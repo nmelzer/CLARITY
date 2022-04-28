@@ -4,13 +4,7 @@
 \alias{run_app}
 \title{Run the Shiny Application}
 \usage{
-run_app(
-  onStart = NULL,
-  options = list(),
-  enableBookmarking = NULL,
-  uiPattern = "/",
-  ...
-)
+run_app(onStart = NULL, options = list(), enableBookmarking = NULL, ...)
 }
 \arguments{
 \item{onStart}{A function that will be called before the app is actually run.
@@ -28,13 +22,7 @@ about the ideal height/width for the app.}
 any previous calls to  \code{\link[shiny:enableBookmarking]{enableBookmarking()}}. See \code{\link[shiny:enableBookmarking]{enableBookmarking()}}
 for more information on bookmarking your app.}
 
-\item{uiPattern}{A regular expression that will be applied to each \code{GET}
-request to determine whether the \code{ui} should be used to handle the
-request. Note that the entire request path must match the regular
-expression in order for the match to be considered successful.}
-
-\item{...}{arguments to pass to golem_opts. 
-See `?golem::get_golem_options` for more details.}
+\item{...}{arguments to pass to golem_opts}
 }
 \description{
 Run the Shiny Application
