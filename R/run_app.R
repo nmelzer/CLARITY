@@ -8,7 +8,7 @@
 #' @importFrom golem with_golem_options
 run_app <- function(
   onStart = NULL,
-  options = list(), 
+  options = list(),
   enableBookmarking = NULL,
   ...
 ) {
@@ -17,9 +17,9 @@ run_app <- function(
       ui = app_ui,
       server = app_server,
       onStart = onStart,
-      options = options, 
+      options = options,
       enableBookmarking = enableBookmarking
-    ), 
+    ),
     golem_opts = list(...)
   )
 }

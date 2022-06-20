@@ -8,6 +8,7 @@
 #' @param output internal
 #' @param session internal
 #' @param filter external depends on choice by the chromosome
+#' @param geneticMap external depends on breed and may later on map selection
 #'
 #' @rdname mod_genetic_map
 #'
@@ -28,7 +29,7 @@ mod_genetic_map_ui=function(id)
   tagList(
     br(),br(),
     fluidRow(id=ns("output1"),
-             box(title= tags$b("Interactive graphical visualization: Genetic vs. physial distance"),status="danger",width=12,
+             box(title= tags$b("Interactive graphical visualization: Genetic vs. physical distance"),status="danger",width=12,
                  solidHeader = TRUE,collapsible = TRUE,collapsed = FALSE,
                  column(width=8, plotlyOutput(ns("genetic"),width="auto",height="auto")%>% withSpinner(color="#0dc5c1"))),
              br(),
@@ -37,18 +38,22 @@ mod_genetic_map_ui=function(id)
              box(title= tags$b("Genetic distance in selected interval"),status="danger",width=12,
                  solidHeader = TRUE,collapsible = TRUE,collapsed = FALSE,
                  fluidRow(column(width=4,uiOutput(ns("sliderRangeMap"))),
+                          column(width=1,""),
                           column(width=2,actionButton(ns("ButtonshowRangeMap"),"Plot selected intervall")),
+                          column(width=1,""),
                           column(width=2,actionButton(ns("ButtonAll"),"Reset to all")),
 
                  ),
+                 br(),
+                 br(),
                 fluidRow(column(width=8,DT::dataTableOutput(outputId=ns("rangeMaps")))))
              ),
-             fluidRow(id=ns("output2"), column(width=3,textInput(ns('height'), 'Plot Height', value="300") ),
-               column(width=3, textInput(ns('width'), 'Width', value="100%")),
+            fluidRow(id=ns("output2"), column(width=3,textInput(ns('height'), 'Plot Height', value="300") ),
+              column(width=3, textInput(ns('width'), 'Width', value="100%")),
                column(width=4, sliderInput(ns('ncol'), 'Columns', min=1, max=4, value=4)),
               column(width=2, downloadLink(ns("dlURL"),label="Download all in a PDF."))
             ),
-            fluidRow(id=ns("output3"), uiOutput(ns('plots'))
+            fluidRow(id=ns("output3"), uiOutput(ns('plots'),height="1800px",width="100%")##uiOutput(ns('plots')) or plotOutput
     )
  )
 }
@@ -59,14 +64,14 @@ mod_genetic_map_ui=function(id)
 #'
 #' @keywords internal
 #' @export
-mod_genetic_map_server=function(input, output, session, filter)
+mod_genetic_map_server=function(input, output, session, filter,geneticMap)
 {
   ns <- session$ns
 
-  geneticMap=NULL
+ # geneticMap=NULL ###moved to app_server
   X<-Y<-Approach<-NULL
 
-  load(system.file("extdata","geneticMap.Rdata",package="CLARITY"))
+  #load(system.file("extdata","geneticMap.Rdata",package="CLARITY")) ## moved to app_server
 
   ## Table header with internal link to methodology
   thead<-tr<-th<-NULL
@@ -87,12 +92,12 @@ mod_genetic_map_server=function(input, output, session, filter)
       tr(
         th(colspan=1,"Chromosome"),
         th(colspan=1,"Marker"),
-        th(colspan=1,"(Mbp)"),
+        th(colspan=1,"Position (Mbp)"),
         th(colspan=1,"Inter-marker distance (Mbp)"),
         th(colspan=1,"Position (BP)"),
-        th(colspan=1,"(cM)"),
-        th(colspan=1,"(cM)"),
-        th(colspan=1,"Recobination rate adjacent")
+        th(colspan=1,"Position (cM)"),
+        th(colspan=1,"Position (cM)"),
+        th(colspan=1,"Recombination rate adjacent")
       )
     )
   ))
@@ -112,7 +117,6 @@ mod_genetic_map_server=function(input, output, session, filter)
     output$sliderRangeMap <- renderUI({
      dat=df.p
      sliderInput(ns("rangeMap"), "Range based on Mbp", min=dat$Mbp_position[1], max=dat$Mbp_position[length(dat$Mbp_position)], step=0.1, value=c(20,30))  ## changed from 0.1 to 1
-
     })
 
     output$genetic <- renderPlotly({
@@ -120,13 +124,10 @@ mod_genetic_map_server=function(input, output, session, filter)
       pp%>%toWebGL()
     })
 
-
-
-   observeEvent(input$rangeMap,
+  observeEvent(input$rangeMap,
    {
     req(input$rangeMap)
     range<-input$rangeMap
-
 
     range1 <- which(input$rangeMap[1]>=as.numeric(df.p$Mbp_position))
     range2 <- which(input$rangeMap[2]<=as.numeric(df.p$Mbp_position))
@@ -140,7 +141,6 @@ mod_genetic_map_server=function(input, output, session, filter)
                                                             pagelength = 10,lengthMenu = list(c(10, 20 ,30, -1), c('10', '20','30','All'))),escape=FALSE,rownames=FALSE)
     })
    })
-
 
    observeEvent(input$ButtonshowRangeMap,
    {
@@ -163,17 +163,15 @@ mod_genetic_map_server=function(input, output, session, filter)
    observeEvent(input$ButtonAll,
    {
        req(input$ButtonAll)
-      # data=df.p[,c(1:3,8,4:7)]
 
-
-        output$rangeMaps=DT::renderDataTable({
+       output$rangeMaps=DT::renderDataTable({
           DT::datatable(df.p[,c(1:3,8,4:7)],filter="none", container=sketch2, options=list(searching = FALSE,dom='Bfrtip',buttons = c('pageLength','copy', 'csv', 'excel', 'pdf'),
                            pagelength = 10, lengthMenu = list(c(10, 20 ,30, -1), c('10', '20','30','All'))),escape=FALSE,rownames=FALSE)
         })
 
         output$sliderRangeMap <- renderUI({
-          sliderInput(ns("rangeMap"), "Range based on Mbp", min=data$Mbp_position[1], max=data$Mbp_position[length(data$Mbp_position)], ## sliderInput
-                              step=0.1, value=c(data$Mbp_position[1],data$Mbp_position[length(data$Mbp_position)]))
+          sliderInput(ns("rangeMap"), "Range based on Mbp", min=df.p$Mbp_position[1], max=df.p$Mbp_position[length(df.p$Mbp_position)], ## sliderInput
+                              step=0.1, value=c(df.p$Mbp_position[1],df.p$Mbp_position[length(df.p$Mbp_position)]))
         })
 
         output$genetic <- renderPlotly({
@@ -190,13 +188,22 @@ mod_genetic_map_server=function(input, output, session, filter)
     shinyjs::show(id="output2")
     shinyjs::show(id="output3")
 
-    ll2=prepareData(n=29,input=geneticMap)
-
     output$plots <- renderUI({
-      makePlotContainers(n=29,ncol=input$ncol, height=input$height, width=input$width )
+    makePlotContainers(n=29,ncol=2,height="300", width="100%") # input$ncol, height=input$height, width=input$width )
     })
-    renderPlots(n=29, input=ll2,output)
+   # renderPlots(n=29, input=ll2,output)
 
+  #  output$plots <- renderPlot({
+      #     print("hier")
+   #   pl<-lapply(1:29,function(.x) ggplot(ll2[[.x]],aes(x=X, y=Y,col=Approach)) +
+  #                 geom_point(size=0.9, na.rm=TRUE)+
+  #                 ggtitle(paste0("BTA ",.x))+
+  #                 scale_color_manual(values=c("dodgerblue2", "cadetblue3"),labels=c("Deterministic","Likelihood"))+
+  #                 theme(plot.title = element_text(hjust = 1))+
+  #                 labs(x="Physical length (Mbp)",y="Genetic distance (cM)"))#
+
+#      gridExtra::grid.arrange(grobs=pl,ncol=2)
+#    }) #%>%bindCache(input$chr, input$ncol,cache="app")
 
     if(file.exists(system.file("figures","geneticMapComparisonAllChromosomes.pdf",package="CLARITY"))!=TRUE){
       ll2=prepareData(n=29,input=geneticMap)

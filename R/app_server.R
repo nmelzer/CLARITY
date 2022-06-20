@@ -71,7 +71,9 @@ app_server <- function( input, output, session ) {
       #      updateSelectInput(session, 'mapversion', label = "Map", choices = map ,selected = map)
       shiny::updateSelectInput(session,'chromosome',label="Chromosome",choices=no.chr,selected="")
       #### disable download button, especially necessary when new breed selection is done
-    }
+
+
+      }
   })
 
   ##### 2. Chromosome selection  #####
@@ -95,12 +97,15 @@ app_server <- function( input, output, session ) {
       shiny::showTab(inputId = "navbar","Hotspot detection")
       shiny::showTab(inputId = "navbar","Genetic-map functions")
 
+
       ##### 1. module general - tabpanel
       callModule(mod_general_server,"mod_general_1",filter=input$chromosome)
 
       ##### 2. module genetic map - tabpanel
-      if(input$chromosome=="All")init_make_plots(output,session) ## the following line is to initialize the multiple plots - otherwise within the module the rendering function does not work - may a better solution exists
-      callModule(mod_genetic_map_server,"mod_genetic_map_1", filter=input$chromosome)
+      geneticMap=NULL
+      load(system.file("extdata","geneticMap.Rdata",package="CLARITY"))
+      if(input$chromosome=="All")init_make_plots(output,session, geneticMap=geneticMap) ## the following line is to initialize the multiple plots - otherwise within the module the rendering function does not work - may a better solution exists
+      callModule(mod_genetic_map_server,"mod_genetic_map_1", filter=input$chromosome, geneticMap=geneticMap)
 
       ###### 3. module misplaced - tabpanel
       callModule(mod_misplaced_server,"mod_misplaced_1",filter=input$chromosome)
@@ -109,7 +114,7 @@ app_server <- function( input, output, session ) {
       callModule(mod_hotspot_server,"mod_hotspot_1",filter=input$chromosome)
 
       ###### 5. module genetic function - tabpanel
-      callModule(mod_genetic_function_server,"mod_genetic_function_1",filter=input$chromosome)  ##
+      callModule(mod_genetic_function_server,"mod_genetic_function_1",filter=input$chromosome)
     }
   })
 

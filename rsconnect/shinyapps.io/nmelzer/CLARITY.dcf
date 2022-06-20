@@ -1,0 +1,13 @@
+name: CLARITY
+title: CLARITY
+username:
+account: nmelzer
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 6198818
+bundleId: 6022948
+url: https://nmelzer.shinyapps.io/CLARITY/
+when: 1655698376.2711
+lastSyncTime: 1655698376.2711
+asMultiple: FALSE
+asStatic: FALSE

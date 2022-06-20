@@ -34,24 +34,43 @@ mod_misplaced_ui <-function(id)
           ),
           fluidRow(
             column(width=10,checkboxInput(ns("checkbox2"), "Show/hide legend", FALSE), p(id = "element2",
-              tags$b("SNP"), "",br(),
-              tags$b("Old_Chr"),"- Old chromosome number",br(),
-              tags$b("Old_bp"),"- Old chromsomal position",br(),
-              tags$b("New_Chr"), " - New chromosome number based on LD analysis. Negative values indicate inconclusive results and the analysis
+              #tags$b("SNP"), "SNP name",br(),
+              #tags$b("Old_Chr"),"- Old chromosome number",br(),
+              #tags$b("Old_bp"),"- Old chromsomal position",br(),
+              #tags$b("New_Chr"), " - New chromosome number based on LD analysis. Negative values indicate inconclusive results and the analysis
+              #                 continued on the original chromosome. ", br(),
+              #tags$b("New_bp")," - New chromosomal position denotes the coordinate of the SNP to which the minimum recombination rate was achieved.",br(),
+              #tags$b("Theta")," -  Minimum recombination rate on new chromosome",br(),
+              #tags$b("Clear_recrate"), "- Coded as 1 if the recombination rate < 0.01 at the new coordinate (bp), zero otherwise; in total 34",br(),
+              #tags$b( "BLAST_ProbeA_Chr.bp")," - The position of alternate match when the probe sequence of candidate SNP was aligned to the reference genome.
+               #                 No entry implies a single hit coinciding with the map coordinate in ",
+               #                 tags$a(href="https://bovinegenome.elsiklab.missouri.edu/downloads/ARS-UCD1.2", "ARS-UCD1.2",target="_blank"),
+                #                " or no hit.", br(),
+            #  tags$b( "Candidate"), "- Coded as 1 if the SNP was identified as candidate of misplacement based on estimates of recombination rate in the
+             #                  original study", tags$a(href = "https://doi.org/10.1186/s12711-020-00593-z","Qanbari and Wittenburg (2020)"),"; in total 51",br(),
+              #tags$b("Problematic region")," -  Identifier of coherent problematic region ; in total 15", br(),
+              #tags$b("Start")," - Start  of position of problematic region",br(),
+              #tags$b("End")," - End of position of problematic region",br(),
+              #tags$b("n_heterozygous"), "- Number of heterozygous sires based on which recombination rates were estimated"))
+
+            "SNP: SNP name",br(),
+            "Old_Chr: Old chromosome number",br(),
+            "Old_bp: Old chromsomal position",br(),
+             "New_Chr: New chromosome number based on LD analysis. Negative values indicate inconclusive results and the analysis
                                continued on the original chromosome. ", br(),
-              tags$b("New_bp")," - New chromosomal position denotes the coordinate of the SNP to which the minimum recombination rate was achieved.",br(),
-              tags$b("Theta")," -  Minimum recombination rate on new chromosome",br(),
-              tags$b("Clear_recrate"), "- Coded as 1 if the recombination rate < 0.01 at the new coordinate (bp), zero otherwise; in total 34",br(),
-              tags$b( "BLAST_ProbeA_Chr.bp")," - The position of alternate match when the probe sequence of candidate SNP was aligned to the reference genome.
+            "New_bp: New chromosomal position denotes the coordinate of the SNP to which the minimum recombination rate was achieved.",br(),
+            "Theta:  Minimum recombination rate on new chromosome",br(),
+             "Clear_recrate: Coded as 1 if the recombination rate < 0.01 at the new coordinate (bp), zero otherwise; in total 34",br(),
+            "BLAST_ProbeA_Chr.bp: The position of alternate match when the probe sequence of candidate SNP was aligned to the reference genome.
                                 No entry implies a single hit coinciding with the map coordinate in ",
-                                tags$a(href="https://bovinegenome.elsiklab.missouri.edu/downloads/ARS-UCD1.2", "ARS-UCD1.2",target="_blank"),
-                                " or no hit.", br(),
-              tags$b( "Candidate"), "- Coded as 1 if the SNP was identified as candidate of misplacement based on estimates of recombination rate in the
+            tags$a(href="https://bovinegenome.elsiklab.missouri.edu/downloads/ARS-UCD1.2", "ARS-UCD1.2",target="_blank"),
+            " or no hit.", br(),
+             "Candidate: Coded as 1 if the SNP was identified as candidate of misplacement based on estimates of recombination rate in the
                                original study", tags$a(href = "https://doi.org/10.1186/s12711-020-00593-z","Qanbari and Wittenburg (2020)"),"; in total 51",br(),
-              tags$b("Problematic region")," -  Identifier of coherent problematic region ; in total 15", br(),
-              tags$b("Start")," - Start  of position of problematic region",br(),
-              tags$b("End")," - End of position of problematic region",br(),
-              tags$b("n_heterozygous"), "- Number of heterozygous sires based on which recombination rates were estimated"))
+            "Problematic region: Identifier of coherent problematic region ; in total 15", br(),
+            "Start: Start  of position of problematic region",br(),
+            "End End of position of problematic region",br(),
+             "n_heterozygous: Number of heterozygous sires based on which recombination rates were estimated"))
           )
        )),
        fluidRow(
@@ -60,17 +79,16 @@ mod_misplaced_ui <-function(id)
            fluidRow(
              br(),
              br(),
-             column(10, "Currently, there are some problematic regions, that are recommended to remove regardless of the SNP panel used (please cite as follows:
-                    Qanbari S, Schnabel RD, Wittenburg D (2022). Evidence of Rare Misassemblies in the Bovine Reference Genome Revealed by Population Genetic Metrics. Anim Genet (to appear))."
-                  )
+             column(10, "Currently, there are some problematic regions, that are recommended to remove regardless of the SNP panel used (please cite
+                    ",HTML("<a href = 'https://doi.org/10.1111/age.13205' target='_blank' >Qanbari et al. (2022)</a>)."
+                  ))
            ),
            br(),
            fluidRow(
 
-             column(width=4,DT::dataTableOutput(ns("tableGenProReg")),style = "height:auto; overflow-y: scroll;overflow-x: scroll;")
+             column(width=6,DT::dataTableOutput(ns("tableGenProReg")),style = "height:auto; overflow-y: scroll;overflow-x: scroll;")
            )
-       )
-     )
+       )     )
     )
 }
 
@@ -148,7 +166,7 @@ mod_misplaced_server <- function(input, output, session, filter)
       class = 'display',
       thead(
         tr(
-          th(colspan=1,"Chromsome"),
+          th(colspan=1,"Chromosome"),
           th(colspan=1,"Start (bp)"),
           th(colspan=1,"End (bp)"),
         )

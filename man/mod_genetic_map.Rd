@@ -7,7 +7,7 @@
 \usage{
 mod_genetic_map_ui(id)
 
-mod_genetic_map_server(input, output, session, filter)
+mod_genetic_map_server(input, output, session, filter, geneticMap)
 }
 \arguments{
 \item{id}{shiny id}
@@ -19,6 +19,8 @@ mod_genetic_map_server(input, output, session, filter)
 \item{session}{internal}
 
 \item{filter}{external depends on choice by the chromosome}
+
+\item{geneticMap}{external depends on breed and may later on map selection}
 }
 \description{
 A shiny Module to generate the outcome for the tabpanel Genetic map.

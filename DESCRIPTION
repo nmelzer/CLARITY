@@ -1,6 +1,6 @@
 Package: CLARITY
 Title: CLARITY-project
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: as.person(c(
     "Nina Melzer <melzer@fbn-dummerstorf.de> [aut, cre]",
     "Saber Qanbari <qanbari@fbn-dummerstorf.de> [ctb]",
@@ -22,6 +22,7 @@ Imports:
     htmltools,
     magrittr,
     periscope,
+    pkgload,
     plotly,
     png,
     roxygen2,

@@ -104,14 +104,21 @@ prepareData=function(n,input)
 
 makePlot_geneticMaps<-function(chr,dat_maps)
 {
-   p <- plot_ly(dat_maps, x = dat_maps$"Mbp_position", y = dat_maps$"cM_deterministic", type = "scatter",size=20, text=dat_maps[,2],hovertemplate = paste("<b>%{text}</b><br>","%{yaxis.title.text}: %{y:.}<br>","%{xaxis.title.text}: %{x:.}<br>","<extra></extra>"
-   ), mode = "markers",height=800,name="Deterministic",color=I("dodgerblue2"))%>% layout(title=paste0("BTA ",chr),titlefont=list(size=26),
-                                                                                      xaxis=list(title="Physical length (Mbp)",titlefont=list(size=24),tickfont = list(size = 23)),
-                                                                                      yaxis=list(title="Genetic distance (cM)",titlefont=list(size=24),tickfont = list(size = 23)),
-                                                                                      margin=list(t=100)) %>% config(displayModeBar=TRUE,displaylogo = FALSE, modeBarButtonsToRemove = list(
-                                                                                        'sendDataToCloud', 'autoScale2d', 'resetScale2d', 'hoverClosestCartesian','hoverCompareCartesian')) ### Ooms, Jeroen. 2018. Rsvg: Render Svg Images into Pdf, Png, Postscript, or Bitmap Arrays. https://CRAN.R-project.org/package=rsvg. adopted from website: https://plotly-r.com/control-modebar.html 05.08.2021
+   if(length(which(is.na(dat_maps$cM_likelihood)==TRUE))!=0)dat_maps=dat_maps[-which(is.na(dat_maps$cM_likelihood)==TRUE),]
 
-   p=add_markers(p,x=dat_maps$"Mbp_position",y=dat_maps$"cM_likelihood",color=I("cadetblue3"), text=dat_maps[,2],hovertemplate = paste("<b>%{text}</b><br>","%{yaxis.title.text}: %{y:.}<br>","%{xaxis.title.text}: %{x:.}<br>","<extra></extra>"),name="Likelihood")
+  # p <- plot_ly(dat_maps, x = dat_maps$"Mbp_position", y = dat_maps$"cM_deterministic", type = "scatter",size=20, text=dat_maps[,2],hovertemplate = paste("<b>%{text}</b><br>","%{yaxis.title.text}: %{y:.}<br>","%{xaxis.title.text}: %{x:.}<br>","<extra></extra>"
+  # ), mode = "markers",height=800,name="Deterministic",color=I("dodgerblue2"))%>% layout(title=paste0("BTA ",chr),titlefont=list(size=26),
+   #                                                                                   xaxis=list(title="Physical length (Mbp)",titlefont=list(size=24),tickfont = list(size = 23)),
+  #                                                                                    yaxis=list(title="Genetic distance (cM)",titlefont=list(size=24),tickfont = list(size = 23)),
+  #                                                                                    margin=list(t=100)) %>% config(displayModeBar=TRUE,displaylogo = FALSE, modeBarButtonsToRemove = list(
+  #                                                                                      'sendDataToCloud', 'autoScale2d', 'resetScale2d', 'hoverClosestCartesian','hoverCompareCartesian')) ### Ooms, Jeroen. 2018. Rsvg: Render Svg Images into Pdf, Png, Postscript, or Bitmap Arrays. https://CRAN.R-project.org/package=rsvg. adopted from website: https://plotly-r.com/control-modebar.html 05.08.2021
+
+   p <- plot_ly(dat_maps, x = dat_maps$"Mbp_position", y = dat_maps$"cM_deterministic", type = "scatter",size=20, text=dat_maps[,2],hovertemplate = paste("<b>%{text}</b><br>","Genetic distance (cM): %{y:.}<br>","Physical length (Mbp): %{x:.}<br>","<extra></extra>"
+   ), mode = "markers",height=800,name="Deterministic",color=I("dodgerblue2"))%>% layout(title=list(main=paste0("BTA ",chr),font.main=3, xlab="Physical length (Mbp)",y.lab= "Genetic distance (cM)",font.lab=2),
+                                                                                                margin=list(t=100)) %>% config(displayModeBar=TRUE,displaylogo = FALSE, modeBarButtonsToRemove = list(
+                                                                                           'sendDataToCloud', 'autoScale2d', 'resetScale2d', 'hoverClosestCartesian','hoverCompareCartesian')) ### Ooms, Jeroen. 2018. Rsvg: Render Svg Images into Pdf, Png, Postscript, or Bitmap Arrays. https://CRAN.R-project.org/package=rsvg. adopted from website: https://plotly-r.com/control-modebar.html 05.08.2021
+
+   p=add_markers(p,x=dat_maps$"Mbp_position",y=dat_maps$"cM_likelihood",color=I("cadetblue3"), text=dat_maps[,2],hovertemplate = paste("<b>%{text}</b><br>","Genetic distance (cM): %{y:.}<br>","Physical length (Mbp): %{x:.}<br>","<extra></extra>"),name="Likelihood")
 
   return(p)
 }
@@ -128,10 +135,8 @@ makePlot_geneticMaps<-function(chr,dat_maps)
 #' @param session internal
 #'
 #' @noRd
-init_make_plots=function(output,session)
+init_make_plots=function(output,session, geneticMap)
 {
-  geneticMap<-NULL
-  load(system.file("extdata","geneticMap.Rdata",package="CLARITY"))
   output$plots <- renderUI({makePlotContainers(n=29)})
   ll3=prepareData(n=29,input=geneticMap)
   renderPlots(n=29,input=ll3, output)

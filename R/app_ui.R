@@ -40,7 +40,8 @@ app_ui <- function(request){
   no.chr=c("","All",paste(1:29))
 
 
-
+  ## options scipen added 13.06.2022
+  options(scipen=999)
 
 
  # shiny::shinyOptions(cache = cachem::cache_disk("./app_cache/cache/")) ## not necessary - Marker plots to huge - resulting in trouble with the app (the app freezes)

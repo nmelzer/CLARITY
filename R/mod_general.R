@@ -31,12 +31,12 @@ mod_general_ui<- function(id){
           fluidRow(column(width=10,checkboxInput(ns("checkbox"), "Show/hide legend", TRUE), ## tried to make the HTML as htmlOutput but it does not work - must be checked later for a better solution
                           p(id = "element",
                             HTML("Chr: chromosome<br>nSNP: number of SNPs<br> BP: chromosome length in base pairs<br>
-                                  Gap: maximum gap size between pairs of adjacent markers in bp<br>
-                                  Space: inter-marker space in kb <br> nRec: number of cross-overs detected <br>
+                                  Gap: maximum gap size between pairs of adjacent markers in base pair (bp)<br>
+                                  Space: inter-marker space in kilobase (kb) <br> nRec: number of cross-overs detected <br>
                                   D(M): genetic length in Morgan estimated based on deterministic approach <br>
                                   L(M): genetic length in Morgan estimated with the likelihood-based approach <br>
-                                  D(cM/Mb): centiMorgan per megabasepair for the deterministic approach <br>
-                                  L(cM/Mb): centiMorgan per megabasepair for the likelihood approach")))
+                                  D(cM/Mb): centiMorgan per megabase pair for the deterministic approach <br>
+                                  L(cM/Mb): centiMorgan per megabase pair for the likelihood approach")))
          )
       )
     ),
@@ -91,7 +91,6 @@ mod_general_server=function(input, output, session, filter){
   ns <- session$ns
 
   genetic_map_summary=NULL
-
   load(system.file("extdata", "genetic_map_summary.Rdata",package="CLARITY"))
   dt=genetic_map_summary
 

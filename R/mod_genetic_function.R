@@ -93,15 +93,14 @@ mod_genetic_function_server=function(input, output, session, filter)
 {
   ns <- session$ns
 
-  max.to.plot=450000
-  load(system.file("extdata", "bestmapfun.Rdata",package="CLARITY"))
+ # max.to.plot=450000 - exclude takes too much time
+ load(system.file("extdata", "bestmapfun.Rdata",package="CLARITY")) ## for each chr. all results regarding MSE and parameter
 
   use=c(2,4,6,8)
   out[,use]=round(out[,use],7)
 
   pp=matrix(0,dim(out)[1],dim(out)[2])
   colnames(pp)=colnames(out)
-
 
   ## find the the best genetic-map function - it is necessary for coloring in the corresponding tables
   for(i in 1:dim(out)[1])
@@ -160,10 +159,13 @@ mod_genetic_function_server=function(input, output, session, filter)
 
     observeEvent(toListen(),{
       chr <- input$GenetMapchr1
-      outcome1= check_bta_marker_length(chromo=chr,max.plot=max.to.plot)
+      #outcome1= check_bta_marker_length(chromo=chr,max.plot=max.to.plot)
+      store=NULL; outcome1=list()
+      load(system.file("extdata",paste0("curve-short-",chr,".Rdata"),package="CLARITY"))  ## 13.06.2022 - only markers are used to see shape of the curve
+      outcome1= store
 
       output$test_bta_marker1<-shiny::renderText({
-        zz=HTML(paste0('<i class="fa fa-info-circle" role="presentation" aria-label="info-circle icon"></i>'," The plot based on about ",round(outcome1[[2]]), "% of the marker comparisons." ))
+        zz=HTML(paste0('<i class="fa fa-info-circle" role="presentation" aria-label="info-circle icon"></i>'," The plot based on about ",round(outcome1[[4]]), "% of the marker comparisons." ))
       })
 
       output$downloadChr1 <- renderUI({
@@ -179,10 +181,13 @@ mod_genetic_function_server=function(input, output, session, filter)
 
 
       chr2 <- input$GenetMapchr2
-      outcome2=check_bta_marker_length(chromo=chr2,max.plot=max.to.plot)
+      store<-NULL; outcome2=list()
+      load(system.file("extdata",paste0("curve-short-",chr2,".Rdata"),package="CLARITY"))  ## 13.06.2022 - only markers are used to see shape of the curve
+      outcome2= store
+      #check_bta_marker_length(chromo=chr2,max.plot=max.to.plot)
 
       output$test_bta_marker2<-shiny::renderText({
-        zz=HTML(paste0('<i class="fa fa-info-circle" role="presentation" aria-label="info-circle icon"></i>'," The plot based on about ",round(outcome2[[2]]), "% of the marker comparisons." ))
+        zz=HTML(paste0('<i class="fa fa-info-circle" role="presentation" aria-label="info-circle icon"></i>'," The plot based on about ",round(outcome2[[4]]), "% of the marker comparisons." ))
       })
 
       output$downloadChr2 <- renderUI({
@@ -196,48 +201,61 @@ mod_genetic_function_server=function(input, output, session, filter)
         }
       )
 
-      if(outcome1[[2]]!=100 && outcome2[[2]]==100){
+      if(outcome1[[4]]!=100 && outcome2[[4]]==100){
         shinyjs::show(id="test_bta_markers1")
         shinyjs::hide(id="test_bta_markers2")
       }
 
-      if(outcome1[[2]]==100 && outcome2[[2]]!=100){
+      if(outcome1[[4]]==100 && outcome2[[4]]!=100){
         shinyjs::hide(id="test_bta_markers1")
         shinyjs::show(id="test_bta_markers2")
       }
-      if(outcome1[[2]]!=100 && outcome2[[2]]!=100){
+      if(outcome1[[4]]!=100 && outcome2[[4]]!=100){
         shinyjs::show(id="test_bta_markers1")
         shinyjs::show(id="test_bta_markers2")
       }
-      if(outcome1[[2]]==100 && outcome2[[2]]==100){
+      if(outcome1[[4]]==100 && outcome2[[4]]==100){
         shinyjs::hide(id="test_bta_markers1")
         shinyjs::hide(id="test_bta_markers2")
       }
-    })
-
-    observeEvent(input$GenetMapchr1,{
-      req(input$GenetMapchr1)
-      chr <- input$GenetMapchr1
-      outcome1= check_bta_marker_length(chromo=chr,max.plot=max.to.plot)
 
       output$genetic_functions3 <- plotly::renderPlotly({
-        chr=as.numeric(as.character(chr))
-        pp2=makePlot(chromo=chr,df=outcome1[[1]],df.list=outcome1[[3]])
+        chr=as.numeric(as.character(input$GenetMapchr1))
+        pp2=makePlot(chromo=chr,df.list=outcome1)
         pp2%>% toWebGL()
       })
-    })
 
-    observeEvent(input$GenetMapchr2 ,{
-      req(input$GenetMapchr2)
-      chr <- input$GenetMapchr2
-      outcome2=check_bta_marker_length(chromo=chr,max.plot=max.to.plot)
-
-        output$genetic_functions4 <- plotly::renderPlotly({
-        chr=as.numeric(as.character(chr))
-        plot2=makePlot(chromo=chr,df=outcome2[[1]],df.list=outcome2[[3]])
+      output$genetic_functions4 <- plotly::renderPlotly({
+        chr2=as.numeric(as.character(input$GenetMapchr2))
+        plot2=makePlot(chromo=chr2,df.list=outcome2)
         plot2%>% toWebGL()
       })
+
     })
+
+    #observeEvent(input$GenetMapchr1,{
+     # req(input$GenetMapchr1)
+#      chr <- input$GenetMapchr1
+      #outcome1= check_bta_marker_length(chromo=chr,max.plot=max.to.plot)
+
+#      output$genetic_functions3 <- plotly::renderPlotly({
+#        chr=as.numeric(as.character(input$GenetMapchr1))
+#        pp2=makePlot(chromo=chr,df.list=outcome1)
+#        pp2%>% toWebGL()
+#      })
+    #})
+
+   # observeEvent(input$GenetMapchr2 ,{
+    #  req(input$GenetMapchr2)
+     # chr <- input$GenetMapchr2
+     # outcome2=check_bta_marker_length(chromo=chr,max.plot=max.to.plot)
+
+ #   output$genetic_functions4 <- plotly::renderPlotly({
+#      chr2=as.numeric(as.character(input$GenetMapchr2))
+#      plot2=makePlot(chromo=chr2,df.list=outcome2)
+#      plot2%>% toWebGL()
+ #   })
+#    })
 
     output$tableBestmapFunction=DT::renderDataTable({
       DT::datatable(out,container=sketch1,filter="none",options=list(searching=FALSE,dom='Bfrtip',buttons = c('pageLength','copy', 'csv', 'excel', 'pdf'),pagelength = 10, lengthMenu = list(c(10, 15, -1), c('10', '20','All'))),escape=FALSE,rownames=FALSE)%>%
@@ -261,11 +279,12 @@ mod_genetic_function_server=function(input, output, session, filter)
 
 
     chr=as.numeric(as.character(filter))
-    outcome=check_bta_marker_length(chromo=chr,max.plot=max.to.plot)
-
+    store<-NULL; outcome=list()
+    load(system.file("extdata",paste0("curve-short-",chr,".Rdata"),package="CLARITY"))##store##check_bta_marker_length(chromo=chr,max.plot=max.to.plot)
+    outcome=store
 
     output$genetic_functions5 <- plotly::renderPlotly({
-      plot2=makePlot(chromo=chr,df=outcome[[1]],df.list=outcome[[3]])
+      plot2=makePlot(chromo=chr,df.list=outcome)
       plot2%>% toWebGL()
     })
 
@@ -278,10 +297,10 @@ mod_genetic_function_server=function(input, output, session, filter)
         DT::formatStyle(if(length(pp[which(pp$Karlin_mse!=0),8])!=0)"Karlin_mse",backgroundColor=DT::styleEqual(pp[which(pp[,8]!=0),8], rep("orange",length(pp[which(pp[,8]!=0),8]))))
    })
 
-    if(outcome[[2]]!=100)
+    if(outcome[[4]]!=100)
     {
       output$test_bta_marker<-shiny::renderUI({
-        zz=HTML(paste0('<i class="fa fa-info-circle" role="presentation" aria-label="info-circle icon"></i>'," The plot based on about ",round(outcome[[2]]), "% of the marker comparisons." ))
+        zz=HTML(paste0('<i class="fa fa-info-circle" role="presentation" aria-label="info-circle icon"></i>'," The plot based on about ",round(outcome[[4]]), "% of the marker comparisons." ))
       })
       shinyjs::show(id="test_bta_markers")
 
@@ -298,7 +317,7 @@ mod_genetic_function_server=function(input, output, session, filter)
       )
     }
 
-    if(outcome[[2]]==100)
+    if(outcome[[4]]==100)
     {
       shinyjs::hide(id="test_bta_markers")
     }
