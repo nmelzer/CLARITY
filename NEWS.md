@@ -1,3 +1,12 @@
-# CLARITY 0.0.0.9000
+# CLARITY 1.0.0 [uploaded October 2022]
 
-* Added a `NEWS.md` file to track changes to the package.
+* First comprehensive version including Holstein and Fleckvieh breed.
+
+# CLARITY 0.0.1.0000  [uploaded on June 2022]
+
+* Smaller changes were realized. 
+
+
+# CLARITY 0.0.0.9000 [uploaded on April 2022]
+
+* Initial upload. 
