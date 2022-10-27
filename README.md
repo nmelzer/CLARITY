@@ -6,6 +6,8 @@
 *CLARITY*: An R Shiny app for an interactive exploration of
 breed-specific genetic maps in cattle
 
+Avaliable [https://nmelzer.shinyapps.io/CLARITY/](https://nmelzer.shinyapps.io/CLARITY/)]
+
 ## Background
 
 The arrangement of markers on the genome can be defined in either
@@ -41,11 +43,11 @@ data are underway).
 
 Key features:
 
-  - Summary statistics for all chromosomes
-  - Genetic map
-  - Misplaced markers
-  - Hotspot detection
-  - Genetic-map functions
+-   Summary statistics for all chromosomes
+-   Genetic map
+-   Misplaced markers
+-   Hotspot detection
+-   Genetic-map functions
 
 ## Installation
 
@@ -66,5 +68,3 @@ library(CLARITY)
 run_app()
 ```
 
-<div style="width: 100% ; height: 400px ; text-align: center; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;" class="muted well">Shiny applications not supported in static R Markdown documents</div>
-# CLARITY 
