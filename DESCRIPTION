@@ -1,6 +1,6 @@
 Package: CLARITY
 Title: CLARITY-project
-Version: 0.0.1
+Version: 1.0.0
 Authors@R: as.person(c(
     "Nina Melzer <melzer@fbn-dummerstorf.de> [aut, cre]",
     "Saber Qanbari <qanbari@fbn-dummerstorf.de> [ctb]",
@@ -9,29 +9,26 @@ Authors@R: as.person(c(
 Description: Clarity_description.
 License: CC BY 4.0
 Imports: 
-    attempt,
     cachem,
-    config (>= 0.3.1),
+    config,
     dplyr,
     DT,
     ggplot2,
-    glue,
+    ggVennDiagram,
     golem (>= 0.3.2),
-    grid,
     gridExtra,
     htmltools,
     magrittr,
-    periscope,
-    pkgload,
+    metathis,
     plotly,
-    png,
-    roxygen2,
+    rlang,
+    sf,
     shiny (>= 1.7.1),
     shinycssloaders,
     shinydashboard,
     shinyjs,
-    spelling,
-    thinkr
+    RVenn,
+    purrr
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.2
@@ -40,7 +37,9 @@ BugReports: https://github.com/nmelzer/CLARITY/issues
 Suggests: 
     knitr,
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    roxygen2,
+    spelling
 Config/testthat/edition: 3
 Language: en-US
 VignetteBuilder: knitr
