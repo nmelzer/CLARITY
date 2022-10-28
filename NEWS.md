@@ -2,7 +2,7 @@
 
 * First comprehensive version including Holstein and Fleckvieh breed.
 
-# CLARITY 0.0.1.0000  [uploaded on June 2022]
+# CLARITY 0.0.1.0000 [uploaded on June 2022]
 
 * Smaller changes were realized. 
 

@@ -17,26 +17,28 @@
 ## Amend DESCRIPTION with dependencies read from package code parsing
 ## Dependencies ----
 ## Add one line by package you want to add as dependency
+usethis::use_package("cachem")
 usethis::use_package("golem")
-usethis::use_package("thinkr" )
+usethis::use_package{"config"}
 usethis::use_package("shiny")
 usethis::use_package("shinydashboard")
 usethis::use_package("shinyjs")
 usethis::use_package("DT")
 usethis::use_package("dplyr")
 usethis::use_package("ggplot2")
-usethis::use_package("roxygen2")
-usethis::use_package("periscope")
+usethis::use_package("roxygen2")    ## afterwards moved to suggests within the Description file
 usethis::use_package("shinycssloaders")
-usethis::use_package("grid")
 usethis::use_package("plotly")
 usethis::use_package("magrittr")
-usethis::use_package("cachem")
 usethis::use_package("gridExtra")
-usethis::use_package("png")
 usethis::use_package("htmltools")
-usethis::use_package("config")
-usethis::use_package("spelling") ## necessary for tests
+usethis::use_package("rlang")
+usethis::use_package("spelling") ## necessary for tests - afterwards moved to suggests within the Description file
+usethis::use_package("ggVennDiagram")
+usethis::use_package("sf")
+usethis::use_package("metathis")
+usethis::use_package("RVenn")
+usethis::use_package("purrr")
 
 
 ## Add modules ----
@@ -50,17 +52,19 @@ golem::add_module( name = "genetic_map")
 golem::add_module( name = "hotspot" )
 golem::add_module( name = "misplaced")
 golem::add_module( name = "about_the_project" )
-
+golem::add_module( name = "bc_general")
+golem::add_module( name = "bc_hotspot")
+golem::add_module( name = "bc_genetic_map")
+golem::add_module( name = "bc_genetic_function")
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*
-golem::add_fct( "app_ui")
 golem::add_fct( "functions",module="general")
 golem::add_fct( "functions",module="hotspot")
 golem::add_fct( "general_hovering")
 golem::add_fct( "functions",module="genetic_function")
 golem::add_fct( "functions",module="genetic_map")
-
+golem::add_fct( "general_venn_diagram")
 
 golem::disable_autoload()  #
 ## External resources
@@ -127,6 +131,7 @@ usethis::use_github_action_pr_commands()
 
 # GitLab CI
 #usethis::use_gitlab_ci()
+
 
 # You're now set! ----
 # go to dev/03_deploy.R

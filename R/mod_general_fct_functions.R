@@ -1,73 +1,170 @@
-#' functions 
+#' function
+#' @title Transform data for breed analysis
 #'
-#' @title transformdata
-#' 
-#' 
-#' @param data1 contains data frame which should be transformed
-#' 
-#' @description The function transform the corresponding columns bp into Mbp and M into cM.
+#' @description The function transforms the data for plotting: basepairs (bp) into megabasepairs (Mbp) and Morgan (M) into centiMorgan (cM).
+#' @return The function returns a data frame with three columns: basepairs (bp), centiMorgan (cM) and chromosome (chr).
 #'
-#' @return A dataframe.
-#' 
+#' @param data1 is a data frame
+#' @seealso \link{mod_general_server}
+#'
 #' @export
-transformdata=function(data1=data1)
+transformdata_general=function(data1)
 {
-  data1[,1]=as.numeric(as.character(data1[,1]))/1000000 
+  data1[,1]=as.numeric(as.character(data1[,1]))/1000000
   data1[,2]=as.numeric(as.character(data1[,2]))*100
-  data1=cbind(data1,paste("chr ",1:nrow(data1),sep=""))
+  data1=cbind(data1,1:nrow(data1))
   colnames(data1)=c("bp","cM","chr")
   data1=as.data.frame(data1)
   data1$bp=as.numeric(data1$bp)
   data1$cM=as.numeric(data1$cM)
-  return(data1)
+  data1
 }
 
 
-# functions
-#' @title Creating the Scatter plot
+#' function
+#' @title Transform data for breed comparison
 #'
-#' @description The corresponding scatter plot is plotted, when all chromosome are selected.
-#' 
-#' @param dat contains the data frame which is used for plotting
-#' @param colo contains the colors which are used
-#' 
+#' @param data1 data frame
+#' @param what name of the approach
+#' \itemize{
+#' \item det - is used for deterministic approach
+#' \item lik - is used for likelihood-based approach
+#' }
+#' @param breed.select.bc vector containing the selected breeds
+#' @param colo vector containing the predefined colors for each breed
+#'
+#' @description The function transforms the data for plotting: basepairs (bp) into megabasepairs (Mbp) and Morgan (M) into centiMorgan (cM) for selected breeds and adds
+#' breed specific colors.
+#'
+#'
+#' @return The function returns a data frame with four columns: basepair (bp), centiMorgan (cM), chromosome (chr), breed and color.
+#'
+#' @seealso \link{mod_bc_general_server}
+#' @export
+transformdata_general_bc=function(data1,what,breed.select.bc,colo)
+{
+  for(i in 1:length(breed.select.bc))
+  {
+    if(what=="det")use=c(3,7)
+    else use=c(3,9)
+    dat=data1[[i]][-nrow(data1[[i]]),use]
+    dat[,1]=as.numeric(as.character(dat[,1]))/1000000
+    dat[,2]=as.numeric(as.character(dat[,2]))*100
+    dat=cbind(dat,1:nrow(dat))
+    dat=cbind(dat,rep(breed.select.bc[i],nrow(dat)))
+    colnames(dat)=c("bp","cM","chr","breed")
+    dat=as.data.frame(dat)
+    dat$bp=as.numeric(dat$bp)
+    dat$cM=as.numeric(dat$cM)
+    color=rep(colo[i,1],nrow(dat))
+    dat=cbind(dat,color)
+    if(i==1) dat.0=dat
+    else dat.0=rbind(dat.0,dat)
+  }
+  dat.0
+}
+
+
+#' function
+#' @title Creating the scatter plot for all chromosomes within breed analysis
+#' @description The scatter plot is created, when all chromosomes are selected within breed analysis.
+#'
+#' @param dat data frame containing basepairs (bp), centiMorgan (cM), chromosome (chr), color and approach
+#' @param colo vector containing the predefined colors
+#'
 #' @import ggplot2
-#' 
-#' @noRd
-scatterPlot <- function(dat,colo)
+#' @return The function returns a ggplot object.
+#'
+#' @seealso \link{mod_general_server}
+#'
+#' @export
+scatterPlot_general_all <- function(dat,colo)
 {
     bp<-cM<-Approach<-NULL
-    p=ggplot(dat, aes(x=bp, y = cM,col=Approach)) +
+    p=ggplot2::ggplot(dat, aes(x=bp, y = cM,col=Approach)) +
     geom_point(size=6,alpha=1)+
     scale_color_manual(values=colo,labels=c("Deterministic","Likelihood"))+
     labs(x="Physical length (Mbp)",y="Genetic distance (cM)")  +
-    guides(colour = guide_legend(override.aes = list(size=5)))+   
-    theme(axis.ticks=element_line(colour = "black", size = 2),text = element_text(size = 25))
-    return(p)
-  
+    guides(colour = guide_legend(override.aes = list(size=5)))+
+    theme(axis.ticks=element_line(colour = "black", size = 2),text = element_text(size = 18))
+    p
 }
 
-
-# functions
-#' @title Creating the Scatter plot
-#' 
-#' @param dat contains the data frame which is used for plotting
-#' @param fil filter means here selected chromosome
-#' @param colo contains the colors which are used
+#' function
+#' @title Creating the scatter plot for selected chromosome within breed analysis
 #'
-#' @description The corresponding scatter plot is plotted when a specific chromosome was selected. All chromosomes are presented, whereby the selected one is drawn bigger 
+#' @param dat data frame containing basepairs (bp), centiMorgan (cM), chromosome (chr), color and approach
+#' @param fil selected chromosome
+#' @param colo vector containing the predefined colors
+#'
+#' @description The corresponding scatter plot is created, when a specific chromosome was selected within breed analysis.
 #' @import ggplot2
-#' 
-#' @noRd
-scatterPlot0 <- function(dat,fil,colo)
+#'
+#' @return The functions returns a ggplot object.
+#' @seealso \link{mod_general_server}
+#' @export
+scatterPlot_general_selected <- function(dat,fil,colo)
 {
     bp<-cM<-Approach<-NULL
-    p=ggplot(dat, aes(x=bp, y = cM,col=Approach)) + 
+    p=ggplot2::ggplot(dat, aes(x=bp, y = cM,col=Approach)) +
     geom_point(size = ifelse(1:nrow(dat) == fil, 8, 4),alpha=ifelse(1:nrow(dat) == fil,1,0.3  ))+
     geom_point(size = ifelse(1:nrow(dat) == (nrow(dat)/2)+fil, 8, 4),alpha=ifelse(1:nrow(dat) == (nrow(dat)/2)+fil,1,0.3  ))+
     scale_color_manual(values=colo,labels=c("Deterministic","Likelihood"))+
     labs(x="Physical length (Mbp)",y="Genetic distance (cM)")  +
-    guides(colour = guide_legend(override.aes = list(size=5)))+ 
-    theme(axis.ticks=element_line(colour = "black", size = 2),text = element_text(size = 25))
-    return(p)
+    guides(colour = guide_legend(override.aes = list(size=5)))+
+    theme(axis.ticks=element_line(colour = "black", size = 2),text = element_text(size = 18))
+   p
 }
+
+#' function
+#' @title Creating the scatter plot for all chromosomes for breed comparison
+#' @description The corresponding scatter plot is created, when all chromosome are selected for the breed comparison.
+#' @param dat data frame containing basepairs (bp), centiMorgan (cM), chromosome (chr), breed and color
+#' @param names.bc.plot vector containing the names of selected breeds
+#' @param colo vector containing the predefined colors for the breeds
+#' @import ggplot2
+#'
+#' @return The functions returns a ggplot object.
+#' @seealso \link{mod_bc_general_server}
+#' @export
+scatterPlot_general_all_bc <- function(dat,names.bc.plot,colo)
+{
+  bp<-cM<-breed<-NULL
+  p=ggplot2::ggplot(dat, aes(x=bp, y = cM,col=breed)) +
+    geom_point(size=6,alpha=1)+
+    scale_color_manual(values=colo[1:length(names.bc.plot),1],labels=names.bc.plot)+
+    labs(x="Physical length (Mbp)",y="Genetic distance (cM)")  +
+    guides(colour = guide_legend(override.aes = list(size=5)))+
+    theme(axis.ticks=element_line(colour = "black", size = 2),text = element_text(size = 25))
+  p
+
+}
+
+#' function
+#' @title Creating the scatter plot for selected chromosome for breed comparison
+#'
+#' @description The corresponding scatter plot is created, when a specific chromosome is selected for the breed comparison.
+#' @param dat data frame containing basepairs (bp), centiMorgan (cM), chromosome (chr), breed and color
+#' @param fil selected chromosome
+#' @param names.bc.plot vector containing the names of selected breeds
+#' @param colo vector containing the predefined colors
+#'
+#' @import ggplot2
+#' @return The functions returns a ggplot object.
+#'
+#' @seealso \link{mod_bc_general_server}
+#' @export
+scatterPlot_general_selected_bc <- function(dat,fil,names.bc.plot,colo)
+{
+  bp<-cM<-Approach<-breed<-NULL
+
+  p=ggplot2::ggplot(dat, aes(x=bp, y = cM,col=breed)) +
+    geom_point(size = ifelse(1:nrow(dat) == fil, 8, 4),alpha=ifelse(1:nrow(dat) == fil,1,0.3  ))+
+    geom_point(size = ifelse(1:nrow(dat) == (nrow(dat)/2)+fil, 8, 4),alpha=ifelse(1:nrow(dat) == (nrow(dat)/2)+fil,1,0.3  ))+
+    scale_color_manual(values=colo[1:length(names.bc.plot),1],labels=names.bc.plot)+
+    labs(x="Physical length (Mbp)",y="Genetic distance (cM)")  +
+    guides(colour = guide_legend(override.aes = list(size=5)))+
+    theme(axis.ticks=element_line(colour = "black", size = 2),text = element_text(size = 25))
+  p
+}
+

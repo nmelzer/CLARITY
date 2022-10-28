@@ -1,63 +1,88 @@
-#' functions
+#' function
 #'
-#' @title makePlot
-#' @description A fct function to plot the
-#' @return Returns the plot to the mod_genetic_funtion.
+#' @title Creating plots of genetic-map functions for breed analysis
 #'
+#' @description For a selected chromosome the scatter plot of recombination rates vs. distances and curves of all genetic-map functions ("Haldane scaled","Rao","Felsenstein","Liberman & Karlin")
+#' are generated.
 #'
-#' @noRd
+#' @details The plots are cached to improve the app performance.
 #'
-makePlot=function(chromo=chromo,df.list=df.list)  ## has to be extended then for breed
+#' @param chromo selected chromosome
+#' @param df.list list: first element contains a matrix of recombination rate and distance for marker pairs, second element includes a matrix of X-values for all genetic-map functions,
+#' third element includes a matrix of Y-values for all genetic-map functions.
+#' @param name.file name of output file.
+#' @param breed.select selected breed
+#'
+#' @importFrom shiny bindCache
+#' @rawNamespace import(plotly, except = last_plot)
+#' @return The functions returns an already rendered plotly object.
+#' @export
+#' @seealso \link{mod_genetic_function_server}
+#'
+makePlot_genetic_function=function(chromo=chromo,df.list=df.list,name.file,breed.select)  ##
 {
+  a<-plotly::renderPlotly({
   genetic_functions=c("Haldane scaled","Rao","Felsenstein","Liberman & Karlin")
 
   xs=as.data.frame(df.list[[2]])
   ys=as.data.frame(df.list[[3]])
 
-  # Plotly object
   p <- plotly::plot_ly(as.data.frame(df.list[[1]]), x = ~dist_M, y = ~theta, type = "scatter", mode = "markers",hoverinfo="none",name="SNP data",color=I("lightgray"))%>%
-    layout(title=paste0("BTA ",chromo),xaxis=list(title="Genetic distance (M)"),yaxis=list(title="Recombination rate"))%>%
-    config(displayModeBar=TRUE, displaylogo = FALSE, modeBarButtonsToRemove = list( 'sendDataToCloud', 'autoScale2d','hoverClosestCartesian',
-                                                                                    'hoverCompareCartesian'))
-  ########################################### new add selection of chromosome
-
+    plotly::layout(title=paste0("BTA ",chromo),xaxis=list(title="Genetic distance (M)"),yaxis=list(title="Recombination rate"))%>%
+    plotly::config(displayModeBar=TRUE, displaylogo = FALSE, modeBarButtonsToRemove = list('sendDataToCloud', 'autoScale2d','hoverClosestCartesian',
+                                                                                    'hoverCompareCartesian'), toImageButtonOptions= list(filename = name.file))
   pp=c("darkred","orange","blue","darkblue")
-  names=c("","darkred","orange","blue","darkblue")
-  for(i in 1:4)p=add_lines(p,x=xs[,i],y=ys[,i],color=I(pp[i]),name=genetic_functions[i])
 
-  return(p)
+  for(i in 1:4)p=plotly::add_lines(p,x=xs[,i],y=ys[,i],color=I(pp[i]),name=genetic_functions[i])
+
+  p%>% plotly::toWebGL()
+  })%>%shiny::bindCache(breed.select,chromo,cache="app")
+
+  a
 }
 
 
+#' function
+#' @title Creating plots of genetic-map functions for breed comparison
+#' @description For a selected chromosome the curves of all genetic-map functions ("Haldane scaled","Rao","Felsenstein","Liberman & Karlin")
+#' are generated for all selected breeds.
+#'
+#' @param df.list list: first element contains a matrix of recombination rate and distance for marker pairs, second element includes a matrix of X-values for all genetic-map functions,
+#' third element includes a matrix of Y-values for all genetic-map functions.
+#' @param chromo selected chromosome
+#' @param names.bc.plot vector containing the selected breeds
+#' @param name.file name of output file
+#'
+#' @rawNamespace import(plotly, except = last_plot)
+#' @return The function returns a plotly object.
+#' @export
+#' @seealso \link{mod_bc_genetic_function_server}
 
+makePlot_genetic_function_bc=function(chromo,df.list,names.bc.plot,name.file)  ##
+{
+  genetic_functions=c("Haldane scaled","Rao","Felsenstein","Liberman & Karlin") ##
+  line_type=c("","dash","dot")
 
-#check_bta_marker_length=function(chromo=chromo,max.plot=max.plot)
-#{
-  ##
- # store=NULL
+  for(ih in 1:length(names.bc.plot))
+  {
+    if(ih==1)
+    {
+     p <- plotly::plot_ly(as.data.frame(df.list[[ih]]), x = ~X1, y = ~Y1, type = "scatter", mode = "lines",hoverinfo="none",name=paste(names.bc.plot[ih],genetic_functions[ih],sep="-"),color=I("darkred"))%>%
+      plotly::layout(title=paste0("BTA ",chromo),xaxis=list(title="Genetic distance (M)"),yaxis=list(title="Recombination rate"))%>%
+      plotly::config(displayModeBar=TRUE, displaylogo = FALSE, modeBarButtonsToRemove = list( 'sendDataToCloud', 'autoScale2d','hoverClosestCartesian',
+                                                                                    'hoverCompareCartesian'), toImageButtonOptions= list(filename = name.file))
 
-  #load(system.file("extdata",paste0("curve-short-",chromo,".RData"),package="CLARITY"))  ## 13.06.2022 - only markers are used to see shape of the curve
+    pp=c("darkred","orange","blue","darkblue")
+   for(ii in 2:4)
+     {
+        p=plotly::add_lines(p,x=df.list[[ih]][,ii],y=df.list[[ih]][,(ii+4)],color=I(pp[ii]),name=paste(names.bc.plot[ih],genetic_functions[ii],sep="-"))
+  }}
+    else
+    {
 
-  #df2= as.data.frame(store[[1]])
-  #colnames(df2)=c("x","y")
-
-##  gg=sqrt((df[2:dim(df)[1],1]-df[1:(dim(df)[1]-1),1])^2  + (df[2:dim(df)[1],2]-df[1:(dim(df)[1]-1),2])^2  )  ## take out marker determinations to time intensive -better to connect to a database
-##  cc=1; c2=0.0
-##  if(dim(df)[1]>=max.plot)
-##  {
-##    while(cc!=0)
-#    {
-#      pos=which(gg > (0.03-c2))
-#      if(length(pos)>=max.plot)cc=0
-##      else c2=c2+0.001
-  #  }
-  #  df2=df[pos,]
-  #}
-#  else  df2=df
-
- # prozent=(dim(df2)[1]*100)/dim(df)[1] ##
-
- # return(list(df2,prozent,store))
-#}
-
+      for(ii in 1:4) p=plotly::add_lines(p,x=df.list[[ih]][,ii],y=df.list[[ih]][,(ii+4)],color=I(pp[ii]),name=paste(names.bc.plot[ih],genetic_functions[ii],sep="-"),line=list(dash=line_type[[ih]]))
+    }
+  }
+  p
+}
 

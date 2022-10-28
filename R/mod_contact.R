@@ -1,47 +1,47 @@
-#' contact UI Function
-#'
-#' @description A shiny Module.
-#'
-#' @param id,input,output,session Internal parameters for {shiny}.
-#'
-#' @noRd
-#'
-#' @importFrom shiny NS tagList
-mod_contact_ui <- function(id){
-  ns <- NS(id)
+# Module UI
 
-#  tagList(
-    fluidRow(
-     br(),
-     br(),
+#' @title mod_contact_ui and mod_contact_server
+#' @description  A shiny module containing the contact information.
+#'
+#' @param id module id
 
-      box("", width=12,
-          fluidRow(
-          column(width=8,
-          tags$h4(HTML("Research Institute for Farm Animal Biology (FBN) <br>
-                Institute of Genetics and Biometry <br>
-                 Wilhelm-Stahl-Allee 2 <br>
-                18196 Dummerstorf <br> <br>
-                Email: wittenburg@fbn-dummerstorf.de <br>
-                URL link: <a href='https://www.fbn-dummerstorf.de/en/about-us/staff/mitarbeiter/doerte-wittenburg/' target='blank' >Wittenburg homepage</a>
-                <br> <br>
-                Email: melzer@fbn-dummerstorf.de <br>
-                URL link: <a href='https://www.fbn-dummerstorf.de/en/about-us/staff/mitarbeiter/nina-melzer/' target='blank' >Melzer homepage</a>"
+#' @rdname mod_contact
+#'
+#' @keywords internal, data set
+#' @import shiny
+#' @importFrom shinydashboard box
+#' @import htmltools
+#' @export
 
+
+mod_contact_ui = function(id){
+  ns <- shiny::NS(id)
+  shiny::tagList(
+    htmltools::br(),htmltools::br(),
+      shinydashboard::box(status="primary",width=12, solidHeader = TRUE,collapsible = FALSE,
+         shiny::fluidRow(
+           shiny::column(width=8, htmltools::tags$h4(htmltools::HTML("Research Institute for Farm Animal Biology (FBN) <br>
+                                  Wilhelm-Stahl-Allee 2 <br>
+                                  18196 Dummerstorf <br> <br>
+                                  Email: wittenburg@fbn-dummerstorf.de <br>
+                                  URL link: <a href='https://www.fbn-dummerstorf.de/en/about-us/staff/mitarbeiter/doerte-wittenburg/' target='blank' >Wittenburg homepage</a>
+                                  <br> <br>
+                                  Email: melzer@fbn-dummerstorf.de <br>
+                                  URL link: <a href='https://www.fbn-dummerstorf.de/en/about-us/staff/mitarbeiter/nina-melzer/' target='blank' >Melzer homepage</a>"
           ))),
-          column(width=4,
-          img(src="www/logo_I2.png",height="220px",width="220px"))
-      ))
-    )
-
- # )
+          shiny::column(width=4,shiny::img(src="www/logo_I2.png",alt="institute_logo",width="188px"))
+        )
+      )
+  )
 }
 
-#' contact Server Functions
-#'
-#' @noRd
-mod_contact_server <- function(id){
-  moduleServer( id, function(input, output, session){
+
+#' @rdname mod_contact
+#' @export
+#' @keywords internal
+
+mod_contact_server = function(id){
+  shiny::moduleServer( id, function(input, output, session){
   })
 }
 

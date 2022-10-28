@@ -1,12 +1,18 @@
+*CLARITY*: A Shiny app for interactive visualisation of the bovine
+physical-genetic map
+================
+N. Melzer, D. Wittenburg
+(October 20, 2022)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# CLARITY
+## Source
 
-*CLARITY*: An R Shiny app for an interactive exploration of
-breed-specific genetic maps in cattle
+An online version of CLARITY is available at
+<https://nmelzer.shinyapps.io/clarity/>
 
-Avaliable [https://nmelzer.shinyapps.io/CLARITY/](https://nmelzer.shinyapps.io/CLARITY/)]
+A pipeline for creating a breed-specific genetic map from genotypes of
+half-siblings is available at <https://github.com/wittenburg/hsrecombi>
 
 ## Background
 
@@ -21,33 +27,31 @@ sequences.
 
 ## Objectives
 
-Based on published results on a large pedigree of German Holstein
-cattle, we aim at providing a platform that allows users to
-interactively explore the bovine genetic and physical map. We developed
-the R Shiny app *CLARITY* that provides access to the genetic map built
-on the Illumina Bovine SNP50 genotyping array with markers ordered
-according to the physical coordinates of the most recent bovine genome
-assembly ARS-UCD1.2. The user is able to interconnect the physical and
-genetic map for a whole chromosome or a specific chromosomal region and
-can inspect a landscape of recombination hotspots. Moreover, the user
-can investigate which of the frequently used genetic-map functions
-locally fits best. We further provide auxiliary information about
-markers being putatively misplaced in the ARS-UCD1.2 release. The
-corresponding output tables and figures can be downloaded in various
-formats. We are working on integrating data from different breeds to
-facilitate comparison of different genome features and to promote this
-app for education and research purposes.
-
-In this package version, only Holstein data can be investigated (more
-data are underway).
+Based on published results on a large pedigree of German Holstein cattle
+and newly obtained results with German/Austrian Fleckvieh cattle, we aim
+at providing a platform that allows users to interactively explore the
+bovine genetic and physical map. We developed the R Shiny app “CLARITY”
+that provides access to the genetic map built on the Illumina Bovine
+SNP50 genotyping array with markers ordered according to the physical
+coordinates of the most recent bovine genome assembly ARS-UCD1.2. The
+user is able to interconnect the physical and genetic map for a whole
+chromosome or a specific chromosomal region and can inspect a landscape
+of recombination hotspots. Moreover, the user can investigate which of
+the frequently used genetic-map functions locally fits best. We further
+provide auxiliary information about markers being putatively misplaced
+in the ARS-UCD1.2 release. The corresponding output tables and figures
+can be downloaded in various formats. By ongoing data integration from
+different breeds, the app also facilitates comparison of different
+genome features, providing a valuable tool for education and research
+purposes.
 
 Key features:
 
 -   Summary statistics for all chromosomes
 -   Genetic map
--   Misplaced markers
 -   Hotspot detection
 -   Genetic-map functions
+-   Misplaced markers
 
 ## Installation
 
@@ -68,3 +72,4 @@ library(CLARITY)
 run_app()
 ```
 
+<div style="width: 100% ; height: 400px ; text-align: center; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;" class="muted well">Shiny applications not supported in static R Markdown documents</div>
