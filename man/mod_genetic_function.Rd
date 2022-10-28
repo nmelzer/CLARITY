@@ -7,18 +7,25 @@
 \usage{
 mod_genetic_function_ui(id)
 
-mod_genetic_function_server(input, output, session, filter)
+mod_genetic_function_server(id, filter, breed.select)
 }
 \arguments{
-\item{id}{shiny id}
+\item{id}{module id}
 
-\item{input}{internal}
+\item{filter}{selected chromosome}
 
-\item{output}{internal}
-
-\item{session}{internal}
+\item{breed.select}{selected breed}
 }
 \description{
-A shiny Module to generate the outcome for the tabpanel Genetic map functions.
+A shiny module to generate the outcome for the tabpanel "Genetic-map functions" for the sidebar "Breed analysis".
 }
+\details{
+The module uses the function \link{makePlot_genetic_function} for plotting.
+}
+\seealso{
+\link{makePlot_genetic_function}
+}
+\keyword{function}
+\keyword{genetic}
 \keyword{internal}
+\keyword{internal,}

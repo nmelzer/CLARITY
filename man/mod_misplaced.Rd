@@ -7,18 +7,14 @@
 \usage{
 mod_misplaced_ui(id)
 
-mod_misplaced_server(input, output, session, filter)
+mod_misplaced_server(id)
 }
 \arguments{
-\item{id}{shiny id}
-
-\item{input}{internal}
-
-\item{output}{internal}
-
-\item{session}{internal}
+\item{id}{module id}
 }
 \description{
-A shiny Module to generate the outcome for Misplaced markers.
+A shiny module to generate the outcome for the misplaced markers.
 }
-\keyword{internal}
+\keyword{internal,}
+\keyword{marker}
+\keyword{misplaced}

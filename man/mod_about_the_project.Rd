@@ -7,18 +7,13 @@
 \usage{
 mod_about_the_project_ui(id)
 
-mod_about_the_project_server(input, output, session)
+mod_about_the_project_server(id)
 }
 \arguments{
-\item{id}{shiny id}
-
-\item{input}{internal}
-
-\item{output}{internal}
-
-\item{session}{internal}
+\item{id}{module id}
 }
 \description{
-A shiny Module to provide all the relevant information about the project.
+A shiny module to provide all relevant information about the project.
 }
-\keyword{internal}
+\keyword{information}
+\keyword{internal,}

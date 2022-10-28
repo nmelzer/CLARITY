@@ -7,25 +7,30 @@
 \usage{
 mod_genetic_map_ui(id)
 
-mod_genetic_map_server(input, output, session, filter, geneticMap)
+mod_genetic_map_server(id, filter, breed.select, geneticMap, color.breed.dl)
 }
 \arguments{
-\item{id}{shiny id}
+\item{id}{module id}
 
-\item{input}{internal}
+\item{filter}{selected chromosome}
 
-\item{output}{internal}
+\item{breed.select}{name of the selected breed}
 
-\item{session}{internal}
+\item{geneticMap}{data frame containing the genetic map}
 
-\item{filter}{external depends on choice by the chromosome}
-
-\item{geneticMap}{external depends on breed and may later on map selection}
+\item{color.breed.dl}{vector containing the predefined colors}
 }
 \description{
-A shiny Module to generate the outcome for the tabpanel Genetic map.
+A shiny module to generate the outcome for the tabpanel "Genetic map" for the sidebar "Breed analysis".
 }
-\note{
-The module uses the mod_genetic_map_fct_functions.R.
+\details{
+Depending on the user choice, when a specific chromosome is selected than the function \link{makePlot_geneticMaps} is used to create the plot.
+If all chromosomes are selected than genetic map data are prepared for the plot using the function \link{transformdata_genetic_map}
+and plotted using the function \link{makePlot_all_geneticMaps}. Moreover, the corresponding plot is cached to increase the app performance.
 }
-\keyword{internal}
+\seealso{
+\link{transformdata_genetic_map}, \link{makePlot_geneticMaps} and \link{makePlot_all_geneticMaps}
+}
+\keyword{genetic}
+\keyword{internal,}
+\keyword{map}

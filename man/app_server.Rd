@@ -2,14 +2,17 @@
 % Please edit documentation in R/app_server.R
 \name{app_server}
 \alias{app_server}
-\title{The application server-side}
+\title{App_server}
 \usage{
 app_server(input, output, session)
 }
 \arguments{
-\item{input, output, session}{Internal parameters for {shiny}.
+\item{input, output, session}{Internal parameters for `{shiny}`.
 DO NOT REMOVE.}
 }
 \description{
+The application server-side.
+}
+\details{
 The application server-side
 }

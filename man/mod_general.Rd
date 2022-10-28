@@ -7,24 +7,28 @@
 \usage{
 mod_general_ui(id)
 
-mod_general_server(input, output, session, filter)
+mod_general_server(id, filter, breed.select, color.breed.dl)
 }
 \arguments{
-\item{id}{shiny id}
+\item{id}{module id}
 
-\item{input}{internal}
+\item{filter}{selected chromosome}
 
-\item{output}{internal}
+\item{breed.select}{name of the selected breed}
 
-\item{session}{internal}
+\item{color.breed.dl}{vector containing the predefined colors}
 }
 \description{
-A shiny Module to generate the outcome for the tabpanel General information.
+A shiny module to generate the outcome for the tabpanel "General information" for the sidebar "Breed analysis".
 }
 \details{
-Both use mod_general_fct_functions were all functions are included for the graphical outputs.
+Within the module the data are prepared for plotting using the function \link{transformdata_general}. Moreover,
+the plots are created using the function \link{scatterPlot_general_all} or \link{scatterPlot_general_selected} depending on the user selected chromosome.
+Corresponding hovering information and style are generated using \link{hovering}.
 }
-\note{
-The module uses the mod_general_fct_functions.R and the fct_general_hovering.R.
+\seealso{
+\link{transformdata_general},\link{scatterPlot_general_all}, \link{scatterPlot_general_selected} and \link{hovering}
 }
-\keyword{internal}
+\keyword{general}
+\keyword{internal,}
+\keyword{module}

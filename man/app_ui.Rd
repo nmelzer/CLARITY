@@ -2,7 +2,7 @@
 % Please edit documentation in R/app_ui.R
 \name{app_ui}
 \alias{app_ui}
-\title{The application User-Interface}
+\title{App ui}
 \usage{
 app_ui(request)
 }
@@ -11,5 +11,8 @@ app_ui(request)
 DO NOT REMOVE.}
 }
 \description{
+The application User-Interface (UI).
+}
+\details{
 The application User-Interface
 }

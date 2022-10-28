@@ -7,18 +7,13 @@
 \usage{
 mod_methodology_ui(id)
 
-mod_methodology_server(input, output, session)
+mod_methodology_server(id)
 }
 \arguments{
-\item{id}{shiny id}
-
-\item{input}{internal}
-
-\item{output}{internal}
-
-\item{session}{internal}
+\item{id}{module id}
 }
 \description{
-A shiny Module containing all relevant information about XXX.
+A shiny module containing all relevant information about the methodology or the terminology of the methods mentioned within the app.
 }
-\keyword{internal}
+\keyword{internal,}
+\keyword{methodology}

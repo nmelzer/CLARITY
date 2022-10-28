@@ -7,18 +7,15 @@
 \usage{
 mod_datasets_ui(id)
 
-mod_datasets_server(input, output, session)
+mod_datasets_server(id)
 }
 \arguments{
-\item{id}{shiny id}
-
-\item{input}{internal}
-
-\item{output}{internal}
-
-\item{session}{internal}
+\item{id}{module id}
 }
 \description{
-A shiny Module containing all relevant information about the data sets. Currently, only one Holstein data set is included.
+A shiny module containing the relevant information about the data sets and their external preprocessing.
 }
+\keyword{data}
 \keyword{internal}
+\keyword{internal,}
+\keyword{set}

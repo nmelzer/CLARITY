@@ -7,21 +7,27 @@
 \usage{
 mod_hotspot_ui(id)
 
-mod_hotspot_server(input, output, session, val, filter)
+mod_hotspot_server(id, filter, breed.select, color.shape.def)
 }
 \arguments{
-\item{id}{shiny id}
+\item{id}{module id}
 
-\item{input}{internal}
+\item{filter}{selected chromosome}
 
-\item{output}{internal}
+\item{breed.select}{names of selected breed}
 
-\item{session}{internal}
+\item{color.shape.def}{data frame containing the definition for coloring, shapes, size for plots}
 }
 \description{
-A shiny Module to generate the outcome for the tabpanel Hotspot detection
+A shiny module to generate the outcome for the tabpanel "General information" for the sidebar "Breed analysis".
 }
-\note{
-The server used functions which are included in mod-hotspot_fct_functions as well as the general fct_general_hovering function.
+\details{
+Within the module the corresponding data are prepared using the function \link{transformdata_hotspot}. The prepared data are used to plot the hotspot figure using the function
+\link{scatterPlot_hotspot} or \link{scatterPlot_hotspot_all} depending on user chromosome choice. The hover information are obtained from the function \link{hovering}.
 }
+\seealso{
+\link{transformdata_hotspot}, \link{scatterPlot_hotspot}, \link{scatterPlot_hotspot_all} and \link{hovering}
+}
+\keyword{hotspot}
 \keyword{internal}
+\keyword{internal,}
