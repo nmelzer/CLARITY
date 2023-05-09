@@ -1,6 +1,6 @@
 Package: CLARITY
 Title: CLARITY-project
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: as.person(c(
     "Nina Melzer <melzer@fbn-dummerstorf.de> [aut, cre]",
     "Saber Qanbari <qanbari@fbn-dummerstorf.de> [ctb]",
