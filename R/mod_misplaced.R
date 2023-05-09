@@ -25,8 +25,6 @@ mod_misplaced_ui <-function(id)
     tags$h4(HTML("For any breed, the recombination rate analysis discarded markers being putatively misplaced in the bovine genome assembly <a href='https://bovinegenome.elsiklab.missouri.edu/downloads/ARS-UCD1.2' target='_blank' >ARS-UCD1.2 assembly</a>.
                  For this, two sources of information were taken into account.")
     ),
-   # shiny::fluidRow(id="back_methodology2" ,  shiny::column(5,""),
-  #                  shiny::column(5,htmltools::tags$a(href="#info",htmltools::h3("Back to methodology"), onclick = "openTab('methodology')"))),
     htmltools::br(),
     shiny::fluidRow(
       shinydashboard::box(title=tags$b(tags$h3("1. General problematic regions")),status="primary",width=12,
@@ -59,14 +57,14 @@ mod_misplaced_ui <-function(id)
             shiny::column(width=12,DT::dataTableOutput(ns("tableMis"),width="auto",height="auto")%>% shinycssloaders::withSpinner(color="#0dc5c1"),style = "height:auto; overflow-y: scroll;overflow-x: scroll;")
           ),
           shiny::fluidRow(
-            shiny::column(width=10,shiny::checkboxInput(ns("checkbox2"), "Show/hide legend", FALSE), htmltools::p(id = "element2",
+            shiny::column(width=10,shiny::checkboxInput(ns("checkbox22"), "Show/hide legend", FALSE), htmltools::p(id = "element22",
             "SNP: SNP name",htmltools::br(),
-            "Old_Chr: Old chromosome number",htmltools::br(),
-            "Old_bp: Old chromsomal position",htmltools::br(),
-             "New_Chr: New chromosome number based on LD analysis. Negative values indicate inconclusive results and the analysis
+            "Old_Chr: Chromosome number according to",htmltools::tags$a(href="https://bovinegenome.elsiklab.missouri.edu/downloads/ARS-UCD1.2", "ARS-UCD1.2",target="_blank"),htmltools::br(),
+            "Old_bp: Chromosomal position in bp according to",htmltools::tags$a(href="https://bovinegenome.elsiklab.missouri.edu/downloads/ARS-UCD1.2", "ARS-UCD1.2",target="_blank"),htmltools::br(),
+             "New_Chr: Chromosome number based on LD analysis. Negative values indicate inconclusive results and the analysis
                                continued on the original chromosome. ", htmltools::br(),
-            "New_bp: New chromosomal position denotes the coordinate of the SNP to which the minimum recombination rate was achieved.",htmltools::br(),
-            "Theta:  Minimum recombination rate on new chromosome",htmltools::br(),
+            "New_bp: Chromosomal position denotes the coordinate of the SNP to which the minimum recombination rate was achieved.",htmltools::br(),
+            "Theta: Minimum recombination rate on new chromosome",htmltools::br(),
              "Clear_recrate: Coded as 1 if the recombination rate < 0.01 at the new coordinate (bp), zero otherwise; in total 34",htmltools::br(),
             "BLAST_ProbeA_Chr.bp: The position of alternate match when the probe sequence of candidate SNP was aligned to the reference genome.
                                 No entry implies a single hit coinciding with the map coordinate in ",
@@ -76,7 +74,7 @@ mod_misplaced_ui <-function(id)
                                original study", tags$a(href = "https://doi.org/10.1186/s12711-020-00593-z","Qanbari and Wittenburg (2020)"),"; in total 51",htmltools::br(),
             "Problematic region: Identifier of coherent problematic region ; in total 15",htmltools::br(),
             "Start: Start  of position of problematic region",htmltools::br(),
-            "End End of position of problematic region",htmltools::br(),
+            "End: End of position of problematic region",htmltools::br(),
              "n_heterozygous: Number of heterozygous sires based on which recombination rates were estimated"))
           )
      ))
@@ -159,15 +157,15 @@ mod_misplaced_server <- function(id){
     shiny::observeEvent(input$old_chr,
     {
       req(input$old_chr)
-      shiny::updateSelectInput(session,'old_chr',label="Select based on Old_Chr:",choices=c(" ",1:29,"All"),selected="")
+      shiny::updateSelectInput(session,'old_chr',label="Select based on Old_Chr:",choices= c(" ","All",1,2,5:9,11,12, 14:16, 18, 21, 23, 26, 28, 29),selected="")
       if(input$old_chr=="All" || input$old_chr==" "){
         data.mis=data
         ll1=c(10, 20,30, -1)
         ll2=c('10', '20','30','All')
       }
-      else
-      {
-        data.mis=data[data[,2] %in% as.numeric(input$old_chr), ]
+     else
+    {
+        data.mis=data[data$old_chr %in% as.numeric(input$old_chr), ]
         ll1=-1
         ll2='All'
       }
@@ -184,7 +182,7 @@ mod_misplaced_server <- function(id){
    shiny::observeEvent(input$new_chr,
    {
       req(input$new_chr)
-      shiny::updateSelectInput(session,'new_chr',label="Select based on New_Chr:",choices=c(" ",1:29,"All"),selected="")
+      shiny::updateSelectInput(session,'new_chr',label="Select based on New_Chr:",choices= c(" ","All",1,2,4:7,10,11,13:15,20,23,24,26,29),selected="")
       if(input$new_chr=="All" || input$new_chr==" ")
       {
          data.mis=data
@@ -195,7 +193,7 @@ mod_misplaced_server <- function(id){
       {
          ll1= -1
          ll2='All'
-         data.mis=data[abs(data[,4]) %in% as.numeric(input$new_chr), ]
+         data.mis=data[abs(data$new_chr) %in% as.numeric(input$new_chr), ]
       }
 
       output$tableMis=DT::renderDataTable({
@@ -209,7 +207,7 @@ mod_misplaced_server <- function(id){
 
     ## show / hide legend
     shiny::observe({
-      shinyjs::toggle(id = "element2", condition = input$checkbox2,asis=TRUE)
+      shinyjs::toggle(id = "element22", condition = input$checkbox22,asis=TRUE)
     })
   })
 }

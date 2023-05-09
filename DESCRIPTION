@@ -7,7 +7,7 @@ Authors@R: as.person(c(
     "Doerte Wittenburg <wittenburg@fbn-dummerstorf.de> [ctb]"
   ))
 Description: Clarity_description.
-License: CC BY 4.0
+License: GPL (>= 2)
 Imports: 
     cachem,
     config,
