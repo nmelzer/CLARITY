@@ -35,7 +35,8 @@ golem::fill_desc(
 golem::set_golem_options()
 
 ## Create Common Files ----
-usethis::use_ccby_license() ## automatically cc-by 4.0
+#usethis::use_ccby_license() ## automatically cc-by 4.0
+usethis::use_gpl_license(version = 2, include_future = TRUE) # changed 2023-05-08
 usethis::use_readme_rmd( open = FALSE )
 usethis::use_lifecycle_badge( "Experimental" )
 usethis::use_code_of_conduct(contact = "Golem User")

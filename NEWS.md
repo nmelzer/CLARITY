@@ -1,11 +1,14 @@
-# CLARITY 1.0.0 [uploaded October 2022]
+# CLARITY 1.0.1 [uploaded on May 2023]
+
+* Typos, fixed minor bug, and license definition
+
+# CLARITY 1.0.0 [uploaded on October 2022]
 
 * First comprehensive version including Holstein and Fleckvieh breed.
 
 # CLARITY 0.0.1.0000 [uploaded on June 2022]
 
 * Smaller changes were realized. 
-
 
 # CLARITY 0.0.0.9000 [uploaded on April 2022]
 
