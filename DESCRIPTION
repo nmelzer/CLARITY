@@ -37,6 +37,7 @@ BugReports: https://github.com/nmelzer/CLARITY/issues
 Suggests: 
     knitr,
     rmarkdown,
+    pandoc,
     testthat (>= 3.0.0),
     roxygen2,
     spelling
