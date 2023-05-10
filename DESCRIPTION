@@ -42,4 +42,4 @@ Suggests:
     spelling
 Config/testthat/edition: 3
 Language: en-US
-VignetteBuilder: knitr
+VignetteBuilder: knitr, rmarkdown
