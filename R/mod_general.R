@@ -5,7 +5,7 @@
 #'
 #' @details Within the module the data are prepared for plotting using the function \link{transformdata_general}. Moreover,
 #' the plots are created using the function \link{scatterPlot_general_all} or \link{scatterPlot_general_selected} depending on the user selected chromosome.
-#' Corresponding hovering information and style are generated using \link{hovering}.
+#' Corresponding hovering information and style are generated using \link{hovering}. Finally, the quality of the likelihood approach is also shown here by means of a traffic light (also termed as likelihood quality signal).
 #'
 #' @param id module id
 #'
@@ -20,7 +20,7 @@
 #' @import htmltools
 #' @rawNamespace import(shinyjs, except = runExample)
 #'
-#' @seealso \link{transformdata_general},\link{scatterPlot_general_all}, \link{scatterPlot_general_selected} and \link{hovering}
+#' @seealso \link{transformdata_general},\link{scatterPlot_general_all}, \link{scatterPlot_general_selected}, \link{hovering} and \link{make_traffic_light}
 
 mod_general_ui<- function(id){
   ns <- shiny::NS(id)
@@ -40,8 +40,8 @@ mod_general_ui<- function(id){
                                   Gap: maximum gap size between pairs of adjacent markers in bp<br>
                                   Space: inter-marker space in kilobase (kb) <br> nRec: number of cross-overs detected <br>
                                   D(M): genetic length in Morgan estimated based on deterministic approach <br>
-                                  L(M): genetic length in Morgan estimated with the likelihood-based approach <br>
                                   D(cM/Mb): centiMorgan per megabase pair for the deterministic approach <br>
+                                  L(M): genetic length in Morgan estimated with the likelihood-based approach <br>
                                   L(cM/Mb): centiMorgan per megabase pair for the likelihood-based approach")))
 
       ))
@@ -53,10 +53,13 @@ mod_general_ui<- function(id){
                    tags$b(tags$h5("Interactive graphic: moving the mouse over the points will show the corresponding information.")))
           ),
           htmltools::br(),htmltools::br(),
-          shiny::fluidRow(shiny::column(width=12,shiny::downloadButton(outputId=ns("DownloadPlot"),"Save plot"))),
+          shiny::fluidRow(shiny::column(width=9,shiny::downloadButton(outputId=ns("DownloadPlot"),"Save plot",class="butt1")),
+                          shiny::column(width=2,tags$a(href="#","Likelihood quality signal", onclick = "openTab('methodology')",style='text-decoration-line: underline;'), ## new insert 23.08.2023
+                                        plotOutput(ns("TrafficLight"),width="80%",height="auto") )
+          ),
           htmltools::br(),
           shiny::fluidRow(shiny::column(width=10,
-                   shiny::plotOutput(ns("plot1"),hover = hoverOpts(ns("plot_hover1"),delay = 100, delayType = "debounce"),width="100%",height="auto"),
+                   shiny::plotOutput(ns("plot1"),hover = hoverOpts(ns("plot_hover1"),delay = 100, delayType = "debounce"),width="auto",height="auto"),
                    shiny::uiOutput(ns("hover_info1")))
           ),
           shiny::fluidRow(
@@ -66,9 +69,9 @@ mod_general_ui<- function(id){
           ),
           shiny::fluidRow(
             htmltools::br(),
-            shiny::column(12, h4("The Pearson correlation (r) between physical and genetic length  #
-                           was r=", shiny::textOutput(ns("detapproach"),inline=T)," for the ",tags$a(href="#","deterministic approach", onclick = "openTab('methodology')"), " and
-                           r=",shiny::textOutput(ns("likapproach"),inline=T)," for the ",tags$a(href="#","likelihood-based approach", onclick = "openTab('methodology')"),"."))
+            shiny::column(12, h4("The Pearson correlation (r) between physical and genetic length
+                           was r=", shiny::textOutput(ns("detapproach"),inline=T)," for the ",tags$a(href="#","deterministic approach", onclick = "openTab('methodology')",style='text-decoration-line: underline;'), " and
+                           r=",shiny::textOutput(ns("likapproach"),inline=T)," for the ",tags$a(href="#","likelihood-based approach.", onclick = "openTab('methodology')",style='text-decoration-line: underline;')))
           )
       )
     )
@@ -79,14 +82,15 @@ mod_general_ui<- function(id){
 # Module Server
 #' @rdname mod_general
 #'
-#' @param filter selected chromosome
-#' @param breed.select name of the selected breed
+#' @param filter character contains the selected chromosome
+#' @param breed.select character contains the name of the selected breed
 #' @param color.breed.dl vector containing the predefined colors
+#' @param make.traff.light object containing the ggplot for the likelihood quality signal
 #'
 #' @keywords internal, general module
 #' @export
 
-mod_general_server=function(id, filter,breed.select,color.breed.dl){
+mod_general_server=function(id, filter,breed.select,color.breed.dl,make.traff.light){
   shiny::moduleServer(id, function(input, output, session){
 
   ns <- session$ns
@@ -94,6 +98,11 @@ mod_general_server=function(id, filter,breed.select,color.breed.dl){
   genetic_map_summary<-NULL
   load(system.file("extdata", paste0(breed.select,"/genetic_map_summary.Rdata"),package="CLARITY"))
   dt=as.data.frame(genetic_map_summary)
+
+  ## render traffic light
+  output$TrafficLight <- renderPlot({
+    make.traff.light()
+  }, width=80, height=30)
 
   ####################
   # a custom table container
@@ -109,8 +118,8 @@ mod_general_server=function(id, filter,breed.select,color.breed.dl){
       tr(
         th(colspan=1,""),
         th(colspan=5,""),
-        th(colspan = 2,htmltools::tags$a(href="#","Deterministic approach", onclick = "openTab('methodology')") ),
-        th(colspan = 2, htmltools::tags$a(href="#","Likelihood-based approach",onclick = "openTab('methodology')"))
+        th(colspan = 2,htmltools::tags$a(href="#","Deterministic approach", onclick = "openTab('methodology')",style='text-decoration-line: underline') ),
+        th(colspan = 2, htmltools::tags$a(href="#","Likelihood-based approach",onclick = "openTab('methodology')",style='text-decoration-line: underline;'))
       ),
       tr(
         th(colspan=1,"Chr"),

@@ -7,16 +7,18 @@
 \usage{
 mod_general_ui(id)
 
-mod_general_server(id, filter, breed.select, color.breed.dl)
+mod_general_server(id, filter, breed.select, color.breed.dl, make.traff.light)
 }
 \arguments{
 \item{id}{module id}
 
-\item{filter}{selected chromosome}
+\item{filter}{character contains the selected chromosome}
 
-\item{breed.select}{name of the selected breed}
+\item{breed.select}{character contains the name of the selected breed}
 
 \item{color.breed.dl}{vector containing the predefined colors}
+
+\item{make.traff.light}{object containing the ggplot for the likelihood quality signal}
 }
 \description{
 A shiny module to generate the outcome for the tabpanel "General information" for the sidebar "Breed analysis".
@@ -24,10 +26,10 @@ A shiny module to generate the outcome for the tabpanel "General information" fo
 \details{
 Within the module the data are prepared for plotting using the function \link{transformdata_general}. Moreover,
 the plots are created using the function \link{scatterPlot_general_all} or \link{scatterPlot_general_selected} depending on the user selected chromosome.
-Corresponding hovering information and style are generated using \link{hovering}.
+Corresponding hovering information and style are generated using \link{hovering}. Finally, the quality of the likelihood approach is also shown here by means of a traffic light (also termed as likelihood quality signal).
 }
 \seealso{
-\link{transformdata_general},\link{scatterPlot_general_all}, \link{scatterPlot_general_selected} and \link{hovering}
+\link{transformdata_general},\link{scatterPlot_general_all}, \link{scatterPlot_general_selected}, \link{hovering} and \link{make_traffic_light}
 }
 \keyword{general}
 \keyword{internal,}

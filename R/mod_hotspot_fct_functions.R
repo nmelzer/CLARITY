@@ -4,7 +4,7 @@
 #' @description The function used the threshold to determine hotspot markers and add accordingly the colors, shapes and numbering.
 #'
 #' @param data.trans data frame (containing: Chr, SNP, cM, BP, Theta, Dis)
-#' @param value contains the user specified threshold to determine the hotspot
+#' @param value numeric contains the user specified threshold to determine the hotspot
 #' @param color1 vector containing the predefined used colors
 #' @param shape1 vector containing the predefined used shapes
 #' @param ord vector containing the predefined numbering
@@ -19,6 +19,7 @@ transformdata_hotspot=function(data.trans,value=value,color1=color1,shape1=shape
   data.trans$Theta= as.numeric(as.character(data.trans$Theta))
 
   threshold <- mean(data.trans$Theta) + value * sd(data.trans$Theta)
+
   data.trans$cols <- unlist(ifelse(data.trans$Theta > threshold, ord[2], ord[1]) )
   data.trans$cols=as.numeric(data.trans$cols) ## necessary otherwise continuous and is mixed
   colnames(data.trans)[dim(data.trans)[2]]="ord"
@@ -43,8 +44,8 @@ transformdata_hotspot=function(data.trans,value=value,color1=color1,shape1=shape
 #' @details Note: legend1, the column breaks contains the color for the corresponding label, and column ord contains numbers used for sorting to keep the sequence (corresponds to ord in dat1).
 #'
 #' @param dat1 data frame (containing: Chr, SNP, cM, BP, Theta, Dis, ord, size, coloring, and shape)
-#' @param ranges contains brush information
-#' @param scale number to scale the plot
+#' @param ranges reactive values containing the brush information
+#' @param scale numeric contains the number to scale the plot
 #' @param legend1 data frame containing the legend information (contains: label, breaks, shape, and ord)
 #'
 #' @import ggplot2
@@ -54,7 +55,6 @@ transformdata_hotspot=function(data.trans,value=value,color1=color1,shape1=shape
 
 scatterPlot_hotspot_all <- function(dat1,ranges,scale,legend1) ## input all in function direct
 {
-
   legend1=legend1[order(as.numeric(legend1$ord)),]
   label1= legend1$label
   breaks1= legend1$breaks
@@ -86,8 +86,8 @@ scatterPlot_hotspot_all <- function(dat1,ranges,scale,legend1) ## input all in f
 #' @description The function creates the hotspot plot for a specific selected chromosome.
 #'
 #' @param dat1 data frame (containing: Chr, SNP, cM, BP, Theta, Dis, ord, size, coloring, and shape)
-#' @param fil selected chromosome
-#' @param ranges contains brush information
+#' @param fil character contains the selected chromosome
+#' @param ranges reactive values containing the brush information
 #' @param legend1 data frame containing the legend information (contains: label, breaks, shape, and ord)
 #'
 #' @details Note: legend1, the column breaks contains the color for the corresponding label, and column ord contains numbers used for sorting to keep the sequence (corresponds to ord in dat1).
@@ -99,7 +99,6 @@ scatterPlot_hotspot_all <- function(dat1,ranges,scale,legend1) ## input all in f
 #'
 scatterPlot_hotspot <- function(dat1,fil,ranges,legend1)
 {
-
   BP<-Theta<-coloring<-ord<-NULL
 
   legend1=legend1[order(as.numeric(legend1$ord)),]

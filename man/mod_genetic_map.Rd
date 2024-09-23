@@ -7,18 +7,27 @@
 \usage{
 mod_genetic_map_ui(id)
 
-mod_genetic_map_server(id, filter, breed.select, geneticMap, color.breed.dl)
+mod_genetic_map_server(
+  id,
+  filter,
+  breed.select,
+  geneticMap,
+  color.breed.dl,
+  make.traff.light
+)
 }
 \arguments{
 \item{id}{module id}
 
-\item{filter}{selected chromosome}
+\item{filter}{character contains the selected chromosome}
 
-\item{breed.select}{name of the selected breed}
+\item{breed.select}{character contains the name of the selected breed}
 
 \item{geneticMap}{data frame containing the genetic map}
 
 \item{color.breed.dl}{vector containing the predefined colors}
+
+\item{make.traff.light}{object containing the ggplot for the likelihood quality signal}
 }
 \description{
 A shiny module to generate the outcome for the tabpanel "Genetic map" for the sidebar "Breed analysis".
@@ -27,9 +36,10 @@ A shiny module to generate the outcome for the tabpanel "Genetic map" for the si
 Depending on the user choice, when a specific chromosome is selected than the function \link{makePlot_geneticMaps} is used to create the plot.
 If all chromosomes are selected than genetic map data are prepared for the plot using the function \link{transformdata_genetic_map}
 and plotted using the function \link{makePlot_all_geneticMaps}. Moreover, the corresponding plot is cached to increase the app performance.
+Finally, the quality of the likelihood approach is also shown here by means of a traffic light (also termed as likelihood quality signal).
 }
 \seealso{
-\link{transformdata_genetic_map}, \link{makePlot_geneticMaps} and \link{makePlot_all_geneticMaps}
+\link{transformdata_genetic_map}, \link{makePlot_geneticMaps}, \link{makePlot_all_geneticMaps} and \link{make_traffic_light}
 }
 \keyword{genetic}
 \keyword{internal,}

@@ -7,23 +7,25 @@
 \usage{
 mod_genetic_function_ui(id)
 
-mod_genetic_function_server(id, filter, breed.select)
+mod_genetic_function_server(id, filter, breed.select, make.traff.light)
 }
 \arguments{
 \item{id}{module id}
 
-\item{filter}{selected chromosome}
+\item{filter}{character contains the selected chromosome}
 
-\item{breed.select}{selected breed}
+\item{breed.select}{character contains the name of the selected breed}
+
+\item{make.traff.light}{object containing the ggplot for the likelihood quality signal}
 }
 \description{
 A shiny module to generate the outcome for the tabpanel "Genetic-map functions" for the sidebar "Breed analysis".
 }
 \details{
-The module uses the function \link{makePlot_genetic_function} for plotting.
+The module uses the function \link{makePlot_genetic_function} for plotting. Moreover, the quality of the likelihood approach is shown here by means of a traffic light (also termed as likelihood quality signal).
 }
 \seealso{
-\link{makePlot_genetic_function}
+\link{makePlot_genetic_function} and \link{make_traffic_light}
 }
 \keyword{function}
 \keyword{genetic}

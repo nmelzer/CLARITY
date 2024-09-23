@@ -14,23 +14,26 @@ mod_bc_general_server(
   geneticMap.bc,
   color.shape.def,
   names.bc.venn,
-  names.files
+  names.files,
+  make.traff.light.bc
 )
 }
 \arguments{
 \item{id}{module id}
 
-\item{filter}{selected chromosome}
+\item{filter}{character contains the selected chromosome}
 
 \item{breed.select.bc}{vector containing the names of selected breeds}
 
-\item{geneticMap.bc}{list containing the genetic maps for all selected breeds (each list element a breed)}
+\item{geneticMap.bc}{list containing the genetic maps for all selected breeds (each list element is a breed)}
 
 \item{color.shape.def}{data frame containing the definition for coloring, shapes, size for plots}
 
 \item{names.bc.venn}{vector containing the first letter of the selected breed names}
 
 \item{names.files}{string containing the concatenate breed names}
+
+\item{make.traff.light.bc}{object containing the ggplot for the likelihood quality signal}
 }
 \description{
 A shiny module to generate the outcome for the tabpanel "General information" for the sidebar "Breed comparison".
@@ -40,7 +43,8 @@ Within the module the data are prepared for plotting using the function \link{tr
 \link{scatterPlot_general_all_bc} or \link{scatterPlot_general_selected_bc} depending on user's selected chromosome.
  Corresponding hovering information and style are generated using the function \link{hovering}. This module also shows a Venn diagram of corresponding markers.
  The input data are prepared using the function \link{process_venn_data} and plotted using the function \link{creating_venn}.
+ Finally, the quality of the likelihood approach is also shown here by means of a traffic light (also termed as likelihood quality signal).
 }
 \seealso{
-\link{transformdata_general_bc},\link{scatterPlot_general_all_bc}, \link{scatterPlot_general_selected_bc}, \link{hovering}, \link{process_venn_data} and \link{creating_venn}.
+\link{transformdata_general_bc}, \link{scatterPlot_general_all_bc}, \link{scatterPlot_general_selected_bc}, \link{hovering}, \link{process_venn_data}, \link{creating_venn} and \link{make_traffic_light}.
 }

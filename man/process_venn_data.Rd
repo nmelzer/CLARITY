@@ -10,7 +10,7 @@ process_venn_data(venn)
 \item{venn}{object of class "Venn"}
 }
 \value{
-The function returns the processed Venn data object (containing: x, y, name, count, geometry).
+The function returns the processed Venn data object (containing the plot data).
 }
 \description{
 This function prepares the data for the Venn plot.

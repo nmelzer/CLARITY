@@ -4,12 +4,10 @@
 \alias{scatterPlot_general_selected_bc}
 \title{Creating the scatter plot for selected chromosome for breed comparison}
 \usage{
-scatterPlot_general_selected_bc(dat, fil, names.bc.plot, colo)
+scatterPlot_general_selected_bc(dat, names.bc.plot, colo)
 }
 \arguments{
-\item{dat}{data frame containing basepairs (bp), centiMorgan (cM), chromosome (chr), breed and color}
-
-\item{fil}{selected chromosome}
+\item{dat}{data frame containing basepairs (bp), centiMorgan (cM), chromosome (chr), breed, alpha, size and color}
 
 \item{names.bc.plot}{vector containing the names of selected breeds}
 

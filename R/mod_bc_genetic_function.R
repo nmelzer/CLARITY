@@ -2,7 +2,8 @@
 #' @title mod_bc_genetic_function_ui and mod_bc_genetic_function_server
 #' @description A shiny module to generate the outcome for the tabpanel "Genetic-map functions" for the sidebar "Breed comparison".
 #'
-#' @details The module uses the function \link{makePlot_genetic_function_bc} for plotting.
+#' @details The module uses the function \link{makePlot_genetic_function_bc} for plotting. Moreover, the quality of the likelihood approach is shown here by means of a traffic light (also termed as likelihood quality signal).
+#'
 #' @rdname mod_bc_genetic_function
 #' @param id module id
 #'
@@ -11,8 +12,12 @@
 #' @importFrom shinycssloaders withSpinner
 #' @import htmltools
 #' @import ggplot2
+#' @rawNamespace importFrom(utils,write.csv)
+#' @rawNamespace importFrom(writexl,write_xlsx)
 #' @rawNamespace import(shinyjs, except = runExample)
 #' @rawNamespace import(plotly, except = last_plot)
+#'
+#' @seealso \link{makePlot_genetic_function_bc} and \link{make_traffic_light}
 #' @export
 #'
 mod_bc_genetic_function_ui <- function(id){
@@ -24,13 +29,16 @@ mod_bc_genetic_function_ui <- function(id){
           solidHeader = TRUE,collapsible = TRUE,collapsed = FALSE,
           shiny::fluidRow(shinyjs::useShinyjs(),id=ns("all_chromosome_bc"),
                            shiny::column(width=12,style="padding-top:30px", ""),
-                           shiny::column(12, "Remove a genetic map function in the figure by clicking on the corresponding name in the legend."),
+                           shiny::column(width=12, "Remove genetic-map function in the figure by clicking on the corresponding name in the legend."),
                            shiny::column(width=12,style="padding-top:30px", ""),
-                           shiny::column(width=6,shiny::selectizeInput(inputId=ns('GenetMapchr1'),label = "Select chromosome",choices=c(seq(1,29,1)),selected=18,multiple=FALSE),
+                           shiny::column(width=9,""),
+                            shiny::column(width=2,tags$a(href="#","Likelihood quality signal", onclick = "openTab('methodology')",style='text-decoration-line: underline;'),
+                                        plotOutput(ns("TrafficLight_3"),width="80%",height="auto")),
+                           shiny::column(width=6,shiny::selectInput(inputId=ns('GenetMapchr1'),label = "Select chromosome",choices=c(seq(1,29,1)),selected=18,multiple=FALSE,selectize=FALSE),
                           plotly::plotlyOutput(ns("genetic_functions3"))%>% shinycssloaders::withSpinner(color="#0dc5c1")
                    ),
                    shiny::column(width=6,
-                           shiny::selectizeInput(inputId=ns('GenetMapchr2'), label = "Select chromosome",choices=c(seq(1,29,1)),selected=28,multiple=FALSE),#)#),
+                           shiny::selectInput(inputId=ns('GenetMapchr2'), label = "Select chromosome",choices=c(seq(1,29,1)),selected=28,multiple=FALSE,selectize=FALSE),
                           plotly::plotlyOutput(ns("genetic_functions4"))%>% shinycssloaders::withSpinner(color="#0dc5c1")
                    )
 
@@ -39,6 +47,9 @@ mod_bc_genetic_function_ui <- function(id){
           ### show output when specific chromosome is selected
           shiny::fluidRow( useShinyjs(),id=ns("single_chromosome_bc"),
                            shiny::column(width=12,style="padding-top:30px", ""),
+                           shiny::column(width=9,""),
+                           shiny::column(width=2,tags$a(href="#","Likelihood quality signal", onclick = "openTab('methodology')",style='text-decoration-line: underline;'),
+                                         plotOutput(ns("TrafficLight_2"),width="80%",height="auto")),
                            shiny::column(width=12, "Remove a genetic-map function in the figure by clicking on the corresponding name in the legend."),
                            shiny::column(width=12,style="padding-top:30px", ""),
                            shiny::column(width=8,plotly::plotlyOutput(ns("genetic_functions5"),width="auto",height="auto")%>% shinycssloaders::withSpinner(color="#0dc5c1")))
@@ -52,7 +63,7 @@ mod_bc_genetic_function_ui <- function(id){
                           shiny::column(width=12,shiny::actionButton(ns("barplot_bc1"), "Show barplot",style = "color: black;background-color: #87CEFA"))),
           shiny:: fluidRow(shinyjs::useShinyjs(),id=ns("bar_bc"),
                            shiny::column(width=12,shiny::actionButton(ns("barplot_bc2"), "Hide barplot",style="background-color: #87CEFA")
-                                         ,shiny::downloadButton(ns("downloadBarplot"),label="Save barplot",style="background-color: #87CEFA")),
+                                         ,shiny::downloadButton(ns("downloadBarplot"),label="Save barplot",style="background-color: #87CEFA",class="butt1")),
                            shiny::column(width=1,""),
                            shiny::column(width=5,shiny::plotOutput(ns("barplot"))),
           ),
@@ -60,6 +71,7 @@ mod_bc_genetic_function_ui <- function(id){
           htmltools::br(),
           shiny::fluidRow(shiny::column(width=5, "Genetic-map function that fits best are highlighed.")),
           htmltools::br(),
+          shiny::column(width=12,downloadButton(ns("csvstore3"),label="CSV",class="butt1",icon=NULL,style="margin-right: 5px; width=100px; position:absolute;left:0em;"),downloadButton(ns("excelstore3"),label="Excel",icon=NULL,class="butt1",style="margin-left: 40px")),
           shiny::fluidRow(shiny::column(width=12, DT::dataTableOutput(ns("tableBestmapFunction")),style = "height:auto; overflow-y: scroll;overflow-x: scroll;")),
           shiny::fluidRow(shiny::column(width=5, "MSE - mean squared error"))
       )
@@ -71,17 +83,18 @@ mod_bc_genetic_function_ui <- function(id){
 # Module Server
 #' @rdname mod_bc_genetic_function
 #'
-#' @param filter selected chromosome
+#' @param filter character contains the selected chromosome
 #' @param breed.select.bc vector containing the names of selected breeds
 #' @param color.shape.def data frame containing the definition for coloring, shapes, size for plots
 #' @param names.files string containing the concatenate breed names
+#' @param make.traff.light.bc object containing the ggplot for the likelihood quality signal
 #'
 #' @export
-mod_bc_genetic_function_server <- function(id,filter,breed.select.bc,color.shape.def,names.files){
+mod_bc_genetic_function_server <- function(id,filter,breed.select.bc,color.shape.def,names.files,make.traff.light.bc){
   shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
 
-    out<-NULL
+    out<-output.name.tab<-NULL
 
     ### table preparation
     out.2=c();pp=c();hepl_1=c() ## coloring
@@ -125,6 +138,8 @@ mod_bc_genetic_function_server <- function(id,filter,breed.select.bc,color.shape
 
     ## Table header with internal link to methodology --
     thead<-tr<-th<-NULL
+    if(length(breed.select.bc)==2)
+    {
     sketch1 = htmltools::withTags(table(
       class = 'display',
       thead(
@@ -133,19 +148,53 @@ mod_bc_genetic_function_server <- function(id,filter,breed.select.bc,color.shape
           lapply(colspan=8,breed.select.bc,th)
         ),
         tr(
-          th(colspan=1,""),
-          th(colspan=2,tags$a(href="#","Haldane scaled", onclick = "openTab('methodology')")),
-          th(colspan=2,tags$a(href="#","Rao", onclick = "openTab('methodology')")),
-          th(colspan=2,tags$a(href="#","Felsenstein", onclick = "openTab('methodology')")),
-          th(colspan=2,tags$a(href="#","Liberman & Karlin", onclick = "openTab('methodology')")),
-          lapply(colspan=2,rep(c("Haldane scaled","Rao","Felsenstein","Liberman & Karlin"),length(breed.select.bc)-1),th)
+         th(colspan=1,""),
+         th(colspan=2,tags$a(href="#","Haldane scaled", onclick = "openTab('methodology')",style='text-decoration-line: underline;')),
+         th(colspan=2,tags$a(href="#","Rao", onclick = "openTab('methodology')",style='text-decoration-line: underline;')),
+         th(colspan=2,tags$a(href="#","Felsenstein", onclick = "openTab('methodology')",style='text-decoration-line: underline;')),
+         th(colspan=2,tags$a(href="#","Liberman & Karlin", onclick = "openTab('methodology')",style='text-decoration-line: underline;')),
+         th(colspan=2,tags$a(href="#","Haldane scaled", onclick = "openTab('methodology')",style='text-decoration-line: underline;')),
+         th(colspan=2,tags$a(href="#","Rao", onclick = "openTab('methodology')",style='text-decoration-line: underline;')),
+         th(colspan=2,tags$a(href="#","Felsenstein", onclick = "openTab('methodology')",style='text-decoration-line: underline;')),
+         th(colspan=2,tags$a(href="#","Liberman & Karlin", onclick = "openTab('methodology')",style='text-decoration-line: underline;'))
         ),
         tr(
           th(colspan=1,"Chromosome"),
-          lapply(rep(c('MSE', 'Parameter'), 4*length(breed.select.bc)), th) ## shorthened
+          lapply(rep(c('MSE', 'Parameter'), 4*length(breed.select.bc)), th) ## shortened
         )
       )
     ))
+    }
+    else{
+      sketch1 = htmltools::withTags(table(
+        class = 'display',
+        thead(
+          tr(
+            th(colspan=1,""),
+            lapply(colspan=8,breed.select.bc,th)
+          ),
+          tr(
+            th(colspan=1,""),
+            th(colspan=2,tags$a(href="#","Haldane scaled", onclick = "openTab('methodology')",style='text-decoration-line: underline;')),
+            th(colspan=2,tags$a(href="#","Rao", onclick = "openTab('methodology')",style='text-decoration-line: underline;')),
+            th(colspan=2,tags$a(href="#","Felsenstein", onclick = "openTab('methodology')",style='text-decoration-line: underline;')),
+            th(colspan=2,tags$a(href="#","Liberman & Karlin", onclick = "openTab('methodology')",style='text-decoration-line: underline;')),
+            th(colspan=2,tags$a(href="#","Haldane scaled", onclick = "openTab('methodology')",style='text-decoration-line: underline;')),
+            th(colspan=2,tags$a(href="#","Rao", onclick = "openTab('methodology')",style='text-decoration-line: underline;')),
+            th(colspan=2,tags$a(href="#","Felsenstein", onclick = "openTab('methodology')",style='text-decoration-line: underline;')),
+            th(colspan=2,tags$a(href="#","Liberman & Karlin", onclick = "openTab('methodology')",style='text-decoration-line: underline;')),
+            th(colspan=2,tags$a(href="#","Haldane scaled", onclick = "openTab('methodology')",style='text-decoration-line: underline;')),
+            th(colspan=2,tags$a(href="#","Rao", onclick = "openTab('methodology')",style='text-decoration-line: underline;')),
+            th(colspan=2,tags$a(href="#","Felsenstein", onclick = "openTab('methodology')",style='text-decoration-line: underline;')),
+            th(colspan=2,tags$a(href="#","Liberman & Karlin", onclick = "openTab('methodology')",style='text-decoration-line: underline;'))
+          ),
+          tr(
+            th(colspan=1,"Chromosome"),
+            lapply(rep(c('MSE', 'Parameter'), 4*length(breed.select.bc)), th) ## shortened
+          )
+        )
+      ))
+    }
 
     #### all for table preparation
     if(filter!="All"){
@@ -154,6 +203,15 @@ mod_bc_genetic_function_server <- function(id,filter,breed.select.bc,color.shape
       shinyjs::hide(id="bar_bc")
       shinyjs::hide(id="barplot")
       shinyjs::hide(id="show_line")
+
+      ## render traffic light
+      if(length(breed.select.bc)==2)height2=45
+      else height2=55
+      output$TrafficLight_2 <- renderPlot({
+        make.traff.light.bc()
+      }, width=165, height=height2) ## vorher 80
+
+      #####
 
       out3=matrix(out.2[as.numeric(as.character(filter)),],1,ncol(out.2))
       colnames(out3)=c(1:ncol(out3))
@@ -187,43 +245,57 @@ mod_bc_genetic_function_server <- function(id,filter,breed.select.bc,color.shape
       shinyjs::show(id="bar_bc")
       shinyjs::show(id="show_line")
 
+      ## render traffic light
+     if(length(breed.select.bc)==2)height2=45
+      else height2=55
+      output$TrafficLight_3 <- renderPlot({
+        make.traff.light.bc()
+      }, width=165, height=height2) ## vorher 80
+      ######
+
+      #####
 
       shiny::observeEvent(input$GenetMapchr1,{
         chr <- input$GenetMapchr1
-        store=NULL; outcome1=list()
+        if(chr>=1 && chr<=29)
+        {
+          store=NULL; outcome1=list()
 
-        for(ik in 1:length(breed.select.bc)){
-          load(system.file("extdata",paste0(breed.select.bc[ik],"/curve-short-",chr,".Rdata"),package="CLARITY"))##store##check_bta_marker_length(chromo=chr,max.plot=max.to.plot)
+          for(ik in 1:length(breed.select.bc)){
+            load(system.file("extdata",paste0(breed.select.bc[ik],"/curve-short-",chr,".Rdata"),package="CLARITY"))##store##check_bta_marker_length(chromo=chr,max.plot=max.to.plot)
 
-          outcome1[[ik]]=cbind(store[[2]],store[[3]],rep(ik,nrow(store[[2]])))
-          colnames(outcome1[[ik]])=c(paste0("X",1:4),paste0("Y",1:4),"Breed")
+            outcome1[[ik]]=cbind(store[[2]],store[[3]],rep(ik,nrow(store[[2]])))
+            colnames(outcome1[[ik]])=c(paste0("X",1:4),paste0("Y",1:4),"Breed")
+          }
+
+          output$genetic_functions3 <- plotly::renderPlotly({
+            chr=as.numeric(as.character(input$GenetMapchr1))
+            output.filename1=paste0(names.files,"mapping-functions_BTA-",chr)
+            pp2=makePlot_genetic_function_bc(chromo=chr,df.list=outcome1,names.bc.plot=breed.select.bc,name.file=output.filename1)
+            pp2%>%plotly::toWebGL()
+          })
         }
-
-        output$genetic_functions3 <- plotly::renderPlotly({
-          chr=as.numeric(as.character(input$GenetMapchr1))
-          output.filename1=paste0(names.files,"mapping-functions_BTA-",chr)
-          pp2=makePlot_genetic_function_bc(chromo=chr,df.list=outcome1,names.bc.plot=breed.select.bc,name.file=output.filename1)
-          pp2%>%plotly::toWebGL()
-        })
-
       })
 
       shiny::observeEvent(input$GenetMapchr2,{
         chr2 <- input$GenetMapchr2
-        store<-NULL; outcome2=list()
-        for(ik in 1:length(breed.select.bc)){
-          load(system.file("extdata",paste0(breed.select.bc[ik],"/curve-short-",chr2,".Rdata"),package="CLARITY"))##store##check_bta_marker_length(chromo=chr,max.plot=max.to.plot)
+        if(chr2>=1 && chr2<=29)
+        {
+          store<-NULL; outcome2=list()
+          for(ik in 1:length(breed.select.bc)){
+            load(system.file("extdata",paste0(breed.select.bc[ik],"/curve-short-",chr2,".Rdata"),package="CLARITY"))##store##check_bta_marker_length(chromo=chr,max.plot=max.to.plot)
 
-          outcome2[[ik]]=cbind(store[[2]],store[[3]],rep(ik,nrow(store[[2]])))
-          colnames(outcome2[[ik]])=c(paste0("X",1:4),paste0("Y",1:4),"Breed")
+            outcome2[[ik]]=cbind(store[[2]],store[[3]],rep(ik,nrow(store[[2]])))
+            colnames(outcome2[[ik]])=c(paste0("X",1:4),paste0("Y",1:4),"Breed")
+          }
+
+          output$genetic_functions4 <- plotly::renderPlotly({
+            chr2=as.numeric(as.character(input$GenetMapchr2))
+            output.filename2=paste0(names.files,"mapping-functions_BTA-",chr2)
+            plot2=makePlot_genetic_function_bc(chromo=chr2,df.list=outcome2,names.bc.plot=breed.select.bc,name.file=output.filename2)
+            plot2%>%plotly::toWebGL()
+          })
         }
-
-        output$genetic_functions4 <- plotly::renderPlotly({
-          chr2=as.numeric(as.character(input$GenetMapchr2))
-          output.filename2=paste0(names.files,"mapping-functions_BTA-",chr2)
-          plot2=makePlot_genetic_function_bc(chromo=chr2,df.list=outcome2,names.bc.plot=breed.select.bc,name.file=output.filename2)
-          plot2%>%plotly::toWebGL()
-        })
       })
 
 
@@ -270,7 +342,8 @@ mod_bc_genetic_function_server <- function(id,filter,breed.select.bc,color.shape
 
       output$barplot <- shiny::renderPlot({
         Input_barplot()
-      })
+      },width=650,# changed 03.06.2024
+      height=350)
 
       shiny::observeEvent(input$barplot_bc1,{
         shinyjs::hide(id="barplot")
@@ -283,15 +356,33 @@ mod_bc_genetic_function_server <- function(id,filter,breed.select.bc,color.shape
       })
     }
 
-      ## rename colnames for colvis - or make "show / hide column" - necessary when more than two breeds are considered
 
+    ## rename colnames for colvis - or make "show / hide column" - necessary when more than two breeds are considered
       output$tableBestmapFunction=DT::renderDataTable({
-         output.name.tab=paste0(names.files,"_Best-Mapping-Function_BTA-",filter)
-          DT::datatable(out3,filter="none",container=sketch1 ,extensions=c("Buttons",'ColReorder'), options=list(searching=FALSE,dom='Bt',colReorder = TRUE,buttons = list('pageLength','copy',list(extend='csv',title= output.name.tab),list(extend='excel',title= output.name.tab) ),
+         output.name.tab<<-paste0(names.files,"_Best-Mapping-Function_BTA-",filter)
+          DT::datatable(out3,filter="none",container=sketch1,extensions=c("Buttons",'ColReorder'), options=list(searching=FALSE,dom='Bt',colReorder = TRUE,buttons = list('pageLength'),#'copy',list(extend='csv',title= output.name.tab),list(extend='excel',title= output.name.tab) ),
                         columnDefs = list(list(visible=FALSE, targets=columns2hide)),pagelength = 10, lengthMenu = list(c(10, 15, -1), c('10', '20','All'))),
                         escape=FALSE)%>%DT::formatStyle(columns=colnames(out3)[seq(2,ncol(out3),2)],backgroundColor = DT::styleEqual(help_3,hepl_1))
 
      },server=FALSE)
+
+      ## new for storing as excel or csv
+      out4=as.data.frame(out3)
+      nams.table=c()
+      for(i in 1:length(breed.select.bc))nams.table=c(nams.table,paste(c("Haldane_mse","Haldane_par","Rao_mse","Rao_par","Felsenstein_mse","Felsenstein_par","Liberman-karlin_mse","Liberman-karlin_par"),breed.select.bc[i],sep="."))
+      colnames(out4)<-c("Chr",nams.table)
+
+      ## storing table information
+      output$csvstore3<-shiny::downloadHandler(
+        paste0(output.name.tab,".csv") , content = function(file) {
+          utils::write.csv(out4, file, row.names = FALSE
+          )
+        })
+
+      output$excelstore3<-shiny::downloadHandler(
+        paste0(output.name.tab,".xlsx"), content = function(file) {
+          writexl::write_xlsx(out4, file)
+        })
 
       #hist
       output$downloadBarplot <- shiny::downloadHandler(

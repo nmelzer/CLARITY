@@ -7,7 +7,7 @@
 #' and plotted using the function \link{makePlot_all_geneticMaps_bc}. Moreover, the corresponding plot is cached to increase the app performance.
 #'  This module also shows a Venn diagram of corresponding markers. The input data are prepared
 #'  using the function \link{process_venn_data} and plotted using the function \link{creating_venn}. The user may select a Venn diagram subset and the
-#'  table will be reduced accordingly using the function \link{prepare_table_venn}.
+#'  table will be reduced accordingly using the function \link{prepare_table_venn}. Finally, the quality of the likelihood approach is also shown here by means of a traffic light (also termed as likelihood quality signal).
 #'
 #' @rdname mod_bc_genetic_map
 #'
@@ -20,9 +20,11 @@
 #' @importFrom shinycssloaders withSpinner
 #' @rawNamespace import(plotly, except = last_plot)
 #' @rawNamespace import(shinyjs, except = runExample)
+#' @rawNamespace importFrom(utils,write.csv)
+#' @rawNamespace importFrom(writexl,write_xlsx)
 #' @importFrom RVenn Venn
 #' @export
-#' @seealso \link{transformdata_genetic_map_bc},\link{makePlot_geneticMaps_bc}, \link{makePlot_all_geneticMaps_bc},\link{process_venn_data},\link{creating_venn}, and \link{prepare_table_venn}
+#' @seealso \link{transformdata_genetic_map_bc}, \link{makePlot_geneticMaps_bc}, \link{makePlot_all_geneticMaps_bc}, \link{process_venn_data}, \link{creating_venn}, \link{prepare_table_venn} and \link{make_traffic_light}
 
 
 mod_bc_genetic_map_ui <- function(id){
@@ -32,6 +34,9 @@ mod_bc_genetic_map_ui <- function(id){
      shiny::fluidRow(id=ns("output1"),  ## single chromosome output
                      shinydashboard::box(title= tags$b("Interactive graphical visualization: Genetic vs. physical distance"),status="danger",width=12,
                         solidHeader = TRUE,collapsible = TRUE,collapsed = FALSE,
+                        shiny::column(width=9,""),
+                        shiny::column(width=2,tags$a(href="#","Likelihood quality signal", onclick = "openTab('methodology')",style='text-decoration-line: underline;'),
+                                      plotOutput(ns("TrafficLight_2"),width="80%",height="auto")),
                         shiny::column(width=5, plotly::plotlyOutput(ns("genetic1"),width="auto",height="auto")%>% shinycssloaders::withSpinner(color="#0dc5c1")),
                         shiny::column(width=5, plotly::plotlyOutput(ns("genetic2"),width="auto",height="auto")%>% shinycssloaders::withSpinner(color="#0dc5c1"))
                ),
@@ -53,19 +58,21 @@ mod_bc_genetic_map_ui <- function(id){
                    shiny::fluidRow(shinyjs::useShinyjs(),id=ns("venn_chr1"),column(width=6,actionButton(ns("venn_chr_bc1"), "Show interactive venn diagram",style = "color: black;
                             background-color: #87CEFA"))),
                    shiny::fluidRow(shinyjs::useShinyjs(),id=ns("venn_chr2"),
-                                   shiny::column(width=12,shiny::actionButton(ns("venn_chr_bc2"), "Hide venn diagram",style="background-color: #87CEFA"),
-                                                 shiny::downloadButton(outputId=ns("download.venn.diagram_bc"),label="Download venn diagram",style="background-color: #87CEFA"),
+                                   shiny::column(width=12,shiny::downloadButton(outputId=ns("download.venn.diagram_bc"),label="Download venn diagram",style="background-color: #87CEFA",class="butt1"),
+                                                 shiny::actionButton(ns("venn_chr_bc2"), "Hide venn diagram",style="background-color: #87CEFA"),
                                                  shiny::actionButton(ns("ButtonReset"),"Reset",style="background-color: #87CEFA")),
                                    shiny::column(width = 12,style="padding-top:30px", ""),
-                                   shiny::column(width=7,"When you click on a specific subset of interest, only the markers for that set are listed in the table. To return to all sets please use the button '",em("Reset"),"'."),
-                                   shiny::column(width=5,""),
+                                   shiny::column(width=8,"When you click on a specific subset of interest, only the markers for that set are listed in the table. To return to all sets please use the button '",em("Reset"),"'."),
+                                   shiny::column(width=4,""),
                                    shiny::column(width=12,""),
-                                   shiny::column(width=6,shiny::plotOutput(ns("venn_diagram"), click = ns("plot_click"),width = "100%",
-                                                      height = "300px")),column(width=6,""),
+                                   shiny::column(width=6,shiny::plotOutput(ns("venn_diagram"), click = ns("plot_click"),width = "100%",height = "500px",inline=TRUE)
+                                                      ),column(width=6,""),
                    ),
                    htmltools::br(),
                    htmltools::hr(style = "border-top: 1px solid #68838B;"),
                    htmltools::br(),
+                   shiny::column(width=12,downloadButton(ns("csvstore2"),label="CSV",class="butt1",icon=NULL,style="margin-right: 5px; width=100px; position:absolute;left:0em;"),
+                                  downloadButton(ns("excelstore2"),label="Excel",icon=NULL,class="butt1",style="margin-left: 40px")),
                    shiny::fluidRow(
                             shiny::column(width=8,DT::dataTableOutput(outputId=ns("rangeMaps")))
 
@@ -73,15 +80,21 @@ mod_bc_genetic_map_ui <- function(id){
       ),
       shiny::fluidRow(id=ns("output2"), ## all chromosomes output
                       shiny::column(1),
-                      shiny::column(3,radioButtons(ns("show_method_bc"),label= "Select approach:",choices=list("deterministic","likelihood-based"))),
-                      shiny::fluidRow(id=ns("show_bc_method_1"),column(width=1,""),column(width=4,shiny::downloadButton(outputId=ns("download.gm.bc"),label="Save figure")),
+                      ## trouble with radiobuttons - lighthouse always show error when using radiobuttons so changed to selectInput - 16.08.2024
+                      #shiny::column(3,shiny::radioButtons(inputId=ns("show_method_bc"),label= "Select approach:",
+                      #   choices=list("deterministic","likelihood-based"),selected="deterministic")),
+                      shiny::column(3,shiny::selectInput(inputId=ns("show_method_bc"),label= "Select approach:",
+                                                         choices=list("deterministic","likelihood-based"),selected = "deterministic",size=2,selectize=FALSE)),
+                      shiny::fluidRow(id=ns("show_bc_method_1"),column(width=1,""),column(width=4,shiny::downloadButton(outputId=ns("download.gm.bc"),label="Save figure",class="butt1")),
                       shinydashboard::box(width=12,style='overflow-x: scroll;height:1000px;overflow-y:scroll;',
                          shinycssloaders::withSpinner(plotOutput(ns("figure_det"),width="1600px",height="2800px"),color="#0dc5c1",proxy.height = "200px")) ##
                   ),
 
                   shiny::fluidRow(id=ns("show_bc_method_2"),
                                   shiny::column(width=1,""),
-                                  shiny::column(width=4,shiny::downloadButton(outputId=ns("download.gm.bc2"),label="Save figure")),
+                                  shiny::column(width=4,shiny::downloadButton(outputId=ns("download.gm.bc2"),label="Save figure",class="butt1")),
+                                  shiny::column(width=2,tags$a(href="#","Likelihood quality signal", onclick = "openTab('methodology')",style='text-decoration-line: underline;'),
+                                               plotOutput(ns("TrafficLight_3"),width="80%",height="auto")),
                                   shinydashboard::box(width=12,style='overflow-x: scroll;height:1000px;overflow-y: scroll;',
                                       shinycssloaders::withSpinner(shiny::plotOutput(ns("figure_lik"),width="1600px",height="2800px"),color="#0dc5c1",proxy.height = "200px"))
                 )
@@ -93,16 +106,17 @@ mod_bc_genetic_map_ui <- function(id){
 # Module Server
 #' @rdname mod_bc_genetic_map
 #'
-#' @param filter selected chromosome
+#' @param filter character contains the selected chromosome
 #' @param breed.select.bc vector containing the names of selected breeds
 #' @param geneticMap.bc list of genetic maps from the selected breeds (each list element contains a breed)
 #' @param color.shape.def data frame containing the definition for coloring, shapes, size for plots
 #' @param names.bc.venn vector containing the first the letter of the selected breed names
 #' @param names.files string concatenate breed names
+#' @param make.traff.light.bc object containing the ggplot for the likelihood quality signal
 #'
 #' @export
-mod_bc_genetic_map_server <- function(id, filter, breed.select.bc, geneticMap.bc,color.shape.def,names.bc.venn,names.files){
-  moduleServer(id, function(input, output, session){
+mod_bc_genetic_map_server <- function(id, filter, breed.select.bc, geneticMap.bc,color.shape.def,names.bc.venn,names.files,make.traff.light.bc){
+  moduleServer(id, function(input, output, session,mtl.bc){
 
     ns <- session$ns
     chr <-filter
@@ -120,8 +134,8 @@ mod_bc_genetic_map_server <- function(id, filter, breed.select.bc, geneticMap.bc
         ),
         tr(
           th(colspan=3,""),
-          th(colspan=length(breed.select.bc),tags$a(href="#","Deterministic approach", onclick = "openTab('methodology')")),
-          th(colspan = length(breed.select.bc),tags$a(href="#","Likelihood-based approach", onclick = "openTab('methodology')"))
+          th(colspan=length(breed.select.bc),tags$a(href="#","Deterministic approach", onclick = "openTab('methodology')",style='text-decoration-line: underline;')),
+          th(colspan = length(breed.select.bc),tags$a(href="#","Likelihood-based approach", onclick = "openTab('methodology')",style='text-decoration-line: underline;'))
         ),
         tr(
           th(colspan=2,""),
@@ -137,6 +151,8 @@ mod_bc_genetic_map_server <- function(id, filter, breed.select.bc, geneticMap.bc
       )
     ))
 
+
+
     ## all for selected chromosome
     if(filter!="All")
     {
@@ -146,6 +162,14 @@ mod_bc_genetic_map_server <- function(id, filter, breed.select.bc, geneticMap.bc
       shinyjs::hide(id="venn_chr1")
       shinyjs::show(id="venn_chr2")
       shinyjs::hide(id="ButtonReset")
+
+      ## render traffic light
+      if(length(breed.select.bc)==2)height2=45
+      else height2=55
+      output$TrafficLight_2 <- renderPlot({
+        make.traff.light.bc()
+      }, width=165, height=height2) ## vorher 80
+      ###########################
 
       df.p=list(); df.pp=list();venn.data.chr=list()
       min.pos<-max.pos<-NULL
@@ -192,6 +216,18 @@ mod_bc_genetic_map_server <- function(id, filter, breed.select.bc, geneticMap.bc
       tab.bc=tab.bc[,c(1:4,seq(6,ncol(tab.bc),2),seq(5,ncol(tab.bc),2))]
       tab.bc=tab.bc[order(tab.bc[,3]),]
 
+      ## make column names for table output - complex header not good at this point - 14.06.2024 - nice for online not for printing - quick solution
+      if(ncol(tab.bc)==7)
+      {
+         colnames(tab.bc)=c("Marker","Chr", "bp_position", paste0("cM_deterministic.",breed.select.bc[1]),  paste0("cM_deterministic.",breed.select.bc[2]),
+                            paste0("cM_likelihood.",breed.select.bc[1]), paste0("cM_likelihood.",breed.select.bc[2]))
+      }
+      else
+      {
+        colnames(tab.bc)=c("Marker","Chr", "bp_position", paste0("cM_deterministic.",breed.select.bc[1]),  paste0("cM_deterministic.",breed.select.bc[2]),paste0("cM_deterministic.",breed.select.bc[3]),
+                           paste0("cM_likelihood.",breed.select.bc[1]), paste0("cM_likelihood.",breed.select.bc[2]), paste0("cM_likelihood.",breed.select.bc[3]))
+      }
+
       data.table<-shiny::reactive(tab.bc) ## complete table
 
       ## initialize
@@ -214,20 +250,50 @@ mod_bc_genetic_map_server <- function(id, filter, breed.select.bc, geneticMap.bc
     })
 
     output$rangeMaps=DT::renderDataTable({
-         file.name.tab=paste0(names.files,"-geneticMap_BTA-",filter)
-         DT::datatable(tab.bc,filter="none", container=sketch2, options=list(searching = FALSE,dom='Bfrtip',buttons = list('pageLength','copy', list(extend='csv',title=file.name.tab),list(extend='excel',title=file.name.tab)),
+         file.name.tab<<-paste0(names.files,"-geneticMap_BTA-",filter)
+         DT::datatable(tab.bc,filter="none", container=sketch2, options=list(searching = FALSE,dom='Bfrtip',buttons = list('pageLength'),#,'copy', list(extend='csv',title=file.name.tab),list(extend='excel',title=file.name.tab)),
                                                                           pagelength = 10, lengthMenu = list(c(10, 20 ,30, -1), c('10', '20','30','All'))),escape=FALSE,rownames=FALSE)
     })
 
+    output$csvstore2<-shiny::downloadHandler(
+      paste0(file.name.tab,".csv") , content = function(file) {
+        utils::write.csv(tab.bc, file, row.names = FALSE
+        )
+      })
+
+    output$excelstore2<-shiny::downloadHandler(
+      paste0(file.name.tab,".xlsx"), content = function(file) {
+        writexl::write_xlsx(tab.bc, file)
+      })
+
+
+
+
     ## all for venn diagram
-    filename.venn <- paste0(names.files,"_BTA-",filter,".png")
+    filename.venn <- paste0("Venn-Diagram-",names.files,"_BTA-",filter,".png")
     venn <- RVenn::Venn(venn.data.chr)
     venn_data <-process_venn_data(venn)
 
     InputPlot4 <- shiny::reactive(creating_venn(venn_data,breed.bc=breed.select.bc, bc.venn=names.bc.venn))
+    if(length(breed.select.bc)==2) ## changed on 11.04.2023 ## changed 03.06.2024
+    {
+      width1= 500 #500
+      height1= 200 #550
+      width1.venn.plot=6 ## for print-out
+      height1.venn.plot=3
+    }
+    else
+    {
+      width1= 700 #700
+      height1= 560 #750
+      width1.venn.plot=9
+      height1.venn.plot=6
+    }
     output$venn_diagram <- shiny::renderPlot({
-      InputPlot4()
-    })
+      InputPlot4()},
+      width=width1,# changed 11.04.2023 ## changed 03.06.2024
+      height=height1
+    )
 
     ## venn.diagramm is clicked
     shiny::observeEvent(input$plot_click, {
@@ -235,14 +301,26 @@ mod_bc_genetic_map_server <- function(id, filter, breed.select.bc, geneticMap.bc
 
       data2=prepare_table_venn(venn.dat=venn_data,venn=venn,click=input$plot_click, table.bc= data.table())
       output$rangeMaps=DT::renderDataTable({
-        file.name.tab=paste0(names.files,"-geneticMap_BTA-",filter,"-set-",data2[[2]])
+        file.name.tab<<-paste0(names.files,"-geneticMap_BTA-",filter,"-set-",data2[[2]])
 
         DT::datatable(data2[[1]][order(data2[[1]][,3]),],container=sketch2, extensions = c("Buttons"),  rownames=FALSE,
                                                options = list(searching=FALSE,dom='Bfrtip',
-                                                              dom = 'Bt', buttons = list('pageLength', 'copy',list(extend='csv',title=file.name.tab),list(extend='excel',title=file.name.tab)),
+                                                              dom = 'Bt', buttons = list('pageLength'),#, 'copy',list(extend='csv',title=file.name.tab),list(extend='excel',title=file.name.tab)),
                                                               pagelength = 10, lengthMenu = list(c(5,10,15, -1), c(5,10,15,'All'))))
       },server=FALSE)
       shinyjs::show("ButtonReset")
+
+      output$csvstore2<-shiny::downloadHandler(
+        paste0(file.name.tab,".csv") , content = function(file) {
+          utils::write.csv(data2[[1]][order(data2[[1]][,3]),], file, row.names = FALSE
+          )
+        })
+
+      output$excelstore2<-shiny::downloadHandler(
+        paste0(file.name.tab,".xlsx"), content = function(file) {
+          writexl::write_xlsx(data2[[1]][order(data2[[1]][,3]),], file)
+        })
+
     })
 
     #### Apply selected input
@@ -274,10 +352,21 @@ mod_bc_genetic_map_server <- function(id, filter, breed.select.bc, geneticMap.bc
 
 
          output$rangeMaps=DT::renderDataTable({
-           file.name.tab=paste0(names.files,"-geneticMap_BTA-",filter,"-range-",input$rangeMap_bc[1],"-",input$rangeMap_bc[2])
+           file.name.tab<<-paste0(names.files,"-geneticMap_BTA-",filter,"-range-",input$rangeMap_bc[1],"-",input$rangeMap_bc[2])
            DT::datatable(data.table(),filter="none", container=sketch2, options=list(searching = FALSE,dom='Bfrtip',buttons = list('pageLength','copy', list(extend='excel',title=file.name.tab)),
                                                                         pagelength = 10, lengthMenu = list(c(10, 20 ,30, -1), c('10', '20','30','All'))),escape=FALSE,rownames=FALSE)
          },server=FALSE)
+
+         output$csvstore2<-shiny::downloadHandler(
+           paste0(file.name.tab,".csv") , content = function(file) {
+             utils::write.csv(data.table(), file, row.names = FALSE
+             )
+           })
+
+         output$excelstore2<-shiny::downloadHandler(
+           paste0(file.name.tab,".xlsx"), content = function(file) {
+             writexl::write_xlsx(data.table(), file)
+           })
 
          output$genetic1 <- plotly::renderPlotly({
           output1.filename=paste0(names.files,"_deterministic_BTA-",filter,"_range-",input$rangeMap_bc[1],"-",input$rangeMap_bc[2])
@@ -291,7 +380,7 @@ mod_bc_genetic_map_server <- function(id, filter, breed.select.bc, geneticMap.bc
            pp%>%plotly::toWebGL()
          })
 
-         filename.venn <-paste0(names.files,"_BTA-",filter,"_range-",input$rangeMap_bc[1],"-",input$rangeMap_bc[2],".png")
+         filename.venn <-paste0("Venn-Diagram-",names.files,"_BTA-",filter,"_range-",input$rangeMap_bc[1],"-",input$rangeMap_bc[2],".png")
 
          venn  <- RVenn::Venn(venn.data.chr.2)
          venn_data <-process_venn_data(venn)
@@ -299,14 +388,15 @@ mod_bc_genetic_map_server <- function(id, filter, breed.select.bc, geneticMap.bc
          InputPlot4 <-shiny::reactive(creating_venn(venn_data,breed.bc=breed.select.bc, bc.venn=names.bc.venn))
          output$venn_diagram <- shiny::renderPlot({
            InputPlot4()
-         })
+         },width=width1,# changed 11.04.2023
+         height=height1)
 
          output$download.venn.diagram_bc <- shiny::downloadHandler(
            filename=filename.venn,
            content = function(file) {
              showModal(modalDialog("Loading", footer=NULL))
              on.exit(removeModal())
-             ggsave(file, plot = InputPlot4(), device = "png",width=6,height=6,units="in",dpi=300)
+             ggsave(file, plot = InputPlot4(), device = "png",width=width1.venn.plot,bg="white",height=height1.venn.plot,units="in",dpi=300)
            })
 
 
@@ -315,23 +405,47 @@ mod_bc_genetic_map_server <- function(id, filter, breed.select.bc, geneticMap.bc
 
            data2=prepare_table_venn(venn.dat=venn_data,venn=venn,click=input$plot_click, table.bc= data.table())
            output$rangeMaps=DT::renderDataTable({
-             file.name.tab=paste0(names.files,"-geneticMap_BTA-",filter,"-range-",input$rangeMap_bc[1],"-",input$rangeMap_bc[2],"_unique-set-",data2[[2]])
+             file.name.tab<<-paste0(names.files,"-geneticMap_BTA-",filter,"-range-",input$rangeMap_bc[1],"-",input$rangeMap_bc[2],"_unique-set-",data2[[2]])
              DT::datatable(data2[[1]][order(data2[[1]][,3]),],container=sketch2, extensions = c("Buttons"),  rownames=FALSE,
                            options = list(searching=FALSE,dom='Bfrtip',
-                                          dom = 'Bt', buttons = list('pageLength', 'copy',list(extend='csv',title=file.name.tab),list(extend='excel',title=file.name.tab)),
+                                          dom = 'Bt', buttons = list('pageLength'),# 'copy',list(extend='csv',title=file.name.tab),list(extend='excel',title=file.name.tab)),
                                           pagelength = 10, lengthMenu = list(c(5,10,15, -1), c(5,10,15,'All'))))
            },server=FALSE)
            shinyjs::show("ButtonReset")
+
+           output$csvstore2<-shiny::downloadHandler(
+             paste0(file.name.tab,".csv") , content = function(file) {
+               utils::write.csv(data2[[1]][order(data2[[1]][,3]),], file, row.names = FALSE
+               )
+             })
+
+           output$excelstore2<-shiny::downloadHandler(
+             paste0(file.name.tab,".xlsx"), content = function(file) {
+               writexl::write_xlsx(data2[[1]][order(data2[[1]][,3]),], file)
+             })
+
          })
 
          shiny::observeEvent(input$ButtonReset,{
            output$rangeMaps<-DT::renderDataTable({
-             file.name.tab=paste0(names.files,"-geneticMap_BTA-",filter,"-range-",input$rangeMap_bc[1],"-",input$rangeMap_bc[2])
+             file.name.tab<<-paste0(names.files,"-geneticMap_BTA-",filter,"-range-",input$rangeMap_bc[1],"-",input$rangeMap_bc[2])
              DT::datatable(data.table(),container=sketch2, extensions = c("Buttons"),  rownames=FALSE,
                            options = list(searching=FALSE,dom='Bfrtip',
-                                          dom = 'Bt', buttons = list('pageLength', 'copy', list(extend='csv',title=file.name.tab),list(extend='excel',title=file.name.tab)),
+                                          dom = 'Bt', buttons = list('pageLength'),#, 'copy', list(extend='csv',title=file.name.tab),list(extend='excel',title=file.name.tab)),
                                           pagelength = 10, lengthMenu = list(c(5,10,15, -1), c(5,10,15,'All')) ))
            },server=FALSE)
+
+           output$csvstore2<-shiny::downloadHandler(
+             paste0(file.name.tab,".csv") , content = function(file) {
+               utils::write.csv(data.table(), file, row.names = FALSE
+               )
+             })
+
+           output$excelstore2<-shiny::downloadHandler(
+             paste0(file.name.tab,".xlsx"), content = function(file) {
+               writexl::write_xlsx(data.table(), file)
+             })
+
            shinyjs::hide("ButtonReset")
          })
     })
@@ -369,21 +483,22 @@ mod_bc_genetic_map_server <- function(id, filter, breed.select.bc, geneticMap.bc
       })
 
                   #
-      filename.venn <-paste0(names.files,"_BTA-",filter,".png")
+      filename.venn <-paste0("Venn-Diagram-",names.files,"_BTA-",filter,".png")
       venn <- RVenn::Venn(venn.data.chr)
       venn_data <-process_venn_data(venn) ## also changed
 
       InputPlot4 <-shiny::reactive(creating_venn(venn_data,breed.bc=breed.select.bc, bc.venn=names.bc.venn))
         output$venn_diagram <- shiny::renderPlot({ ## make routine
         InputPlot4()
-      })
+      },width=width1,# changed 11.04.2023
+      height=height1)
 
       output$download.venn.diagram_bc <- shiny::downloadHandler(
         filename=filename.venn,
         content = function(file) {
           showModal(modalDialog("Loading", footer=NULL))
           on.exit(removeModal())
-          ggsave(file, plot = InputPlot4(), device = "png",width=6,height=6,units="in",dpi=300)
+          ggsave(file, plot = InputPlot4(), device = "png",bg="white",width=width1.venn.plot,height=height1.venn.plot,units="in",dpi=300)
         })
 
 
@@ -423,7 +538,8 @@ mod_bc_genetic_map_server <- function(id, filter, breed.select.bc, geneticMap.bc
 
       output$venn_diagram <- shiny::renderPlot({
         InputPlot4()
-      })
+      },width=width1,# changed 11.04.2023
+      height=height1)
     })
 
     shiny::observeEvent(input$venn_chr_bc2,{
@@ -448,7 +564,7 @@ mod_bc_genetic_map_server <- function(id, filter, breed.select.bc, geneticMap.bc
       content = function(file) {
         showModal(modalDialog("Loading", footer=NULL))
         on.exit(removeModal())
-        ggsave(file, plot = InputPlot4(), device = "png",width=6,height=6,units="in",dpi=300)
+        ggsave(file, plot = InputPlot4(), device = "png",bg="white",width=width1.venn.plot,height=height1.venn.plot,units="in",dpi=300) # added bg=white to ggsave 03.06.2024
       })
     ### end
 
@@ -491,6 +607,16 @@ mod_bc_genetic_map_server <- function(id, filter, breed.select.bc, geneticMap.bc
         else{
           shinyjs::hide(id="show_bc_method_1")
           shinyjs::show(id="show_bc_method_2")
+
+
+          ## render traffic light
+          if(length(breed.select.bc)==2)height2=45
+          else height2=55
+          output$TrafficLight_3 <- renderPlot({
+            make.traff.light.bc()
+          }, width=165, height=height2) ## vorher 80
+          ######
+
 
           meth2="likelihood"
           ll3=transformdata_genetic_map_bc(n=29,input=geneticMap.bc,meth=meth2,names.bc.plot=breed.select.bc)

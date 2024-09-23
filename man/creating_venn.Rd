@@ -7,14 +7,14 @@
 creating_venn(venn_data, breed.bc, bc.venn)
 }
 \arguments{
-\item{venn_data}{processed Venn data object (containing: x, y, name, count, geometry)}
+\item{venn_data}{object of class "Venn" processed data (containing the plot data)}
 
 \item{breed.bc}{vector containing the full names of selected breeds}
 
 \item{bc.venn}{vector containing only the first letter of the selected breeds}
 }
 \value{
-The function returns the plotted Venn diagram.
+The function returns the plotted Venn diagram (ggplot object).
 }
 \description{
 The function creates Venn diagram plot.

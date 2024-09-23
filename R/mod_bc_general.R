@@ -9,6 +9,7 @@
 #' \link{scatterPlot_general_all_bc} or \link{scatterPlot_general_selected_bc} depending on user's selected chromosome.
 #'  Corresponding hovering information and style are generated using the function \link{hovering}. This module also shows a Venn diagram of corresponding markers.
 #'  The input data are prepared using the function \link{process_venn_data} and plotted using the function \link{creating_venn}.
+#'  Finally, the quality of the likelihood approach is also shown here by means of a traffic light (also termed as likelihood quality signal).
 #'
 #' @rdname mod_bc_general
 #'
@@ -18,7 +19,7 @@
 #' @importFrom RVenn Venn
 #' @rawNamespace import(shinyjs, except = runExample)
 #'
-#' @seealso  \link{transformdata_general_bc},\link{scatterPlot_general_all_bc}, \link{scatterPlot_general_selected_bc}, \link{hovering}, \link{process_venn_data} and \link{creating_venn}.
+#' @seealso  \link{transformdata_general_bc}, \link{scatterPlot_general_all_bc}, \link{scatterPlot_general_selected_bc}, \link{hovering}, \link{process_venn_data}, \link{creating_venn} and \link{make_traffic_light}.
 #'
 #' @export
 
@@ -40,9 +41,9 @@ mod_bc_general_ui <- function(id){
       )
     ),
     shiny::fluidRow(box(title=tags$b("Venn diagram of markers"), status="danger",width=12,solidHeader = TRUE,collapsible = TRUE,collapsed = TRUE,
-                        shiny::column(width=12,shiny::downloadButton(outputId=ns("download.venn.diagram.bc"),label="Download venn diagram",style="background-color: #87CEFA")),
+                        shiny::column(width=12,shiny::downloadButton(outputId=ns("download.venn.diagram.bc"),label="Download venn diagram",style="background-color: #87CEFA"),class="butt1"),
                         shiny::column(width=6,shiny::plotOutput(ns("venn_diagram_gm"),width = "100%",
-                                                    height = "300px")),column(width=6,""))
+                                                    height = "300px", inline=TRUE)),column(width=6,""))
     ),
     shiny::fluidRow(
       box(title=tags$b("Genetic versus physical length of the bovine autosomes"), status="danger",width=12,solidHeader = TRUE,collapsible = TRUE,collapsed = FALSE,
@@ -50,13 +51,19 @@ mod_bc_general_ui <- function(id){
                           tags$b(tags$h5("Interactive graphic: moving the mouse over the points will show the corresponding information.")))
           ),
           htmltools::br(),htmltools::br(),
+
+          shiny::fluidRow(shiny::column(width=8,""),
+                          shiny::column(width=2,tags$a(href="#","Likelihood quality signal", onclick = "openTab('methodology')",style='text-decoration-line: underline;'),
+                                        plotOutput(ns("TrafficLight_nn"),width="80%",height="auto") )
+          ),
+          htmltools::br(),htmltools::br(),
           ## layout for the two plots -  next to each others
           shiny::fluidRow(
             shiny::column(width=1),shiny::column(width=5,tags$h3("Deterministic approach")),
             shiny::column(width=1),shiny::column(width=5,tags$h3("Likelihood-based approach")),
-            shiny::column(width=2,shiny::downloadButton(outputId=ns("DownloadPlot_gm_1"),"Save plot")),
+            shiny::column(width=2,shiny::downloadButton(outputId=ns("DownloadPlot_gm_1"),"Save plot",class="butt1")),
             shiny::column(4),
-            shiny::column(width=2,shiny::downloadButton(outputId=ns("DownloadPlot_gm_2"),"Save plot")),
+            shiny::column(width=2,shiny::downloadButton(outputId=ns("DownloadPlot_gm_2"),"Save plot",class="butt1")),
             shiny::column(width=4,""),
             shiny::column(width=6,
                           shiny::plotOutput(ns("plot_gm_1"),hover = hoverOpts(ns("plot_hover_gm_1"), delay = 100, delayType = "debounce"),width="100%",height="auto"),
@@ -79,20 +86,29 @@ mod_bc_general_ui <- function(id){
 # Module Server
 #' @rdname mod_bc_general
 #'
-#' @param filter selected chromosome
+#' @param filter character contains the selected chromosome
 #' @param breed.select.bc vector containing the names of selected breeds
-#' @param geneticMap.bc  list containing the genetic maps for all selected breeds (each list element a breed)
+#' @param geneticMap.bc  list containing the genetic maps for all selected breeds (each list element is a breed)
 #' @param color.shape.def data frame containing the definition for coloring, shapes, size for plots
 #' @param names.bc.venn vector containing the first letter of the selected breed names
 #' @param names.files string containing the concatenate breed names
+#' @param make.traff.light.bc object containing the ggplot for the likelihood quality signal
 #'
 #' @export
 
-mod_bc_general_server <- function(id,filter,breed.select.bc, geneticMap.bc,color.shape.def,names.bc.venn,names.files){
+mod_bc_general_server <- function(id,filter,breed.select.bc, geneticMap.bc,color.shape.def,names.bc.venn,names.files,make.traff.light.bc){
   shiny::moduleServer(id, function(input, output, session){
     ns <- session$ns
 
     InputPlot_gm_venn<-genetic_map_summary<-NULL
+
+    ### render plot likelihood quality signal
+    if(length(breed.select.bc)==2)height2=45
+    else height2=55
+    output$TrafficLight_nn <- renderPlot({
+      make.traff.light.bc()
+       }, width=165, height=height2) #
+    #####
 
     dt2=list(); label=c()
     for(ik in 1:length(breed.select.bc))
@@ -102,13 +118,19 @@ mod_bc_general_server <- function(id,filter,breed.select.bc, geneticMap.bc,color
       label=c(label,seq(ik,ncol(genetic_map_summary)*length(breed.select.bc),length(breed.select.bc)))
     }
 
+    ## new
+    dt.5=c();
+    ##
     for(i in 1:length(breed.select.bc)){
       if(i==1)dt=dt2[[i]]
       else dt=cbind(dt,dt2[[i]])
+
+      dt.5=rbind(dt.5,dt2[[i]])
     }
 
     dt=dt[,order(as.numeric(label))]
     dt=dt[,-c(2:length(breed.select.bc))]
+
 
 
     shiny::observe({
@@ -140,8 +162,8 @@ mod_bc_general_server <- function(id,filter,breed.select.bc, geneticMap.bc,color
         tr(
           th(colspan=1,""),
           th(colspan=5*length(breed.select.bc),""),
-          th(colspan = 2*length(breed.select.bc),tags$a(href="#","Deterministic approach", onclick = "openTab('methodology')") ),
-          th(colspan = 2*length(breed.select.bc), tags$a(href="#","Likelihood-based approach",onclick = "openTab('methodology')"))
+          th(colspan = 2*length(breed.select.bc),tags$a(href="#","Deterministic approach", onclick = "openTab('methodology')",style='text-decoration-line: underline') ),
+          th(colspan = 2*length(breed.select.bc), tags$a(href="#","Likelihood-based approach",onclick = "openTab('methodology')",style='text-decoration-line: underline'))
         ),
         tr(
         th(colspan=1,"Chr"),
@@ -159,7 +181,6 @@ mod_bc_general_server <- function(id,filter,breed.select.bc, geneticMap.bc,color
     ))
 
     file.name=paste0(names.files,"_BTA-",filter)
-
     if(filter=="All"){
       output$table0=DT::renderDataTable({
         DT::datatable(dt,extensions = "Buttons", filter="none",container=sketch,rownames=FALSE ,escape=FALSE, options = list(searching=FALSE,dom='Bfrtip',
@@ -177,24 +198,38 @@ mod_bc_general_server <- function(id,filter,breed.select.bc, geneticMap.bc,color
       })
     }
 
-    ######################## All regarding plots
+      ######################## All regarding plots
      ################ plots
     ## transform data for the plot
 
-    data2=transformdata_general_bc(data1 = dt2,what="det",breed.select.bc,colo=color.shape.def)
-    data3=transformdata_general_bc(data1 = dt2,what="lik",breed.select.bc,colo=color.shape.def)
+    if(length(breed.select.bc)==2) ## changed on 11.04.2023 / changed on 06.03.2024
+    {
+      width1= 500 #500
+      height1= 200 #550
+      width1.venn.plot=6 ## for print-out
+      height1.venn.plot=3
+    }
+    else
+    {
+      width1= 700 #700
+      height1= 560 #750
+      width1.venn.plot=9
+      height1.venn.plot=6
+    }
+
+    data2=transformdata_general_bc(data1 = dt2,what="det",breed.select.bc,colo=color.shape.def,filter)
+    data3=transformdata_general_bc(data1 = dt2,what="lik",breed.select.bc,colo=color.shape.def,filter)
 
     ## perform plots
     if(filter=="All"){
 
       ## venn diagrams
-      filename.venn<-paste0(names.files,"_BTA_",filter,"-all-markers.png")
+      filename.venn<-paste0("Venn-Diagram-",names.files,"_BTA_",filter,"-all-markers.png")
 
       venn.data.all<-lapply(1:length(breed.select.bc), function(i) geneticMap.bc[[i]]$Name)
       names(venn.data.all)<-names.bc.venn
 
       venn <- RVenn::Venn(venn.data.all)
-
       venn_data <-process_venn_data(venn)
 
       InputPlot_gm_venn<<-shiny::reactive(
@@ -203,7 +238,7 @@ mod_bc_general_server <- function(id,filter,breed.select.bc, geneticMap.bc,color
 
       output$venn_diagram_gm <- shiny::renderPlot({
         InputPlot_gm_venn()
-      })
+      },width=width1, height=height1)
 
       #  scatter PLot - deterministic
       InputPlot_gm_1=shiny::reactive(
@@ -233,23 +268,25 @@ mod_bc_general_server <- function(id,filter,breed.select.bc, geneticMap.bc,color
 
     if(filter!="All"){
       ## venn diagrams
-      filename.venn<-paste0(names.files,"_BTA-",filter,"-all-markers.png")
+      filename.venn<-paste0("Venn-Diagram-",names.files,"_BTA-",filter,"-all-markers.png")
 
       venn.data.all<-lapply(1:length(breed.select.bc), function(i) geneticMap.bc[[i]][which(geneticMap.bc[[i]]$Chr==filter),]$Name)
       names(venn.data.all)<-names.bc.venn
 
+
       venn <- RVenn::Venn(venn.data.all)
       venn_data <-process_venn_data(venn)
+
 
       InputPlot_gm_venn<<-shiny::reactive(creating_venn(venn_data,breed.bc=breed.select.bc, bc.venn=names.bc.venn))
 
       output$venn_diagram_gm <- shiny::renderPlot({
         InputPlot_gm_venn()
-      })
+      }, width=width1,height=height1)
 
 
       ## scatter plot - deterministic
-      InputPlot_gm_1=shiny::reactive(scatterPlot_general_selected_bc(dat=data2,fil=as.numeric(as.character(filter)),names.bc.plot=breed.select.bc,colo=color.shape.def))
+      InputPlot_gm_1=shiny::reactive(scatterPlot_general_selected_bc(dat=data2,names.bc.plot=breed.select.bc,colo=color.shape.def))
 
       file.name_gm_1=paste0(names.files,"-genetic_vs_physical_length_BTA-",filter,"_deterministic-approach.png") ## 26.07.2022 added breed
 
@@ -259,7 +296,7 @@ mod_bc_general_server <- function(id,filter,breed.select.bc, geneticMap.bc,color
       )
 
       #  scatter PLot - likelihood-based approach
-      InputPlot_gm_2=shiny::reactive(scatterPlot_general_selected_bc(dat=data3,fil=as.numeric(as.character(filter)),names.bc.plot=breed.select.bc,colo=color.shape.def))
+      InputPlot_gm_2=shiny::reactive(scatterPlot_general_selected_bc(dat=data3,names.bc.plot=breed.select.bc,colo=color.shape.def))
 
       file.name_gm_2=paste0(names.files,"-genetic_vs_physical_length_BTA-",filter,"-likelihood-based-approach.png") ## 26.07.2022 added breed
 
@@ -304,7 +341,7 @@ mod_bc_general_server <- function(id,filter,breed.select.bc, geneticMap.bc,color
         content = function(file) {
           showModal(modalDialog("Loading", footer=NULL))
           on.exit(removeModal())
-          ggsave(file, plot = InputPlot_gm_venn(), device = "png",width=6,height=6,units="in",dpi=300)
+          ggsave(file, plot = InputPlot_gm_venn(), bg="white",device = "png",width=width1.venn.plot,height=height1.venn.plot,units="in",dpi=300)
         })
   })
 }

@@ -12,11 +12,12 @@ hovering(dat1, hover, what)
 \item{hover}{list containing information from the scatter plot to show the corresponding point information
 when mouse is moved over the plot.}
 
-\item{what}{specifies the outcome as well as the hovering style for the wellpanel where  \enumerate{
-\item represents the \link{mod_general_server}
-\item represents the \link{mod_hotspot_server}
-\item represents the \link{mod_bc_general_server}
-\item represents the \link{mod_bc_hotspot_server}
+\item{what}{numeric specifies the outcome as well as the hovering style for the wellpanel where
+ \enumerate{
+   \item represents the \link{mod_general_server}
+   \item represents the \link{mod_hotspot_server}
+   \item represents the \link{mod_bc_general_server}
+   \item represents the \link{mod_bc_hotspot_server}
 }}
 }
 \value{

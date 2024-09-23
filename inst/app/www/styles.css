@@ -1,0 +1,68 @@
+body */.content-wrapper, .right-side {background-color:#F0F6FB;},
+    .content-wrapper {float:top;}
+    .wrapper {overflow-y: hidden;}
+    .main-header {
+      max-height: 200px !important;}
+    .main-header .logo {line-height: 85px !important;padding: 0px 0px;}
+.left-side, .main-sidebar {float:top;padding-top: 100px}
+.sidebar-menu>li {padding-top:34px;}
+.main-sidebar { font-size: 19px; }
+                 .treeview-menu>li>a { font-size: 18px!important; }
+        .skin-blue .main-header .logo {
+                              background-color: #073763; ## darkblue
+                              color:#ffffff;
+                              font-size:22;
+                              }
+        .skin-blue .main-header .logo:hover {
+                              background-color: #073763; ##darkblue
+                              }
+        .skin-blue .main-header .navbar {background-color: #CFE2F3;## blue
+                              }
+         .skin-blue .main-sidebar {background-color: #000000; ## ## black
+                              }
+        .skin-blue .main-sidebar .sidebar .sidebar-menu .active a{
+                              background-color: #073763; ## darkblue
+                              }
+        .skin-blue .main-sidebar .sidebar .sidebar-menu a{
+                              background-color: #073763;  ## darkblue
+                              }
+         .skin-blue .main-sidebar .sidebar .sidebar-menu a:hover{
+                              background-color: #68838B; ##a64d79
+                              color: #ffffff;
+                              }
+         .skin-blue .main-header .navbar .sidebar-toggle:hover{
+                              background-color: #68838B;
+                              color: #ffffff;
+                              }
+.nav-tabs {font-size: 18px}
+.box.box-solid.box-primary>.box-header {
+                              color:white;
+                              background: E87722 #darkolivegreen
+                            }
+                            .box.box-solid.box-primary{
+                              border-bottom-color:E87722#Lavender;
+                              border-left-color: E87722#Lavender;
+                              border-right-color: E87722;#Lavender;
+                              border-top-color: E87722#Lavender;
+                              background: withe #Ivory
+                            }
+.box.box-info>.box-header {border: 0px solid #3DA0D1}
+                            .box.box-info{border: 0px solid #3DA0D1;shadow: none}
+.box.box-solid.box-danger>.box-header {color:black;background:lightskyblue}
+                          .box.box-solid.box-danger{
+                            border-bottom-color:lightskyblue;
+                            border-left-color:lightskyblue;
+                            border-right-color:lightskyblue;
+                            border-top-color: lightskyblue;
+                            background: white
+                          }
+                          .box.box-header{}
+.fas.fa-minus {font-weight: 900;color: black;}
+.fas.fa-plus {font-weight: 900;color: black;}
+.tabbable > .nav > li > a {background-color: #CFE2F3;  color:black}
+                          .tabbable > .nav > li > a[data-value='Genetic map'] {background-color: #CFE2F3;   color:black}
+                          .tabbable > .nav > li > a[data-value='Hotspot detection'] {background-color: #CFE2F3;  color:black}
+                          .tabbable > .nav > li > a[data-value='Genetic-map functions'] {background-color: #CFE2F3; color:black}
+                          .tabbable > .nav > li[class=active]    > a {background-color: #073763; color:white;}
+a:active, a:link, a:visited {color: #0000ff; }
+.butt1{color: black !important;font-size: 13px;}

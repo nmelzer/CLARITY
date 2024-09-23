@@ -7,7 +7,7 @@
 app_ui(request)
 }
 \arguments{
-\item{request}{Internal parameter for `{shiny}`.
+\item{request}{Internal parameter for '`shiny`'.
 DO NOT REMOVE.}
 }
 \description{

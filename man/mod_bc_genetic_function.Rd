@@ -12,23 +12,29 @@ mod_bc_genetic_function_server(
   filter,
   breed.select.bc,
   color.shape.def,
-  names.files
+  names.files,
+  make.traff.light.bc
 )
 }
 \arguments{
 \item{id}{module id}
 
-\item{filter}{selected chromosome}
+\item{filter}{character contains the selected chromosome}
 
 \item{breed.select.bc}{vector containing the names of selected breeds}
 
 \item{color.shape.def}{data frame containing the definition for coloring, shapes, size for plots}
 
 \item{names.files}{string containing the concatenate breed names}
+
+\item{make.traff.light.bc}{object containing the ggplot for the likelihood quality signal}
 }
 \description{
 A shiny module to generate the outcome for the tabpanel "Genetic-map functions" for the sidebar "Breed comparison".
 }
 \details{
-The module uses the function \link{makePlot_genetic_function_bc} for plotting.
+The module uses the function \link{makePlot_genetic_function_bc} for plotting. Moreover, the quality of the likelihood approach is shown here by means of a traffic light (also termed as likelihood quality signal).
+}
+\seealso{
+\link{makePlot_genetic_function_bc} and \link{make_traffic_light}
 }

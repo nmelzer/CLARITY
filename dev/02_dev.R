@@ -19,7 +19,7 @@
 ## Add one line by package you want to add as dependency
 usethis::use_package("cachem")
 usethis::use_package("golem")
-usethis::use_package{"config"}
+usethis::use_package("config")
 usethis::use_package("shiny")
 usethis::use_package("shinydashboard")
 usethis::use_package("shinyjs")
@@ -35,14 +35,16 @@ usethis::use_package("htmltools")
 usethis::use_package("rlang")
 usethis::use_package("spelling") ## necessary for tests - afterwards moved to suggests within the Description file
 usethis::use_package("ggVennDiagram")
-usethis::use_package("sf")
+#usethis::use_package("sf")
 usethis::use_package("metathis")
 usethis::use_package("RVenn")
-usethis::use_package("purrr")
-
+#usethis::use_package("purrr")
+usethis::use_package("ggpubr")
+usethis::use_package("writexl")
 
 ## Add modules ----
 ## Create a module infrastructure in R/
+golem::add_module( name = "startscreen")
 golem::add_module( name = "methodology") # Name of the module
 golem::add_module( name = "datasets")
 golem::add_module( name = "contact")
@@ -64,6 +66,7 @@ golem::add_fct( "functions",module="hotspot")
 golem::add_fct( "general_hovering")
 golem::add_fct( "functions",module="genetic_function")
 golem::add_fct( "functions",module="genetic_map")
+golem::add_fct( "traffic_light")
 golem::add_fct( "general_venn_diagram")
 
 golem::disable_autoload()  #

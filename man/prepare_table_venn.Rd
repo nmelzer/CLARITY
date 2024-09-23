@@ -7,23 +7,23 @@
 prepare_table_venn(venn.dat, venn, click, table.bc)
 }
 \arguments{
-\item{venn.dat}{processed Venn data object (containing: x, y, name, count, geometry)}
+\item{venn.dat}{object containing the processed Venn data (containing the plot data)}
 
 \item{venn}{object of class "Venn"}
 
-\item{click}{selected Venn diagram subset}
+\item{click}{list containing the selected Venn diagram subset}
 
-\item{table.bc}{data frame}
+\item{table.bc}{data frame containing the information: SNP, Chr, SNP position (bp), SNP position (cM), whereby the last column is repeated for the number of breed to be compared.}
 }
 \value{
 The function returns a list: 1. element is a table containing the unique set and 2. element contains which Venn subset was selected.
 }
 \description{
-The function creates a reduced table based on the selected Venn diagram subset. The function is used by \link{mod_bc_genetic_map_server}.
+The function creates a reduced table based on the selected Venn diagram subset. The function is used by \link{mod_bc_genetic_map_server} and \link{mod_bc_hotspot_server}.
 }
 \details{
 function
 }
 \seealso{
-\link{mod_bc_genetic_map_server} and  \link{mod_bc_hotspot_server}
+\link{mod_bc_genetic_map_server} and \link{mod_bc_hotspot_server}
 }

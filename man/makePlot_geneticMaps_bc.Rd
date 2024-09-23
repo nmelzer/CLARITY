@@ -9,7 +9,7 @@ makePlot_geneticMaps_bc(chr, dat_maps.list, colo, plot.pos, what, name.file)
 \arguments{
 \item{chr}{selected chromosome}
 
-\item{dat_maps.list}{list, each list element contains the genetic map data for a breed}
+\item{dat_maps.list}{list each list element contains the genetic map data for a breed}
 
 \item{colo}{vector containing the pre-defined colors}
 

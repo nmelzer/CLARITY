@@ -13,7 +13,7 @@ mod_contact_server(id)
 \item{id}{module id}
 }
 \description{
-A shiny module containing the contact information.
+A shiny module containing the contact information and references.
 }
 \keyword{data}
 \keyword{internal}

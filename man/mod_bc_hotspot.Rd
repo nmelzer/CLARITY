@@ -19,7 +19,7 @@ mod_bc_hotspot_server(
 \arguments{
 \item{id}{module id}
 
-\item{filter}{selected chromosome}
+\item{filter}{character contains the selected chromosome}
 
 \item{breed.select.bc}{vector containing the names of selected breeds}
 
@@ -40,6 +40,6 @@ Within the module the input data are prepared using the function \link{transform
  table will be reduced accordingly using the function \link{prepare_table_venn}.
 }
 \seealso{
-\link{transformdata_hotspot}, \link{scatterPlot_hotspot}, \link{scatterPlot_hotspot_all}, \link{hovering},\link{process_venn_data},\link{creating_venn} and \link{prepare_table_venn}
+\link{transformdata_hotspot}, \link{scatterPlot_hotspot}, \link{scatterPlot_hotspot_all}, \link{hovering}, \link{process_venn_data}, \link{creating_venn} and \link{prepare_table_venn}
 }
 \keyword{internal}

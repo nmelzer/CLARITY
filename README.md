@@ -1,10 +1,11 @@
 *CLARITY*: A Shiny app for interactive visualisation of the bovine
-physical-genetic map
-================
+physical-genetic map \
+
 N. Melzer, D. Wittenburg
-(October 20, 2022)
+(June 12, 2024)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
 
 ## Source
 
@@ -13,6 +14,7 @@ An online version of CLARITY is available at
 
 A pipeline for creating a breed-specific genetic map from genotypes of
 half-siblings is available at <https://github.com/wittenburg/hsrecombi>
+
 
 ## Background
 
@@ -27,31 +29,35 @@ sequences.
 
 ## Objectives
 
-Based on published results on a large pedigree of German Holstein cattle
-and newly obtained results with German/Austrian Fleckvieh cattle, we aim
-at providing a platform that allows users to interactively explore the
-bovine genetic and physical map. We developed the R Shiny app “CLARITY”
+Frequencies of recombination events have been studied in 8 European
+cattle breeds comprising dairy, dual-purpose and beef breeds (German
+Holstein, Swiss Holstein, German/Austrian Fleckvieh, Brown Swiss,
+Original Braunvieh, Simmental, Limousin, Angus). Here, we provide a
+platform that allows users to interactively explore the bovine genetic
+and physical map in each breed. We developed the R Shiny app “CLARITY”
 that provides access to the genetic map built on the Illumina Bovine
-SNP50 genotyping array with markers ordered according to the physical
-coordinates of the most recent bovine genome assembly ARS-UCD1.2. The
-user is able to interconnect the physical and genetic map for a whole
-chromosome or a specific chromosomal region and can inspect a landscape
-of recombination hotspots. Moreover, the user can investigate which of
-the frequently used genetic-map functions locally fits best. We further
-provide auxiliary information about markers being putatively misplaced
-in the ARS-UCD1.2 release. The corresponding output tables and figures
-can be downloaded in various formats. By ongoing data integration from
-different breeds, the app also facilitates comparison of different
-genome features, providing a valuable tool for education and research
-purposes.
+SNP50 genotyping array (or similar panel) with markers ordered according
+to the physical coordinates of the most recent bovine genome assembly
+[ARS-UCD1.2](https://bovinegenome.elsiklab.missouri.edu/downloads/ARS-UCD1.2).
+The user is able to interconnect the physical and genetic map for a
+whole chromosome or a specific chromosomal region and can inspect a
+landscape of recombination hotspots. Moreover, the user can investigate
+which of the frequently used genetic-map functions locally fits best. We
+further provide auxiliary information about markers being putatively
+misplaced in the
+[ARS-UCD1.2](https://bovinegenome.elsiklab.missouri.edu/downloads/ARS-UCD1.2)
+release. The corresponding output tables and figures can be downloaded
+in various formats. The app also facilitates comparison of different
+genome features among cattle breeds, providing a valuable tool for
+education and research purposes.
 
 Key features:
 
--   Summary statistics for all chromosomes
--   Genetic map
--   Hotspot detection
--   Genetic-map functions
--   Misplaced markers
+- Summary statistics for all chromosomes
+- Genetic map
+- Hotspot detection
+- Genetic-map functions
+- Misplaced markers
 
 ## Installation
 
@@ -73,3 +79,8 @@ run_app()
 ```
 
 <div style="width: 100% ; height: 400px ; text-align: center; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;" class="muted well">Shiny applications not supported in static R Markdown documents</div>
+
+
+
+## Cite
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11620802.svg)](https://doi.org/10.5281/zenodo.11620802)

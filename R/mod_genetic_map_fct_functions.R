@@ -60,7 +60,7 @@ transformdata_genetic_map_bc=function(n,input,meth,names.bc.plot)
     for(ij in 1:length(names.bc.plot))
     {
      df.p = input[[ij]][which(input[[ij]]$Chr==i),]
-     print(dim(df.p))
+
      if(meth=="deterministic")a=cbind(df.p$"Chr",df.p$"Mbp_position",df.p$"cM_deterministic")
      else a=cbind(df.p$"Chr",df.p$"Mbp_position",df.p$"cM_likelihood")
 
@@ -93,10 +93,10 @@ transformdata_genetic_map_bc=function(n,input,meth,names.bc.plot)
 #' @title Creating the genetic map plot for breed analysis
 #' @description The function creates the plot for a single chromosome for one breed.
 #'
-#' @param chr selected chromosome
-#' @param dat_maps genetic map data
-#' @param name.file name for image file
-#' @param colo vector of predefined colors
+#' @param chr character contains the selected chromosome
+#' @param dat_maps data frame containing the genetic map data
+#' @param name.file character contains the name for image file
+#' @param colo vector contains the predefined colors
 #'
 #' @rawNamespace import(plotly, except = last_plot)
 #' @return The function returns a plotly object.
@@ -125,7 +125,7 @@ makePlot_geneticMaps<-function(chr,dat_maps,name.file,colo)
 #' @description The function creates the plot for a single chromosome for more than one breed.
 #'
 #' @param chr selected chromosome
-#' @param dat_maps.list list, each list element contains the genetic map data for a breed
+#' @param dat_maps.list list each list element contains the genetic map data for a breed
 #' @param colo vector containing the pre-defined colors
 #' @param plot.pos contains the column which should be used
 #' @param what contains the approach name ("deterministic" or "likelihood-based") to create plot title
@@ -157,7 +157,7 @@ makePlot_geneticMaps_bc<-function(chr,dat_maps.list,colo,plot.pos,what,name.file
 #' @description The function creates the plots for all chromosomes for a breed and grid arrange them. To obtain only one
 #' legend for all plots, the function \link{get_only_legend} is called inside.
 #'
-#' @param ll.gm.s list, each list element contains a data frame, including chromosome, position in Mbp and cM, as well as approach for a chromosome
+#' @param ll.gm.s list each list element contains a data frame, including chromosome, position in Mbp and cM, as well as approach for a chromosome
 #' @param colo vector containing the pre-defined colors
 #'
 #' @import ggplot2
@@ -204,6 +204,7 @@ makePlot_all_geneticMaps <-function(ll.gm.s,colo)
 #' @param plot ggplot object
 #'
 #' @import ggplot2
+#'
 #' @return The function return the legend from a ggplot object.
 #' @export
 #' @seealso The function is called from \link{makePlot_all_geneticMaps_bc}.
@@ -222,7 +223,7 @@ get_only_legend <- function(plot) {
 #' @description The function creates the plots for all chromosomes for more than one breed and grid arrange them. To obtain only one
 #' legend for all plots, the function \link{get_only_legend} is called inside.
 #'
-#' @param ll list, whereby each list element contains a data frame including chromosome number, the position in Mbp and cM, as well as breed information for a chromosome
+#' @param ll list whereby each list element contains a data frame including chromosome number, the position in Mbp and cM, as well as breed information for a chromosome
 #' @param names.bc.plot vector containing names of selected breeds
 #' @param colo vector containing the pre-defined colors
 #'

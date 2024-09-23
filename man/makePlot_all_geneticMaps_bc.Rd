@@ -7,7 +7,7 @@
 makePlot_all_geneticMaps_bc(ll, names.bc.plot, colo)
 }
 \arguments{
-\item{ll}{list, whereby each list element contains a data frame including chromosome number, the position in Mbp and cM, as well as breed information for a chromosome}
+\item{ll}{list whereby each list element contains a data frame including chromosome number, the position in Mbp and cM, as well as breed information for a chromosome}
 
 \item{names.bc.plot}{vector containing names of selected breeds}
 

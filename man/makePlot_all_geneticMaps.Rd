@@ -7,7 +7,7 @@
 makePlot_all_geneticMaps(ll.gm.s, colo)
 }
 \arguments{
-\item{ll.gm.s}{list, each list element contains a data frame, including chromosome, position in Mbp and cM, as well as approach for a chromosome}
+\item{ll.gm.s}{list each list element contains a data frame, including chromosome, position in Mbp and cM, as well as approach for a chromosome}
 
 \item{colo}{vector containing the pre-defined colors}
 }

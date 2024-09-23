@@ -15,7 +15,7 @@ transformdata_hotspot(
 \arguments{
 \item{data.trans}{data frame (containing: Chr, SNP, cM, BP, Theta, Dis)}
 
-\item{value}{contains the user specified threshold to determine the hotspot}
+\item{value}{numeric contains the user specified threshold to determine the hotspot}
 
 \item{color1}{vector containing the predefined used colors}
 

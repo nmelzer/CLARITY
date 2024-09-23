@@ -23,19 +23,19 @@
 #' @importFrom rlang is_empty
 #' @import htmltools
 #'
-#' @seealso \link{transformdata_hotspot}, \link{scatterPlot_hotspot}, \link{scatterPlot_hotspot_all}, \link{hovering},\link{process_venn_data},\link{creating_venn} and \link{prepare_table_venn}
+#' @seealso \link{transformdata_hotspot}, \link{scatterPlot_hotspot}, \link{scatterPlot_hotspot_all}, \link{hovering}, \link{process_venn_data}, \link{creating_venn} and \link{prepare_table_venn}
 #' @export
 #'
 mod_bc_hotspot_ui <- function(id){
   ns <- shiny::NS(id)
   htmltools::tagList(
     shiny::fluidRow(
-      shiny::column(width=12,h2("Genome-wide landscape of putative recombination",tags$a(href="#","hotspot", onclick = "openTab('methodology')")," intervals.")),
+      shiny::column(width=12,h2("Genome-wide landscape of putative recombination",tags$a(href="#","hotspot", onclick = "openTab('methodology')",style='text-decoration-line: underline;')," intervals.")),
       htmltools::br(),
       htmltools::br(),
       shinydashboard::box(width=12, title=tags$b("Recombination hotspots"),status="danger",solidHeader = TRUE,collapsible = TRUE,
           h5("Interactive graphic: brush and double click to zoom-in specific regions. Use double click to return."),
-          shiny::column(width=12,shiny::downloadButton(outputId=ns("downloadHotspot"),"Save plot")),
+          shiny::column(width=12,shiny::downloadButton(outputId=ns("downloadHotspot"),"Save plot",class="butt1")),
           shiny::column(width= 12, shiny::plotOutput(ns("plothotspot"),height="750px", dblclick = ns("plothotspot_dblclick"),brush = brushOpts(id = ns("plothotspot_brush"), resetOnNew = TRUE),
                      hover = hoverOpts(ns("plothotspot_hover"), delay = 400, delayType = "throttle",clip=TRUE)) %>% shinycssloaders::withSpinner(color="#0dc5c1"),shiny::uiOutput(ns("hoverhotspot_info")),style="width: calc(100% - 100px); !important;")
 
@@ -56,21 +56,22 @@ mod_bc_hotspot_ui <- function(id){
           shiny:: fluidRow(shinyjs::useShinyjs(),id=ns("venn_hot1"),shiny::column(width=6,shiny::actionButton(ns("venn_hotspot1"), "Show interactively venn diagram",style = "color: black;
                             background-color: #87CEFA"))),
           shiny::fluidRow(shinyjs::useShinyjs(),id=ns("venn_hot2"),
-                            shiny::column(width=10,shiny::downloadButton(ns("downloadVenn"),label="Save plot",style="background-color: #87CEFA"),shiny::actionButton(ns("venn_hotspot2"), "Hide venn diagram",style="background-color: #87CEFA"),
+                            shiny::column(width=10,shiny::downloadButton(ns("downloadVenn"),label="Download venn diagram",style="background-color: #87CEFA",class="butt1"),
+                                          shiny::actionButton(ns("venn_hotspot2"), "Hide venn diagram",style="background-color: #87CEFA"),
                                    shiny::actionButton(ns("ButtonAll_bc_hotspot"),"Reset table to all",style="background-color: #87CEFA")),
                             shiny::column(width=10,style="padding-top:30px", ""),
                             shiny::column(width=10,"When you click on a specific subset of interest, only the markers for that set are listed in the table."),
                             shiny::column(width=5,shiny::plotOutput(ns("venn_diagram"), click = ns("plot_click"),width = "100%",
-                                                                         height = "300px"))
+                                                                         height = "300px",inline=TRUE))
 
           ),
          htmltools:: br(),
          htmltools::hr(style = "border-top: 1px solid #68838B;"),
          htmltools::br(),
 
-         shiny::fluidRow(shiny::column(width=10,DT::dataTableOutput(outputId=ns("tablehotspot")),style = "height:auto; overflow-y: scroll;overflow-x: scroll;")),
+         shiny::fluidRow(shiny::column(width=7,DT::dataTableOutput(outputId=ns("tablehotspot")),style = "overflow-y: scroll;overflow-x: scroll;")),
          shiny::fluidRow(shiny::column(9,shiny::checkboxInput(ns("checkbox3"), "Show/hide legend", TRUE), ## tried to make the HTML as htmlOutput but it does not work - must be checked later for a better solution
-                           htmltools::p(id = "element30",HTML("Chr: chromosome<br>bp: chromosome position in base pairs<br>cM: chromosome position in centiMorgan based on <a href='#' onclick = openTab('methodology') >deterministic approach</a>")))
+                           htmltools::p(id = "element30",HTML("Chr: chromosome<br>bp: chromosome position in base pairs<br>cM: chromosome position in centiMorgan based on <a href='#' onclick = openTab('methodology') style='text-decoration-line: underline;'>deterministic approach</a>")))
           )
          )
       )
@@ -80,7 +81,7 @@ mod_bc_hotspot_ui <- function(id){
 # bc_hotspot Server Functions
 #' @rdname mod_bc_hotspot
 #'
-#' @param filter selected chromosome
+#' @param filter character contains the selected chromosome
 #' @param breed.select.bc vector containing the names of selected breeds
 #' @param color.shape.def data frame containing the definition for coloring, shapes, size for plots
 #' @param names.bc.venn vector containing the first the letter of the selected breed name
@@ -113,15 +114,15 @@ mod_bc_hotspot_server <- function(id,filter, breed.select.bc,color.shape.def,nam
           th(colspan=length(breed.select.bc),"Genetic Map")
 
         ),
-        tr(
-         th(colspan=3,""),
-         lapply(colspan=1,breed.select.bc, th)
-        ),
+      #  tr(
+      #   th(colspan=3,""),
+      #   lapply(colspan=1,breed.select.bc,th)
+      #  ),
         tr(
           th(colspan=1,"Marker"),
           th(colspan=1,"Chr"),
           th(colspan=1,"Position (bp)"),
-          lapply(colspan=1, rep("Position (cM)", length(breed.select.bc)), th)
+          lapply(colspan=1, paste(rep("Position (cM)", length(breed.select.bc)),breed.select.bc,sep=" "), th)
         )
       )
     ))
@@ -141,6 +142,12 @@ mod_bc_hotspot_server <- function(id,filter, breed.select.bc,color.shape.def,nam
           for(i in 1:length(breed.select.bc)){
 
             load(system.file("extdata",paste0(breed.select.bc[i],"/adjacentRecRate.Rdata"),package="CLARITY"))
+            if(length(which(is.na(adjacentRecRate$cM)==T))!=0)adjacentRecRate=adjacentRecRate[-which(is.na(adjacentRecRate$cM)==T),]
+            if(class(adjacentRecRate$BP)=="numeric"){
+              adjacentRecRate$BP=as.integer(adjacentRecRate$BP)
+              adjacentRecRate$Dis=as.integer(adjacentRecRate$Dis)
+            }
+
             dat[[i]]=transformdata_hotspot(data.trans=adjacentRecRate,value=input$threshold,color1=color.shape.def[i,1:2],shape1=color.shape.def[i,3:4],ord=color.shape.def[i,5:6])
 
             if(i==1)legend1=rbind(c(unlist(paste0("No hotspot ",breed.select.bc[i])),unlist(color.shape.def[i,c(2,4)]),unlist(color.shape.def[i,5])),c(unlist(paste0("Hotspot ",breed.select.bc[i])),unlist(color.shape.def[i,c(1,3)]),unlist(color.shape.def[i,6])))
@@ -321,11 +328,25 @@ mod_bc_hotspot_server <- function(id,filter, breed.select.bc,color.shape.def,nam
           else venn <- RVenn::Venn(venn.data.chr)
 
           venn_data <-process_venn_data(venn)
+          if(length(breed.select.bc)==2) ## changed on 12.04.2023 / changed 06.03.2024 - could be set once for all modules
+          {
+            width1= 500 #500
+            height1= 200 #550
+            width1.venn.plot=6 ## for print-out
+            height1.venn.plot=3
+          }
+          else
+          {
+            width1= 700 #700
+            height1= 560 #750
+            width1.venn.plot=9
+            height1.venn.plot=6
+          }
 
           InputPlot5=shiny::reactive(creating_venn(venn_data,breed.bc=breed.select.bc,bc.venn=names.bc.venn))
           output$venn_diagram <- shiny::renderPlot({
             InputPlot5()
-          })
+          },width=width1, height=height1)
 
 
           ## select  specific set from venn diagram
@@ -364,11 +385,11 @@ mod_bc_hotspot_server <- function(id,filter, breed.select.bc,color.shape.def,nam
             }
           )
 
-          #oVenn
+          #download Venn Plot
           output$downloadVenn <- shiny::downloadHandler(
             filename = paste0(names.files,"_Venn_hotspots_BTA-",filter,"_", input$threshold,".png") ,
             content = function(file){
-              ggplot2::ggsave(file, plot =  InputPlot5(), device = "png",width=6,height=6,units="in",dpi=300)
+              ggplot2::ggsave(file, plot =  InputPlot5(), bg="white",device = "png",width= width1.venn.plot,height= height1.venn.plot,units="in",dpi=300)
             }
           )
 

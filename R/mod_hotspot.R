@@ -26,11 +26,11 @@ mod_hotspot_ui=function(id)
   ns=shiny::NS(id)
   shiny::tagList(
     shiny::fluidRow(
-      shiny::column(width=12,h2("Genome-wide landscape of putative recombination",tags$a(href="#","hotspot", onclick = "openTab('methodology')")," intervals.")),
+      shiny::column(width=12,h2("Genome-wide landscape of putative recombination",tags$a(href="#","hotspot", onclick = "openTab('methodology')",style='text-decoration-line: underline;')," intervals.")),
       htmltools::br(),htmltools::br(),
       shinydashboard::box(width=12, title=tags$b("Recombination hotspots"),status="danger",solidHeader = TRUE,collapsible = TRUE,
         h5("Interactive graphic: brush and double click to zoom-in specific regions. Use double click to return."),
-        shiny::column(12,shiny::downloadButton(outputId=ns("downloadHotspot"),"Save plot")),
+        shiny::column(12,shiny::downloadButton(outputId=ns("downloadHotspot"),"Save plot",class="butt1")),
         shiny::column(12,shiny::plotOutput(ns("plothotspot"), height="750px", dblclick = ns("plothotspot_dblclick"),brush = brushOpts(id = ns("plothotspot_brush"), resetOnNew = TRUE),
         hover = hoverOpts(ns("plothotspot_hover"), delay = 400, delayType = "throttle",clip=TRUE)) %>% shinycssloaders::withSpinner(color="#0dc5c1"),shiny::uiOutput(ns("hoverhotspot_info")),style="width: calc(100% - 100px); !important;")
       )
@@ -47,9 +47,9 @@ mod_hotspot_ui=function(id)
       shiny::fluidRow(
         shiny::column(width=10,DT::dataTableOutput(outputId=ns("tablehotspot")),style = "height:auto; overflow-y: scroll;overflow-x: scroll;"),
         shiny::column(width=10,shiny::checkboxInput(ns("checkbox3"), "Show/hide legend", TRUE), ##
-                      htmltools::p(id = "element3",HTML("Chr: chromosome<br>SNP: SNP name<br>cM: chromosome position in centiMorgan based on <a href='#' onclick = openTab('methodology') >deterministic approach</a>  <br>BP: chromosome position in base pairs<br>
+                      htmltools::p(id = "element3",HTML("Chr: chromosome<br>SNP: SNP name<br>cM: chromosome position in centiMorgan based on <a href='#' onclick = openTab('methodology')><u>deterministic approach</u></a>  <br>BP: chromosome position in base pairs<br>
                                         Theta: recombination rate<br>
-                                        Dis: distance to the next marker")))
+                                        Dis: distance to preceeding marker")))
         )
       )
     )
@@ -59,8 +59,8 @@ mod_hotspot_ui=function(id)
 
 # Module Server
 #' @rdname mod_hotspot
-#' @param filter selected chromosome
-#' @param breed.select names of selected breed
+#' @param filter character contains the selected chromosome
+#' @param breed.select character contains the name of the selected breed
 #' @param color.shape.def data frame containing the definition for coloring, shapes, size for plots
 #'
 #' @keywords internal
@@ -81,9 +81,16 @@ mod_hotspot_server=function(id, filter,breed.select,color.shape.def){
          ranges <- shiny::reactiveValues(x = NULL, y = NULL)
 
          load(system.file("extdata",paste0(breed.select,"/adjacentRecRate.Rdata"),package="CLARITY"))
+         if(length(which(is.na(adjacentRecRate$cM)==T))!=0)adjacentRecRate=adjacentRecRate[-which(is.na(adjacentRecRate$cM)==T),]
+         if(class(adjacentRecRate$BP)=="numeric"){
+           adjacentRecRate$BP=as.integer(adjacentRecRate$BP)
+           adjacentRecRate$Dis=as.integer(adjacentRecRate$Dis)
+         }
+
          dat=transformdata_hotspot(data.trans=as.data.frame(adjacentRecRate),value=input$threshold,color1=color.shape.def[1,1:2],shape1=color.shape.def[1,3:4],ord=color.shape.def[1,5:6])
          data12=dat[dat$ord%in%1,c(1:6)] ## selecting only hotspot markers
          data12$Chr=as.character(data12$Chr)
+
 
          len=length(dat$cols%in%1) ## may can be exclude
 

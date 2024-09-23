@@ -12,9 +12,9 @@ mod_hotspot_server(id, filter, breed.select, color.shape.def)
 \arguments{
 \item{id}{module id}
 
-\item{filter}{selected chromosome}
+\item{filter}{character contains the selected chromosome}
 
-\item{breed.select}{names of selected breed}
+\item{breed.select}{character contains the name of the selected breed}
 
 \item{color.shape.def}{data frame containing the definition for coloring, shapes, size for plots}
 }

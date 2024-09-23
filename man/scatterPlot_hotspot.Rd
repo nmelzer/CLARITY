@@ -9,9 +9,9 @@ scatterPlot_hotspot(dat1, fil, ranges, legend1)
 \arguments{
 \item{dat1}{data frame (containing: Chr, SNP, cM, BP, Theta, Dis, ord, size, coloring, and shape)}
 
-\item{fil}{selected chromosome}
+\item{fil}{character contains the selected chromosome}
 
-\item{ranges}{contains brush information}
+\item{ranges}{reactive values containing the brush information}
 
 \item{legend1}{data frame containing the legend information (contains: label, breaks, shape, and ord)}
 }

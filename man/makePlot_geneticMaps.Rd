@@ -7,13 +7,13 @@
 makePlot_geneticMaps(chr, dat_maps, name.file, colo)
 }
 \arguments{
-\item{chr}{selected chromosome}
+\item{chr}{character contains the selected chromosome}
 
-\item{dat_maps}{genetic map data}
+\item{dat_maps}{data frame containing the genetic map data}
 
-\item{name.file}{name for image file}
+\item{name.file}{character contains the name for image file}
 
-\item{colo}{vector of predefined colors}
+\item{colo}{vector contains the predefined colors}
 }
 \value{
 The function returns a plotly object.

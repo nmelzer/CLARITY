@@ -7,7 +7,7 @@
 transformdata_general(data1)
 }
 \arguments{
-\item{data1}{is a data frame}
+\item{data1}{data frame}
 }
 \value{
 The function returns a data frame with three columns: basepairs (bp), centiMorgan (cM) and chromosome (chr).

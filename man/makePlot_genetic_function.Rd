@@ -12,14 +12,14 @@ makePlot_genetic_function(
 )
 }
 \arguments{
-\item{chromo}{selected chromosome}
+\item{chromo}{character contains the selected chromosome}
 
-\item{df.list}{list: first element contains a matrix of recombination rate and distance for marker pairs, second element includes a matrix of X-values for all genetic-map functions,
+\item{df.list}{list first element contains a matrix of recombination rate and distance for marker pairs, second element includes a matrix of X-values for all genetic-map functions,
 third element includes a matrix of Y-values for all genetic-map functions.}
 
-\item{name.file}{name of output file.}
+\item{name.file}{character contains name of output file.}
 
-\item{breed.select}{selected breed}
+\item{breed.select}{character contains the selected breed}
 }
 \value{
 The functions returns an already rendered plotly object.

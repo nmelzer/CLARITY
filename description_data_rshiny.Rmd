@@ -1,21 +1,32 @@
 ---
-title: "CLARITY: Documentation of data sets"
+title: 'CLARITY: Documentation of data sets'
 author: "N. Melzer, D. Wittenburg"
-date: October 19, 2022
+date: "June 12, 2024"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo =TRUE)
 library(DT)
-path.input <- "inst/extdata/Holstein"
+options(DT.options = list(pageLength = 100, language = list(search = 'Filter:'))) ## used to show all rows otherwise only the first ten rows are displayed
+path.input <- "inst/extdata/Holstein-DE"
+path.input2 <- "inst/extdata/general"
 ```
 
-&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;
 
-## Input data format required for CLARITY app
+# Input data format required for CLARITY app
+&nbsp;
 
+## 1. Data sets generated applying the [hsrecombi](https://github.com/wittenburg/hsrecombi) pipeline.
 
-### 1. geneticMap.Rdata
+&nbsp;
+
+### 1.1 geneticMap.Rdata
 
 data.frame *geneticMap*
 
@@ -34,10 +45,21 @@ df=cbind(df,Class)
 datatable(df,rownames=F,options=list(searching=F,dom=""))
 ```
 
+<font size="2">
+Chr: Chromosome <br>
+Name: SNP name <br>
+Mbp_position: Chromosome position in million base pair <br>
+bp_position: Chromosome position in million base pair <br>
+cM_likelihood: Chromosome position in centiMorgan based on likelihood approach<br>
+cM_deterministic: Chromosome position in centiMorgan based on deterministic approach <br>
+recrate_adjacent_deterministic: Recombination rate adjacent markers based on deterministic approach <br>
+Mbp_inter_marker_distanc: Inter-marker distance in Mbp <br>
+</font> 
+
 &nbsp;&nbsp;
 
 
-### 2. genetic_map_summary.Rdata
+### 1.2 genetic_map_summary.Rdata
 data.frame *genetic_map_summary*
 
 ```{r table2, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
@@ -55,10 +77,24 @@ df=cbind(df,Class)
 datatable(df,rownames=F,options=list(searching=F,dom=""))
 ```
 
+
+<font size="2"> 
+Chr: Chromosome <br>
+nSNP: Number of SNPs <br>
+max_bp: Chromosome length in base pairs <br>
+Gap_bp: Maximum gap size between pairs of adjacent markers in bp <br>
+Space_kb: Inter-marker space in kilobase (kb) <br>
+nRec: Number of cross-overs detected <br>
+D_M: Genetic length in Morgan estimated based on deterministic approach <br>
+L_M: Genetic length in Morgan estimated with the likelihood-based approach <br>
+cMMb_D: centiMorgan per megabase pair for the deterministic approach <br>
+cMMb_L: centiMorgan per megabase pair for the likelihood-based approach <br>
+</font> 
+
 &nbsp;&nbsp;
 
 
-### 3. adjacentRecRate.Rdata
+### 1.3 adjacentRecRate.Rdata
 
 data.frame *adjacentRecRate*
 
@@ -77,10 +113,18 @@ df=cbind(df,Class)
 datatable(df,rownames=F,options=list(searching=F,dom=""))
 ```
 
+<font size="2"> 
+Chr: Chromosome <br>
+SNP: SNP name <br>
+cM: Chromosome position in centiMorgan based on deterministic approach <br>
+BP: Chromosome position in base pairs <br>
+Theta: Recombination rate <br>
+Dis: Distance to preceeding marker <br>
+</font>
+
 &nbsp;&nbsp;
 
-
-### 4. bestmapfun.Rdata
+### 1.4 bestmapfun.Rdata
 
 matrix *out*
 
@@ -99,10 +143,11 @@ df=cbind(df,Class)
 datatable(df,rownames=F,options=list(searching=F,dom=""))
 ```
 
+
 &nbsp;&nbsp;
 
 
-### 5. curve-short-\<chr\>.Rdata
+### 1.5 curve-short-\<chr\>.Rdata
 
 $\text{<chr>}=1,\ldots,29$; list *store* with four elements:
 
@@ -113,3 +158,131 @@ $\text{<chr>}=1,\ldots,29$; list *store* with four elements:
 
 
 &nbsp;&nbsp;
+
+## 2. Additional generated data sets
+
+### 2.1  OverviewBreeds.Rdata
+
+data.frame *BreedOverview*
+
+```{r table5, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
+load(file.path(path.input2, "OverviewBreeds.Rdata"))
+out=BreedOverview
+df=cbind(1:ncol(out),colnames(out))
+
+
+Class=c()
+for(i in 1:ncol(out))Class[i]=class(out[,i])
+df=cbind(df,Class)
+                   
+ colnames(df)<-c("Column no.","Column name","Class")                  
+ 
+# output the table in a format suitable for HTML/PDF/docx conversion
+datatable(df,rownames=F,options=list(searching=F,dom=""))
+```
+
+<font size="2"> 
+n1: Number of genotyped animals <br>
+N1: Number of half-sib families <br>
+n2: Number of genotyped animals in half-sib families with at least 30 progeny <br>
+N2: Half-sib families with sires having at least 30 progenies <br>
+p: Number of SNPs <br>
+</font> 
+
+
+&nbsp;&nbsp;
+
+
+### 2.2 misplaced_all_breeds.Rdata
+
+tibble *tab*
+
+```{r table7, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
+load(file.path(path.input2, "misplaced_all_breeds.Rdata"))
+out=data.frame(tab)
+df=cbind(1:ncol(out),colnames(out))
+
+
+Class=c()
+for(i in 1:ncol(out))Class[i]=class(out[,i])
+df=cbind(df,Class)
+                   
+ colnames(df)<-c("Column no.","Column name","Class")                  
+ 
+# output the table in a format suitable for HTML/PDF/docx conversion
+datatable(df,rownames=F,options=list(searching=T,dom=""))
+
+```
+<font size="2"> 
+Chr: chromosome <br>
+Name: SNP name <br>
+Mbp_position: chromosomal position in million base pairs <br>
+</font> 
+
+&nbsp;&nbsp;
+
+### 2.3 misplacedMarkers.Rdata
+
+tibble *misplacedMarkers*
+
+```{r table6, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
+load(file.path(path.input2, "misplacedMarkers.Rdata"))
+out=data.frame(misplacedMarkers)
+df=cbind(1:ncol(out),colnames(out))
+
+Class=c()
+for(i in 1:ncol(out))Class[i]=class(out[,i])
+df=cbind(df,Class)
+                   
+ colnames(df)<-c("Column no.","Column name","Class")                  
+ 
+# output the table in a format suitable for HTML/PDF/docx conversion
+datatable(df,rownames=F,options=list(searching=T,dom=""))
+
+```
+
+<font size="2"> 
+snp: SNP name <br>
+old_chr: Chromosome number according to ARS-UCD1.2 <br>
+old_bp: Chromosomal position in bp according to ARS-UCD1.2  <br>
+new_chr: Chromosome number based on linkage disequilibrium (LD) analysis. Negative values indicate inconclusive results and the analysis continued on the original chromosome. <br>
+new_bp: Chromosomal position denotes the coordinate of the SNP to which the minimum recombination rate was achieved <br>
+theta: Minimum recombination rate on new chromosome<br>
+clear_recrate: Coded as 1 if the recombination rate < 0.01 at the new coordinate (bp), zero otherwise; in total 34 <br>
+BLAST_probeA_chr.bp: The position of alternate match when the probe sequence of candidate SNP was aligned to the reference genome. No entry implies a single hit coinciding with the map coordinate in ARS-UCD1.2 or no hit. <br>
+candidate:  Coded as 1 if the SNP was identified as candidate of misplacement based on estimates of recombination rate in the original study Qanbari and Wittenburg (2020); in total 51 <br>
+problemregion:  Identifier of coherent problematic region ; in total 15<br>
+start: Start of position of problematic region<br>
+end: End of position of problematic region<br>
+n_heterozygous: Number of heterozygous sires based on which recombination rates were estimated <br>
+</font> 
+
+&nbsp;&nbsp;
+
+### 2.4 generalproblematicRegions.Rdata
+
+tibble *generalProblematicRegions*
+
+```{r table8, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
+load(file.path(path.input2, "generalProblematicRegions.Rdata"))
+out=data.frame(generalProblematicRegions)
+df=cbind(1:ncol(out),colnames(out))
+
+
+Class=c()
+for(i in 1:ncol(out))Class[i]=class(out[,i])
+df=cbind(df,Class)
+                   
+ colnames(df)<-c("Column no.","Column name","Class")                  
+ 
+# output the table in a format suitable for HTML/PDF/docx conversion
+datatable(df,rownames=F,options=list(searching=F,dom=""))
+```
+<font size="2"> 
+Chr: Chromosome <br>
+Start: Start of position of problematic region in bp <br>
+End: End of position of problematic region in bp <br>
+HD: Number of SNPs on Illumina HD array falling in this region <br>
+GGPF250: Number of SNPs on GGP-F250 array falling in this region <br>
+SNP50: Number of SNPs on Illumina SNP50 array falling in this region <br>
+</font> 

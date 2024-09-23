@@ -7,14 +7,14 @@
 makePlot_genetic_function_bc(chromo, df.list, names.bc.plot, name.file)
 }
 \arguments{
-\item{chromo}{selected chromosome}
+\item{chromo}{numeric contains the selected chromosome}
 
-\item{df.list}{list: first element contains a matrix of recombination rate and distance for marker pairs, second element includes a matrix of X-values for all genetic-map functions,
-third element includes a matrix of Y-values for all genetic-map functions.}
+\item{df.list}{list whereby the first list element contains a matrix of recombination rate and distance for marker pairs, second list element includes a matrix of X-values for all genetic-map functions,
+third list element includes a matrix of Y-values for all genetic-map functions.}
 
 \item{names.bc.plot}{vector containing the selected breeds}
 
-\item{name.file}{name of output file}
+\item{name.file}{character name of output file}
 }
 \value{
 The function returns a plotly object.
