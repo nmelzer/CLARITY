@@ -4,8 +4,6 @@ physical-genetic map \
 N. Melzer, D. Wittenburg
 (June 12, 2024)
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 
 ## Source
 
@@ -77,9 +75,6 @@ To start the R Shiny app, please type:
 library(CLARITY)
 run_app()
 ```
-
-<div style="width: 100% ; height: 400px ; text-align: center; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;" class="muted well">Shiny applications not supported in static R Markdown documents</div>
-
 
 
 ## Cite

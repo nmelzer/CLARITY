@@ -88,7 +88,7 @@ app_ui <- function(request){
     htmltools::tags$head(
        tags$meta(name="author", content="Nina Melzer"),
        tags$meta(name="creation_date", content="2022-10-27"),
-       tags$meta(name="modified_date", content="2024-08-17"),
+       tags$meta(name="modified_date", content="2024-09-23"),
        tags$meta(name="url", content="https://nmelzer.shinyapps.io/clarity"),
        tags$meta(name="version",content="2.0.0")
     ),
