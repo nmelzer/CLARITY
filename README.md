@@ -73,3 +73,6 @@ run_app()
 ```
 
 <div style="width: 100% ; height: 400px ; text-align: center; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;" class="muted well">Shiny applications not supported in static R Markdown documents</div>
+
+## Cite
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11620802.svg)](https://doi.org/10.5281/zenodo.11620802)
