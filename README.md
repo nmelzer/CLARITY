@@ -77,5 +77,13 @@ run_app()
 ```
 
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+
+
+=======
+>>>>>>> 24739e81909b189b36f04e25537676625b8fb606
+>>>>>>> 69b63a9b780242edc9ea5bdc198896e06abe0211
 ## Cite
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11620802.svg)](https://doi.org/10.5281/zenodo.11620802)
