@@ -67,7 +67,7 @@ mod_contact_server = function(id){
     output$softwareList <- renderUI(htmltools::tags$h4(htmltools::HTML("
     <ul>
       <li> Melzer N (2024). <i>CLARITY: A Shiny app for interactive visualisation of the bovine physical-genetic map (v2.0.0)</i>.
-            Zenodo. <a href ='https://doi.org/10.5281/zenodo.11620802' target='_blank'><u>https://doi.org/10.5281/zenodo.11620802</u></a>
+            Zenodo. <a href ='https://doi.org/10.5281/zenodo.13832239' target='_blank'><u>https://doi.org/10.5281/zenodo.13832239</u></a>
             (available: <a href ='https://github.com/nmelzer/CLARITY' target='_blank'> <u>https://github.com/nmelzer/CLARITY </u></a>)</li> &nbsp;
       <li> Melzer N (2023). <i>CLARITY: A Shiny app for interactive visualisation of the bovine physical-genetic map (v1.0.1)</i>.
             Zenodo. <a href ='https://doi.org/10.5281/zenodo.11620802' target='_blank'><u>https://doi.org/10.5281/zenodo.11620802</u></a>
