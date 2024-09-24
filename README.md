@@ -77,4 +77,4 @@ run_app()
 ```
 
 ## Cite
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11620802.svg)](https://doi.org/10.5281/zenodo.11620802)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13832239.svg)](https://doi.org/10.5281/zenodo.13832239)
