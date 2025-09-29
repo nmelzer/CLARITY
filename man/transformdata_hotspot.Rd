@@ -2,36 +2,39 @@
 % Please edit documentation in R/mod_hotspot_fct_functions.R
 \name{transformdata_hotspot}
 \alias{transformdata_hotspot}
-\title{Transform data for Hotspot plot}
+\title{Transform data for hotspot plot for breed analysis}
 \usage{
-transformdata_hotspot(
-  data.trans,
-  value = value,
-  color1 = color1,
-  shape1 = shape1,
-  ord = ord
-)
+transformdata_hotspot(data.trans, value, filter, infos)
 }
 \arguments{
-\item{data.trans}{data frame (containing: Chr, SNP, cM, BP, Theta, Dis)}
+\item{data.trans}{data frame (containing: SNP,BP,D_cM,D_Theta,Hm_cM,Hm_Theta,Hf_cM,Hf_Theta,Dis)}
 
 \item{value}{numeric contains the user specified threshold to determine the hotspot}
 
-\item{color1}{vector containing the predefined used colors}
+\item{filter}{character contains the selected chromosome}
 
-\item{shape1}{vector containing the predefined used shapes}
-
-\item{ord}{vector containing the predefined numbering}
+\item{infos}{data.frame data frame containing the predefined settings and names for the selected approaches (\link{table_approach_information})}
 }
 \value{
-The function returns a data frame (containing: Chr, SNP, cM, BP, Theta, Dis, ord, size, coloring, and shape).
+The function returns a list containing: \cr
+* 1. data frame containing information for hotspot plot (\link{data_plot_hotspot}-specific selected chromosome or \link{data_plot_hotspot_all} - all chromosomes is selected) \cr
+* 2. data.frame for table use created for table (\link{data_table_hotspot}) \cr
+* 3. list containing revealed hotspot SNP markers for each approach for the Venn diagram
 }
 \description{
-The function used the threshold to determine hotspot markers and add accordingly the colors, shapes and numbering.
+The function used the threshold to determine hotspot SNP markers and generate corresponding output data for plot (1), table (2) and Venn diagram (3) for a selected breed and selected approaches.
+1) Transform BP into Mbp and add accordingly colors, sizes and shapes. If all chromosomes are selected then an additional
+column is generated "ChrTheta" - chromosome number + theta. The later is scaled depending on the size of Theta.
+2) To create the corresponding table only the detected hotspot SNP markers for each approach are used.
+3) For the number of selected approaches, creates corresponding sets containing the hotspot SNP markers required to create the Venn diagram.
 }
 \details{
 function
 }
+\note{
+The function only works for a maximum of three breeds.
+}
 \seealso{
-\link{mod_hotspot_server} and \link{mod_bc_hotspot_server}
+* \link{mod_hotspot_server} \cr
+* \link{mod_bc_hotspot_server}
 }

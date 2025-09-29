@@ -4,31 +4,23 @@
 \alias{transformdata_general_bc}
 \title{Transform data for breed comparison}
 \usage{
-transformdata_general_bc(data1, what, breed.select.bc, colo, filter)
+transformdata_general_bc(data1, breed.infos, filter)
 }
 \arguments{
-\item{data1}{data frame}
+\item{data1}{list each list element represents a chosen breed and contains a data frame with genetic map summary for selected approach.}
 
-\item{what}{character contains the name of the approach
-\itemize{
-\item det - is used for deterministic approach
-\item lik - is used for likelihood-based approach
-}}
-
-\item{breed.select.bc}{vector containing the selected breeds}
-
-\item{colo}{vector containing the predefined colors for each breed}
+\item{breed.infos}{data frame containing the predefined settings and names for the selected breeds (\link{table_breed_information})}
 
 \item{filter}{character contains the selected chromosome}
 }
 \value{
-The function returns a data frame with six columns: basepair (bp), centiMorgan (cM), chromosome (chr), breed, alpha, size and color.
+The function returns a data frame (\link{data_plot_general})
 }
 \description{
-The function transforms the data for plotting: 1) basepairs (bp) into megabasepairs (Mbp) and Morgan (M) into centiMorgan (cM) for selected breeds,
-2) adds breed specific colors, and
-3) adds geom_point information for the ggplot accordingly to the selected chromosome: alpha values ("0.4" not selected chromosome and "1" selected chromosome)
- and size values ("4" not selected chromosome and "8" selected chromosome)
+The function transforms the data for plotting:
+1) basepairs (bp) into megabasepairs (Mbp) and Morgan (M) into centiMorgan (cM) for selected breeds,
+2) adds breed specific colors and breed name, and
+3) adds size values ("10" not selected chromosome and "18" selected chromosome; 14 when all chromosomes are selected)
 }
 \details{
 function

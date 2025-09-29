@@ -1,0 +1,12 @@
+Column.No, Column.Name, Meaning, Class
+1,Chr,Chromosome,integer
+2,SNP,SNP marker name,character
+3,BP,Marker position in base pair (physical map),integer
+4,cM,Marker position bin centiMorgan based on selected approach/es (genetic map),  numeric
+5,Theta,Recombination rate,numeric
+6,Mbp,Marker position in base pair (physical map),numeric
+7,what,Names of the approaches or breeds,character
+8,size,Scatter plot size (internal: 7-hotspot; 2-no hotspot),numeric
+9,coloring,Color for each plot dot depending on hotspot or not,character
+10,shape,Shape for each plot dot depending on hotspot or not,numeric
+11,ChrTheta,Chromosome number added with Theta,numeric

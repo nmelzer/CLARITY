@@ -12,8 +12,9 @@ mod_genetic_map_server(
   filter,
   breed.select,
   geneticMap,
-  color.breed.dl,
-  make.traff.light
+  make.traff.light,
+  approach.info,
+  add.approach.names
 )
 }
 \arguments{
@@ -25,21 +26,28 @@ mod_genetic_map_server(
 
 \item{geneticMap}{data frame containing the genetic map}
 
-\item{color.breed.dl}{vector containing the predefined colors}
+\item{make.traff.light}{object containing the ggplot for the likelihood quality signal (\link{make_traffic_light})}
 
-\item{make.traff.light}{object containing the ggplot for the likelihood quality signal}
+\item{approach.info}{data frame containing the predefined settings for selected approaches (\link{table_approach_information})}
+
+\item{add.approach.names}{character containing the concatenated approach abbreviations and is used as an addition to the file name}
 }
 \description{
 A shiny module to generate the outcome for the tabpanel "Genetic map" for the sidebar "Breed analysis".
 }
 \details{
-Depending on the user choice, when a specific chromosome is selected than the function \link{makePlot_geneticMaps} is used to create the plot.
-If all chromosomes are selected than genetic map data are prepared for the plot using the function \link{transformdata_genetic_map}
-and plotted using the function \link{makePlot_all_geneticMaps}. Moreover, the corresponding plot is cached to increase the app performance.
-Finally, the quality of the likelihood approach is also shown here by means of a traffic light (also termed as likelihood quality signal).
+Independent from the user choice regarding chromosome selection, the data are prepared for the plot
+using the function \link{transformdata_genetic_map}. Depending on the user's selection, when a specific chromosome is chosen, the function \link{makePlot_geneticMaps} is used to create the plot,
+otherwise the function \link{makePlot_all_geneticMaps} is used to create the plot. In addition, when all chromosome is selected than the corresponding plot
+is cached to increase the app performance.
+Finally, the quality of the likelihood approach is also shown here by means of a traffic light
+ (also termed as likelihood quality signal (\link{make_traffic_light})).
 }
 \seealso{
-\link{transformdata_genetic_map}, \link{makePlot_geneticMaps}, \link{makePlot_all_geneticMaps} and \link{make_traffic_light}
+* \link{transformdata_genetic_map} \cr
+* \link{makePlot_geneticMaps} \cr
+* \link{makePlot_all_geneticMaps} \cr
+* \link{make_traffic_light}
 }
 \keyword{genetic}
 \keyword{internal,}

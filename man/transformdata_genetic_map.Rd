@@ -2,20 +2,20 @@
 % Please edit documentation in R/mod_genetic_map_fct_functions.R
 \name{transformdata_genetic_map}
 \alias{transformdata_genetic_map}
-\title{Prepare genetic map data for plotting}
+\title{Prepare genetic map data for plotting for breed analysis}
 \usage{
-transformdata_genetic_map(n, input)
+transformdata_genetic_map(input, approach.info)
 }
 \arguments{
-\item{n}{number of chromosomes}
-
 \item{input}{data frame containing the genetic map information}
+
+\item{approach.info}{data frame containing the predefined settings for selected approaches (\link{table_approach_information})}
 }
 \value{
-The function returns a list containing the desired information for each chromosome.
+The function returns list containing the desired information in data frame (\link{data_plot_geneticMap}) for each chromosome.
 }
 \description{
-The function prepares the genetic map information for a single breed.
+The function prepares the genetic map information for a single breed and selected approaches.
 }
 \details{
 function

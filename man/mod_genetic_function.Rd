@@ -7,7 +7,13 @@
 \usage{
 mod_genetic_function_ui(id)
 
-mod_genetic_function_server(id, filter, breed.select, make.traff.light)
+mod_genetic_function_server(
+  id,
+  filter,
+  breed.select,
+  make.traff.light,
+  approach.info
+)
 }
 \arguments{
 \item{id}{module id}
@@ -16,16 +22,18 @@ mod_genetic_function_server(id, filter, breed.select, make.traff.light)
 
 \item{breed.select}{character contains the name of the selected breed}
 
-\item{make.traff.light}{object containing the ggplot for the likelihood quality signal}
+\item{make.traff.light}{object containing the ggplot for the likelihood quality signal(\link{make_traffic_light})}
 }
 \description{
 A shiny module to generate the outcome for the tabpanel "Genetic-map functions" for the sidebar "Breed analysis".
 }
 \details{
-The module uses the function \link{makePlot_genetic_function} for plotting. Moreover, the quality of the likelihood approach is shown here by means of a traffic light (also termed as likelihood quality signal).
+The module uses the function \link{makePlot_genetic_function} for plotting.
+ Moreover, the quality of the likelihood approach is shown here by means of a traffic light (also termed as likelihood quality signal ((\link{make_traffic_light}))).
 }
 \seealso{
-\link{makePlot_genetic_function} and \link{make_traffic_light}
+* \link{makePlot_genetic_function} \cr
+* \link{make_traffic_light}
 }
 \keyword{function}
 \keyword{genetic}

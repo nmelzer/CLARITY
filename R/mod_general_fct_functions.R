@@ -1,177 +1,284 @@
 #' function
 #' @title Transform data for breed analysis
 #'
-#' @description The function transforms the data for plotting: basepairs (bp) into megabasepairs (Mbp) and Morgan (M) into centiMorgan (cM).
-#' @return The function returns a data frame with three columns: basepairs (bp), centiMorgan (cM) and chromosome (chr).
+#' @description The function transforms the data for plotting:
+#' 1) basepairs (bp) into megabasepairs (Mbp) and Morgan (M) into centiMorgan (cM) for selected approaches,
+#' 2) adds approach specific colors and approach names, and
+#' 3) adds size values ("10" not selected chromosome and "18" selected chromosome; "14" when all chromosomes are selected)
+#' Moreover, the transformed data are also used in function \link{create.output} to create the correlation output.
 #'
-#' @param data1 data frame
-#' @seealso \link{mod_general_server}
+#' @param data1 data frame containing the genetic map summary for selected approaches for chosen breed
+#' @param approach.info data frame containing the predefined settings and names for the selected approaches (\link{table_approach_information})
+#' @param filter character contains the selected chromosome
 #'
+#' @importFrom dplyr mutate if_else row_number
+#'
+#' @return The function returns a data.frame (\link{data_plot_general})
+#'
+#' @seealso
+#' * \link{mod_general_server} \cr
+#' * \link{create.output}
 #' @export
-transformdata_general=function(data1)
+transformdata_general=function(data1,approach.info,filter)
 {
-  data1[,1]=as.numeric(as.character(data1[,1]))/1000000
-  data1[,2]=as.numeric(as.character(data1[,2]))*100
-  data1=cbind(data1,1:nrow(data1))
-  colnames(data1)=c("bp","cM","chr")
-  data1=as.data.frame(data1)
-  data1$bp=as.numeric(data1$bp)
-  data1$cM=as.numeric(data1$cM)
-  data1
-}
+  use=grep("_M",colnames(data1))
 
+  dat1<-lapply(1:length(use),function(i)
+  {
+    dat=as.data.frame(data1[,c(3,use[i],1)])
+    colnames(dat)=c("Mbp","cM","Chr")
+    dat <- dat%>%dplyr::mutate(
+      Mbp=as.numeric(dat$Mbp)/1000000,
+      cM= as.numeric(dat$cM)*100,
+      Color=approach.info$Color[i],
+      What=approach.info$Approach[i]
+    )
+    if(filter!="All")dat <- dat %>% dplyr::mutate(Size = dplyr::if_else(dplyr::row_number() %in% as.numeric(filter), 18, 10))
+    else  dat <- dat %>% dplyr::mutate(Size = 14)
+  })
+
+  dat1.table=do.call("rbind",dat1)
+  dat1.table
+}
 
 #' function
 #' @title Transform data for breed comparison
 #'
-#' @param data1 data frame
-#' @param what character contains the name of the approach
-#' \itemize{
-#' \item det - is used for deterministic approach
-#' \item lik - is used for likelihood-based approach
-#' }
-#' @param breed.select.bc vector containing the selected breeds
-#' @param colo vector containing the predefined colors for each breed
+#' @param data1 list each list element represents a chosen breed and contains a data frame with genetic map summary for selected approach.
+#' @param breed.infos data frame containing the predefined settings and names for the selected breeds (\link{table_breed_information})
 #' @param filter character contains the selected chromosome
 #'
-#' @description The function transforms the data for plotting: 1) basepairs (bp) into megabasepairs (Mbp) and Morgan (M) into centiMorgan (cM) for selected breeds,
-#' 2) adds breed specific colors, and
-#' 3) adds geom_point information for the ggplot accordingly to the selected chromosome: alpha values ("0.4" not selected chromosome and "1" selected chromosome)
-#'  and size values ("4" not selected chromosome and "8" selected chromosome)
+#' @importFrom dplyr mutate if_else row_number
 #'
+#' @description The function transforms the data for plotting:
+#' 1) basepairs (bp) into megabasepairs (Mbp) and Morgan (M) into centiMorgan (cM) for selected breeds,
+#' 2) adds breed specific colors and breed name, and
+#' 3) adds size values ("10" not selected chromosome and "18" selected chromosome; 14 when all chromosomes are selected)
 #'
-#' @return The function returns a data frame with six columns: basepair (bp), centiMorgan (cM), chromosome (chr), breed, alpha, size and color.
+#' @return The function returns a data frame (\link{data_plot_general})
 #'
 #' @seealso \link{mod_bc_general_server}
 #' @export
-transformdata_general_bc=function(data1,what,breed.select.bc,colo,filter)
+transformdata_general_bc=function(data1,breed.infos,filter)
 {
+  use=c(3,grep("_M",colnames(data1[[1]])),1)
 
-  dat.0=c()
-  for(i in 1:length(breed.select.bc))
+  dat0<-lapply(1:nrow(breed.infos), function(i)
   {
-    if(what=="det")use=c(3,7)
-    else use=c(3,9)
-
     dat=data1[[i]][-nrow(data1[[i]]),use]
-    dat[,1]=as.numeric(as.character(dat[,1]))/1000000
-    dat[,2]=as.numeric(as.character(dat[,2]))*100
-    dat=cbind(dat,1:nrow(dat))
-    dat=cbind(dat,rep(breed.select.bc[i],nrow(dat)),rep(1,nrow(dat)),rep(4,nrow(dat)))
-    colnames(dat)=c("bp","cM","chr","breed","alpha","size")
-    dat=as.data.frame(dat)
-    dat$alpha=as.numeric(dat$alpha)
-    dat$size=as.numeric(dat$size)
-    if(filter!="All")dat$size[as.numeric(filter)]=8
-    dat$bp=as.numeric(dat$bp)
-    dat$cM=as.numeric(dat$cM)
-    color=rep(colo[i,1],nrow(dat))
-    dat=cbind(dat,color)
-    if(i==1) dat.0=dat
-    else dat.0=rbind(dat.0,dat)
+    colnames(dat)=c("Mbp","cM","Chr")
+    dat <- dat%>%dplyr::mutate(
+      Mbp=as.numeric(dat$Mbp)/1000000,
+      cM=as.numeric(dat$cM)*100,
+      Color=breed.infos$Color[i],
+      What=breed.infos$Name[i]
+    )
+    if(filter!="All")dat <- dat %>% dplyr::mutate(Size=dplyr::if_else(dplyr::row_number() %in% as.numeric(filter), 18, 10))
+    else dat<-dat %>% dplyr::mutate(Size = 14)
+
+  })
+  dat0
+  dat0.table=do.call("rbind",dat0)
+  dat0.table
+}
+
+#' function
+#' @title Creating the general scatter plot
+#' @description The corresponding scatter plot is created, when a specific chromosome or all chromosomes was selected within breed analysis or breed comparison.
+#'
+#' @param dat data frame containing the corresponding plot information (\link{data_plot_general})
+#' @param name.file character containing the name used for the generated plot
+#'
+#' @rawNamespace import(plotly, except = last_plot)
+#'
+#' @return The functions returns a plotly object.
+#'
+#' @seealso
+#'  * \link{mod_general_server} \cr
+#'  * \link{mod_bc_general_server}
+#' @export
+
+scatterPlot_general <- function(dat,name.file)
+{
+  dat=dat[order(dat$What),]
+
+  hover_info<-paste(
+    "<b>Chromosome: <b>",dat$Chr,"<br>",
+    "<b>Physical distance (Mbp): <b>",round(dat$Mbp,2),"<br>",
+    "<b>Genetic distance (cM): <b>",round(dat$cM,2),"<br>"
+    )
+
+  p <- plotly::plot_ly(data=dat, x = ~Mbp, y = ~cM,color=~What, type = "scatter", mode="markers",marker=list(size=~Size),hoverinfo="text",hovertext=hover_info, fill=~'',colors=~unique(dat$Color))%>%
+       plotly::layout(hovermode="closest",plot_bgcolor = '#F5F5F5',
+                   xaxis = list(
+                     title=list(text="Physical length (Mbp)",font=list(family="Arial",size=16)),
+                     tickfont = list(size = 14),
+                     showgrid = TRUE,
+                     gridcolor = 'white',
+                     fixedrange = TRUE
+                   ),
+                   yaxis = list(
+                     title=list(text="Genetic distance (cM)",font=list(family="Arial",size=16)),
+                     tickfont = list(size = 14),
+                     showgrid = TRUE,
+                     gridcolor = 'white',
+                     fixedrange = TRUE
+                   ),
+                   legend=list(title=list(text="Legend",font=list(size=18,family="Arial")),font=list(family="Arial",size=16)))%>%
+        plotly::config(displayModeBar=TRUE, displaylogo = FALSE, modeBarButtonsToRemove = list('sendDataToCloud','zoom2d', 'autoScale2d', 'hoverClosestCartesian','hoverCompareCartesian', 'pan2d',
+                                                                                            'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d','resetScale2d'), toImageButtonOptions= list(filename = name.file))
+p
+}
+
+#' function
+#' @title Creating the correlation output for selected approaches (breed analysis)
+#' @description The Pearson correlations between physical and genetic length are calculated for all selected approaches and summarized in a common output.
+#'
+#' @param data.trans data frame \link{data_plot_general}
+#' @param approach.info data frame containing the predefined settings and names for the selected approaches (\link{table_approach_information})
+#'
+#' @importFrom stats cor
+#' @return The function returns a character string.
+#' @seealso \link{mod_general_server}
+#' @export
+
+create.output<-function(data.trans,approach.info)
+{
+  zz<-unlist(sapply(1:nrow(approach.info),function(inn) (round(stats::cor(data.trans$Mbp[data.trans$What%in%approach.info$Approach[inn]],data.trans$cM[data.trans$What%in%approach.info$Approach[inn]],method="pearson"),3))))
+
+  if(nrow(approach.info)==1){
+    output =paste0("The Pearson correlation (r) between physical and genetic length was r=",zz[1]," for the  <a href='#",approach.info$Name[1],"' onclick = openTab('methodology')><u>",tolower(approach.info$Name[1]),"</u></a>.")
+  }else if(nrow(approach.info)==2){
+    output =paste0("The Pearson correlation (r) between physical and genetic length was r=",zz[1]," for the  <a href='#",approach.info$Name[1],"' onclick = openTab('methodology')><u>",tolower(approach.info$Name[1]),"</u></a> and
+                   r=",zz[2]," for the <a href='#",approach.info$Name[2],"' onclick = openTab('methodology')><u>",tolower(approach.info$Name[2]),"</u></a>.")
+  }else if (nrow(approach.info)==3){
+    output =paste0("The Pearson correlation (r) between physical and genetic length was r=",zz[1]," for the <a href='#",approach.info$Name[1],"' onclick = openTab('methodology')><u>",tolower(approach.info$Name[1]),",
+                    </u></a> r=",zz[2]," for the <a href='#",approach.info$Name[2],"' onclick = openTab('methodology')><u>",tolower(approach.info$Name[2]),"</u></a> and r=",zz[3],"
+                   for the  <a href='#",approach.info$Name[3],"' onclick = openTab('methodology')><u>",tolower(approach.info$Name[3]),"</u></a>.")
+  }else{
+    output =paste0("The Pearson correlation (r) between physical and genetic length was r=",zz[1]," for the <a href='#",approach.info$Name[1],"' onclick = openTab('methodology')><u>",tolower(approach.info$Name[1]),",
+                    </u></a> r=",zz[2]," for the <a href='#",approach.info$Name[2],"' onclick = openTab('methodology')><u>",tolower(approach.info$Name[2]),", </u></a> r=",zz[3],"
+                   for the  <a href='#",approach.info$Name[3],"' onclick = openTab('methodology')><u>",tolower(approach.info$Name[3]),"</u></a> and
+                    r=",zz[4]," for the <a href='#",approach.info$Name[4],"' onclick = openTab('methodology')><u>",tolower(approach.info$Name[4]),"</u></a>.")
   }
-  dat.0
-}
-
-
-#' function
-#' @title Creating the scatter plot for all chromosomes within breed analysis
-#' @description The scatter plot is created, when all chromosomes are selected within breed analysis.
-#'
-#' @param dat data frame containing basepairs (bp), centiMorgan (cM), chromosome (chr), color and approach
-#' @param colo vector containing the predefined colors
-#'
-#' @import ggplot2
-#' @return The function returns a ggplot object.
-#'
-#' @seealso \link{mod_general_server}
-#'
-#' @export
-scatterPlot_general_all <- function(dat,colo)
-{
-    bp<-cM<-Approach<-NULL
-    p=ggplot2::ggplot(dat, aes(x=bp, y = cM,col=Approach)) +
-    geom_point(size=6,alpha=1)+
-    scale_color_manual(values=colo,labels=c("Deterministic","Likelihood"))+
-    labs(x="Physical length (Mbp)",y="Genetic distance (cM)")  +
-    guides(colour = guide_legend(override.aes = list(size=5)))+
-    theme(axis.ticks=element_line(colour = "black", size = 2),text = element_text(size = 18))
-    p
+  output
 }
 
 #' function
-#' @title Creating the scatter plot for selected chromosome within breed analysis
+#' @title Creates table header for the general table for breed analysis
 #'
-#' @param dat data frame containing basepairs (bp), centiMorgan (cM), chromosome (chr), color and approach
-#' @param fil selected chromosome
-#' @param colo vector containing the predefined colors
+#' @param approach.info data frame containing the predefined settings and names for the selected approaches \link{table_approach_general}
+#' @return The function returns a shiny.tag.
 #'
-#' @description The corresponding scatter plot is created, when a specific chromosome was selected within breed analysis.
-#' @import ggplot2
-#'
-#' @return The functions returns a ggplot object.
-#' @seealso \link{mod_general_server}
-#' @export
-scatterPlot_general_selected <- function(dat,fil,colo)
-{
-    bp<-cM<-Approach<-NULL
-    p=ggplot2::ggplot(dat, aes(x=bp, y = cM,col=Approach)) +
-    geom_point(size = ifelse(1:nrow(dat) == fil, 8, 4))+#,alpha=ifelse(1:nrow(dat) == fil,1,0.3  ))+
-    geom_point(size = ifelse(1:nrow(dat) == (nrow(dat)/2)+fil, 8, 4))+#,alpha=ifelse(1:nrow(dat) == (nrow(dat)/2)+fil,1,0.3  ))+
-    scale_color_manual(values=colo,labels=c("Deterministic","Likelihood"))+
-    labs(x="Physical length (Mbp)",y="Genetic distance (cM)")  +
-    guides(colour = guide_legend(override.aes = list(size=5)))+
-    theme(axis.ticks=element_line(colour = "black", size = 2),text = element_text(size = 18))
-   p
+#' @noRd
+create_table_header1 <- function(approach.info) {
+  tr<-thead<-th<-NULL
+
+  need.col2<-c()
+  need.col2= unlist(sapply(1:nrow(approach.info), function(inn)
+    (if(approach.info$Abbreviation[inn]!="Lm")paste0(approach.info$Abbreviation[inn],c("_nRec","_M","_cM/Mb"))
+     else paste0(approach.info$Abbreviation[inn],c("_M","_cM/Mb")))
+  ))
+
+  sketch0 = htmltools::withTags(table(
+    class = 'display',
+    thead(
+      tr(
+        th(colspan=1,""),
+        th(colspan=4,"Physical Map"),
+        th(colspan=length(need.col2),"Genetic Map"),
+      ),
+      tr(
+        th(colspan=1,""),
+        th(colspan=4,""),
+        lapply(1:nrow(approach.info), function(inn) {
+          if(approach.info$Approach[inn]!="Likelihood_male") {
+            th(colspan = 3, htmltools::tags$a(href="#", approach.info$Name[inn], onclick = "openTab('methodology')", style='text-decoration-line: underline'))
+          } else {
+            th(colspan = 2, htmltools::tags$a(href="#", approach.info$Name[inn], onclick = "openTab('methodology')", style='text-decoration-line: underline;'))
+          }
+        }),
+      ),
+      tr(
+        th(colspan=1,"Chr"),
+        th(colspan=1,"nSNP"),
+        th(colspan=1,"bp"),
+        th(colspan=1,"Gap"),
+        th(colspan=1,"Space"),
+
+        lapply(1:length(need.col2), function(inn) {
+          th(colspan=1, need.col2[inn])
+        })
+      )
+    )
+  ))
+
+  sketch0
 }
 
 #' function
-#' @title Creating the scatter plot for all chromosomes for breed comparison
-#' @description The corresponding scatter plot is created, when all chromosome are selected for the breed comparison.
-#' @param dat data frame containing basepairs (bp), centiMorgan (cM), chromosome (chr), breed and color
-#' @param names.bc.plot vector containing the names of selected breeds
-#' @param colo vector containing the predefined colors for the breeds
-#' @import ggplot2
+#' @title Creates table header for general table for breed comparison
 #'
-#' @return The functions returns a ggplot object.
-#' @seealso \link{mod_bc_general_server}
-#' @export
-scatterPlot_general_all_bc <- function(dat,names.bc.plot,colo)
+#' @param breed.infos data frame containing the predefined settings and names for the selected breed  (\link{table_breed_general})
+#' @param label numeric vector containing the
+#' @param no.cols numeric
+#' @param header.length numeric how many columns are necessary for the genetic map part
+#' @return The function returns a shiny.tag.
+#'
+#' @noRd
+create_table_header_bc1<-function(breed.infos,label,no.cols,header.length)
 {
-  bp<-cM<-breed<-NULL
-  p=ggplot2::ggplot(dat, aes(x=bp, y = cM,col=breed)) +
-    geom_point(size=6,alpha=1)+
-    scale_color_manual(values=colo[1:length(names.bc.plot),1],labels=names.bc.plot)+
-    labs(x="Physical length (Mbp)",y="Genetic distance (cM)")  +
-    guides(colour = guide_legend(override.aes = list(size=5)))+
-    theme(axis.ticks=element_line(colour = "black", size = 2),text = element_text(size = 25))
-  p
 
+  label.new=c("nSNP","bp","Gap","Space","nRec","M","cM/Mb")
+
+  var.label=unlist(lapply(1:nrow(breed.infos), function(ik){
+    if(no.cols==7)c("Chr",paste0(label.new[-5],".",breed.infos$Abbreviation[ik]))
+    else c("Chr",paste0(label.new,".",breed.infos$Abbreviation[ik]))
+  }))
+
+  var.label1=var.label[order(as.numeric(label))]
+  var.label=var.label1[-c(2:nrow(breed.infos))]
+
+  pp=(5*nrow(breed.infos)-(nrow(breed.infos)-1))
+
+  tr<-thead<-th<-NULL
+  sketch0=htmltools::withTags(table(
+    class = 'display',
+    thead(
+      tr(
+        th(colspan=1,""),
+        lapply(colspan=pp-1, "Physical Map", th),
+        lapply(colspan=(header.length-pp), "Genetic Map", th),
+      ),
+      tr(
+        lapply(1:length(var.label), function(inn) {
+          th(colspan=1, var.label[inn])
+        })
+      )
+    )
+  ))
+  sketch0
 }
 
 #' function
-#' @title Creating the scatter plot for selected chromosome for breed comparison
+#' @title Creates the table legend for the general table within breed analysis
 #'
-#' @description The corresponding scatter plot is created, when a specific chromosome is selected for the breed comparison.
-#' @param dat data frame containing basepairs (bp), centiMorgan (cM), chromosome (chr), breed, alpha, size and color
-#' @param names.bc.plot vector containing the names of selected breeds
-#' @param colo vector containing the predefined colors
+#' @param approach.info data frame containing the predefined settings and names for the selected approaches (\link{table_approach_information})
+#' @return The function returns a character vector containing the legend for the created table in \link{mod_general_server}.
 #'
-#' @import ggplot2
-#' @return The functions returns a ggplot object.
-#'
-#' @seealso \link{mod_bc_general_server}
-#' @export
-scatterPlot_general_selected_bc <- function(dat,names.bc.plot,colo)
+#' @noRd
+create.legend.table<-function(approach.info)
 {
-  bp<-cM<-Approach<-breed<-NULL
+  variable.explanation<-lapply(1:nrow(approach.info), function(x){
+    a<-b<-c<-c()
+    if(approach.info$Approach[x]!="Likelihood_male")a=paste0(approach.info$Abbreviation[x],"_nRec: number of cross-overs detected based on ",approach.info$Name[x],"<br>")
+    b=paste0(approach.info$Abbreviation[x],"_M: genetic length in Morgan estimated with the ",approach.info$Name[x],"<br>")
+    c=paste0(approach.info$Abbreviation[x],"_cM/Mb: centiMorgan per megabase pair for the " ,approach.info$Name[x],"<br>")
+    c(a,b,c)
+  })
 
-  p=ggplot2::ggplot(dat, aes(x=bp, y = cM, col=breed)) +
-  geom_point(size = dat$size,alpha=dat$alpha)+
-  scale_color_manual(values=colo[1:length(names.bc.plot),1],labels=names.bc.plot)+
-  labs(x="Physical length (Mbp)",y="Genetic distance (cM)")  +
-  guides(colour = guide_legend(override.aes = list(size=5)))+
-  theme(axis.ticks=element_line(colour = "black", size = 2),text = element_text(size = 25))
-  p
+  combine<- paste0(c("Chr: chromosome<br>nSNP: number of SNPs<br>", "bp: chromosome length in base pairs<br>",
+                     "Gap: maximum gap size between pairs of adjacent markers in bp<br>", "Space: inter-marker space in kilobase (kb) <br>",
+                     unlist(variable.explanation)))
+  combine
 }
-

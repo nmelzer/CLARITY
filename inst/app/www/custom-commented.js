@@ -26,7 +26,11 @@ document.addEventListener("DOMContentLoaded", function() {
   document.getElementById('breed1').setAttribute('title', 'Select breeds');
   document.getElementById('chromosome').setAttribute('title', 'chromosome');
   document.getElementById('chromosome1').setAttribute('title', 'chromosome');
+  document.getElementById('approachselection').setAttribute('title', 'approachselection'); // new added 24.09 not tested
+  document.getElementById('approachselection_bc').setAttribute('title', 'approachselection_bc'); // new added 24.09 not tested
   document.getElementById('mod_misplaced_1-breedSelect_misplaced').setAttribute('title','Select breed(s)');
+  document.getElementById('mod_genetic_map_1-filetype').setAttribute('title','Select file extension'); //new
+  document.getElementById('bc_genetic_map_1-filetype').setAttribute('title','Select file extension');
 
   // plus/minus adaptation for aria for the shinydashboard::box!- 01.08.2024 - not working for the navbar-icon fa-bars
   var collapseButtons = document.querySelectorAll('[data-widget=\"collapse\"]');

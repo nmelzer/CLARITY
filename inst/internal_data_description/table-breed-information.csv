@@ -1,0 +1,5 @@
+Column.No,Column.Name,Meaning,Class
+1,Name,Name of the breed,character
+2,Abbreviation,Abbreviation of the breed,character
+3,Color,Color used for all plots,character
+4,Color2,Color used only for the hotspot plot (indicating: no hotspot),character

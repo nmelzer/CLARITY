@@ -1,0 +1,6 @@
+Col.No,Column.Name,Meaning,Class
+1,Name,SNP marker name,character
+2,Chr,Chromosome number,integer
+3,bp_position,Marker position in base pair (physical map),numeric
+4-n,*_cM,Marker position based on selected approach/es (genetic map) - breed analysis,	numeric
+   ,  ,or Marker position based on selected breed/s (genetic map) -breed comparison,

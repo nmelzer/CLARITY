@@ -10,12 +10,11 @@ mod_bc_genetic_map_ui(id)
 mod_bc_genetic_map_server(
   id,
   filter,
-  breed.select.bc,
   geneticMap.bc,
-  color.shape.def,
-  names.bc.venn,
   names.files,
-  make.traff.light.bc
+  make.traff.light.bc,
+  breed.infos,
+  approach
 )
 }
 \arguments{
@@ -23,29 +22,37 @@ mod_bc_genetic_map_server(
 
 \item{filter}{character contains the selected chromosome}
 
-\item{breed.select.bc}{vector containing the names of selected breeds}
-
 \item{geneticMap.bc}{list of genetic maps from the selected breeds (each list element contains a breed)}
 
-\item{color.shape.def}{data frame containing the definition for coloring, shapes, size for plots}
+\item{names.files}{character containing the concatenated breed names and is used as an addition to the file name}
 
-\item{names.bc.venn}{vector containing the first the letter of the selected breed names}
+\item{make.traff.light.bc}{object containing the ggplot for the likelihood quality signal (\link{make_traffic_light})}
 
-\item{names.files}{string concatenate breed names}
+\item{breed.infos}{data frame containing the predefined settings and names for the selected breeds (\link{table_breed_information})}
 
-\item{make.traff.light.bc}{object containing the ggplot for the likelihood quality signal}
+\item{approach}{data frame containing the predefined settings and names for the selected approach (\link{table_approach_information})}
 }
 \description{
 A shiny module to generate the outcome for the tabpanel "Genetic map" for the sidebar "Breed comparison".
 }
 \details{
-When a specific chromosome is selected by the user then the function \link{makePlot_geneticMaps_bc} is used to create the plot.
-If all chromosomes are selected then genetic map data are prepared for the plot using the function \link{transformdata_genetic_map_bc}
-and plotted using the function \link{makePlot_all_geneticMaps_bc}. Moreover, the corresponding plot is cached to increase the app performance.
- This module also shows a Venn diagram of corresponding markers. The input data are prepared
- using the function \link{process_venn_data} and plotted using the function \link{creating_venn}. The user may select a Venn diagram subset and the
- table will be reduced accordingly using the function \link{prepare_table_venn}. Finally, the quality of the likelihood approach is also shown here by means of a traffic light (also termed as likelihood quality signal).
+Independent from the user choice regarding chromosome selection, the data are prepared for the plot
+using the function \link{transformdata_genetic_map_bc}.Depending on the user's selection, when a specific chromosome is chosen, the function \link{makePlot_geneticMaps} is used to create the plot,
+otherwise the function \link{makePlot_all_geneticMaps} is used to create the plot. In addition, when all chromosome is selected than the corresponding plot
+is cached to increase the app performance.
+This module also shows a Venn diagram of corresponding markers. The input data are prepared
+using the function \link{process_venn_data}, corresponding colors for Venn sets are created using the function \link{create.colors} and plotted using the function \link{creating_venn}.
+The user may select a Venn diagram subset and the
+table will be reduced accordingly using the function \link{prepare_table_venn}.
+Finally, the quality of the likelihood approach is also shown here by means of a traffic light (also termed as likelihood quality signal (\link{make_traffic_light})).
 }
 \seealso{
-\link{transformdata_genetic_map_bc}, \link{makePlot_geneticMaps_bc}, \link{makePlot_all_geneticMaps_bc}, \link{process_venn_data}, \link{creating_venn}, \link{prepare_table_venn} and \link{make_traffic_light}
+*\link{transformdata_genetic_map_bc} \cr
+* \link{makePlot_all_geneticMaps} \cr
+* \link{makePlot_geneticMaps}
+* \link{process_venn_data} \cr
+* \link{create.colors}
+* \link{creating_venn}\cr
+* \link{prepare_table_venn} \cr
+* \link{make_traffic_light}
 }

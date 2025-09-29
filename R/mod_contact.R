@@ -41,6 +41,8 @@ mod_contact_ui = function(id){
                                         shiny::fluidRow(shiny::column(width=12,shiny::uiOutput(ns("referenceList")))),
                                         shiny::fluidRow(shiny::column(width=12,htmltools::HTML('<h4 style = "text-indent:10px;"> Software </h4>'))),
                                         shiny::fluidRow(shiny::column(width=12, shiny::uiOutput(ns("softwareList")))),
+                                        shiny::fluidRow(shiny::column(width=12,htmltools::HTML('<h4 style = "text-indent:10px;"> Datasets </h4>'))),
+                                        shiny::fluidRow(shiny::column(width=12, shiny::uiOutput(ns("dataList"))))
                           )
   ))
 }
@@ -55,32 +57,45 @@ mod_contact_server = function(id){
 
     output$referenceList <- renderUI(htmltools::tags$h4(htmltools::HTML("
     <ul>
-      <li> Wittenburg D, Ding X, Melzer N, Abdollahi Sisi N, Schwarzenbacher H, Seefried FR (2024) <i>A resource of Bovine Genetic Maps</i> (in preparation)</li>  &nbsp;
+     <li>Wittenburg D, Ding X, Melzer N, Abdollahi Sisi N, Seefried FR (2025) <i> A comparative study on recombination activity in cattle</i> (in revision)</li>  &nbsp;
     <li>Melzer N, Qanbari S, Ding X and Wittenburg D (2023) <i>CLARITY: a Shiny app for interactive visualisation of the bovine physical-genetic
-    map.</i> Front. Genet. 14:1082782. doi: <a href = 'https://doi.org/10.3389/fgene.2023.1082782' target='_blank'> <u>10.3389/fgene.2023.1082782</u></a> </li>  &nbsp;
-    <li> Qanbari S, Schnabel RD,  Wittenburg, D (2022) <i>Evidence of Rare Misassemblies in the Bovine Reference Genome Revealed by Population Genetic Metrics</i>
-    Anim. Genet.,  53, 498-505. <a href = 'https://doi.org/10.1111/age.13205' target='_blank'> <u> 10.1111/age.13205 </u></a> </li>  &nbsp;
+    map.</i> Front. Genet. 14:1082782. doi: <a href = 'https://doi.org/10.3389/fgene.2023.1082782' target='_blank'> <u> https://doi.org/10.3389/fgene.2023.1082782 </u></a> </li>  &nbsp;
+    <li> Qanbari S, Schnabel RD,  Wittenburg, D (2022) <i>Evidence of rare misassemblies in the bovine reference genome revealed by population genetic metrics.</i>
+    Anim. Genet.,  53, 498-505. <a href = 'https://doi.org/10.1111/age.13205' target='_blank'> <u> https://doi.org/10.1111/age.13205 </u></a> </li>  &nbsp;
     <li>Qanbari  S, Wittenburg D (2020) <i>Male recombination map of the autosomal genome in German Holstein.</i> Genet Sel Evol 52, 73.
-    doi: <a href = 'https://doi.org/10.1186/s12711-020-00593-z' target='_blank'> <u>10.1186/s12711-020-00593-z </u></a></li>
+    <a href = 'https://doi.org/10.1186/s12711-020-00593-z' target='_blank'> <u> https://doi.org/10.1186/s12711-020-00593-z </u></a></li>
       </ul>")))
 
     output$softwareList <- renderUI(htmltools::tags$h4(htmltools::HTML("
     <ul>
-      <li> Melzer N (2024). <i>CLARITY: A Shiny app for interactive visualisation of the bovine physical-genetic map (v2.0.0)</i>.
-            Zenodo. <a href ='https://doi.org/10.5281/zenodo.13832239' target='_blank'><u>https://doi.org/10.5281/zenodo.13832239</u></a>
-            (available: <a href ='https://github.com/nmelzer/CLARITY' target='_blank'> <u>https://github.com/nmelzer/CLARITY </u></a>)</li> &nbsp;
-      <li> Melzer N (2023). <i>CLARITY: A Shiny app for interactive visualisation of the bovine physical-genetic map (v1.0.1)</i>.
-            Zenodo. <a href ='https://doi.org/10.5281/zenodo.11620802' target='_blank'><u>https://doi.org/10.5281/zenodo.11620802</u></a>
-            (available: <a href ='https://github.com/nmelzer/CLARITY' target='_blank'> <u>https://github.com/nmelzer/CLARITY </u></a>)</li> &nbsp;
-      <li> Wittenburg D (2023) <i>A pipeline for processing genotype data and an R script for composing the CLARITY app input data. </i>Github Release v1.0.0, doi:
-           <a href ='https://doi.org/10.5281/zenodo.11543150' target='_blank'> <u> 10.5281/zenodo.11543150</u></a>
-           (<a href ='https://github.com/wittenburg/hsrecombi' target='_blank'><u>https://github.com/wittenburg/hsrecombi </u></a>) </li> &nbsp;
-      <li> Wittenburg D (2020) <i>hsrecombi: Estimation of recombination rate and maternal LD in half-sibs.</i>, v1.0.1, available at:
-           <a href ='https://cran.r-project.org/package=hsrecombi' target='_blank'><u> https://cran.r-project.org/package=hsrecombi </u></a> </li>
+     <li> Wittenburg D (2025) <i>A pipeline for processing genotype data and an R script for composing data (v2.0.0) the CLARITY app input data. </i>Github Release v1.1.0.
+            Available soon.</li> &nbsp
+      <li> Melzer N (2025) <i>CLARITY: A Shiny app for interactive visualisation of the bovine physical-genetic map (v3.0.0)</i>.
+            Available at <a href ='https://github.com/nmelzer/CLARITY' target='_blank'> <u>https://github.com/nmelzer/CLARITY </u></a>; &nbsp
+            DOI: coming soon</u></a> </li> &nbsp;
+      <li> Melzer N (2024) <i>CLARITY: A Shiny app for interactive visualisation of the bovine physical-genetic map (v2.0.0)</i>.
+            Available at <a href ='https://github.com/nmelzer/CLARITY' target='_blank'> <u>https://github.com/nmelzer/CLARITY </u></a>;
+            <a href ='https://doi.org/10.5281/zenodo.13832239' target='_blank'><u> https://doi.org/10.5281/zenodo.13832239</u></a> </li> &nbsp;
+      <li> Melzer N (2023) <i>CLARITY: A Shiny app for interactive visualisation of the bovine physical-genetic map (v1.0.1)</i>.
+            Available at <a href ='https://github.com/nmelzer/CLARITY' target='_blank'> <u>https://github.com/nmelzer/CLARITY </u></a>;
+            <a href ='https://doi.org/10.5281/zenodo.11620802' target='_blank'><u>https://doi.org/10.5281/zenodo.11620802</u></a> </li> &nbsp;
+      <li> Wittenburg D (2023) <i>hsrecombi: Estimation of recombination rate and maternal LD in half-sibs </i> (v1.0.1).
+            Available at <a href ='https://cran.r-project.org/package=hsrecombi' target='_blank'><u> https://cran.r-project.org/package=hsrecombi </u></a> </li>
+    </ul>")))
+
+
+   output$dataList <- renderUI(htmltools::tags$h4(htmltools::HTML("
+    <ul>
+     <li> Wittenburg D (2025) <i>Processed data to R shiny app CLARITY (v3.0.0); DOI coming soon </li> &nbsp
     </ul>")))
 
   })
 }
+
+
+# <li> Melzer N (2025) <i>CLARITY: A Shiny app for interactive visualisation of the bovine physical-genetic map (v3.0.0)</i>.
+# Available at <a href ='https://github.com/nmelzer/CLARITY' target='_blank'> <u>https://github.com/nmelzer/CLARITY </u></a>;
+# <a href ='https://doi.org/10.5281/zenodo.13832239' target='_blank'><u> has to added </u></a> </li> &nbsp;
 
 ## To be copied in the UI
 # mod_contact_ui("mod_contact_1")

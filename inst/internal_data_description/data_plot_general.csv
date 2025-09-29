@@ -1,0 +1,7 @@
+Column.No,Column.Name,Meaning,Class
+1,Mbp,Chromosome length in megabase pair,numeric
+2,cM,Chromosome length in centiMorgan for approach/breed,numeric
+3,Chr,Chromosome/s,character
+4,Color,Color for approaches/breeds,character
+5,What,Names of the approaches or breeds, character
+6,Size,Scatter plot size ,numeric

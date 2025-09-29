@@ -7,39 +7,36 @@
 \usage{
 mod_bc_hotspot_ui(id)
 
-mod_bc_hotspot_server(
-  id,
-  filter,
-  breed.select.bc,
-  color.shape.def,
-  names.bc.venn,
-  names.files
-)
+mod_bc_hotspot_server(id, filter, breed.infos, names.files, approach)
 }
 \arguments{
 \item{id}{module id}
 
 \item{filter}{character contains the selected chromosome}
 
-\item{breed.select.bc}{vector containing the names of selected breeds}
+\item{breed.infos}{data frame containing the predefined settings and names for the selected breeds (\link{table_breed_information})}
 
-\item{color.shape.def}{data frame containing the definition for coloring, shapes, size for plots}
+\item{names.files}{character containing the concatenate breed names for file naming}
 
-\item{names.bc.venn}{vector containing the first the letter of the selected breed name}
-
-\item{names.files}{string containing the concatenate breed names}
+\item{approach}{data frame containing the predefined settings and names for the selected approach (\link{table_approach_information})}
 }
 \description{
 A shiny module to generate the outcome for the tabpanel "General information" for the sidebar "Breed comparison".
 }
 \details{
-Within the module the input data are prepared using the function \link{transformdata_hotspot}. To produce the hotspot plot, the function
-\link{scatterPlot_hotspot} or \link{scatterPlot_hotspot_all} depending on the user choice of chromosome is used. The hover information are obtained from the function \link{hovering}.
- This module also shows a Venn diagram of corresponding hotspot markers. The input data are prepared
- using the function \link{process_venn_data} and plotted using the function \link{creating_venn}. The user may select a Venn diagram subset and the
+Within the module the input data are prepared using the function \link{transformdata_hotspot_bc}. To produce the hotspot plot, the function
+\link{scatterPlot_hotspot} for a selected chromosome or \link{scatterPlot_hotspot_all} when all chromosomes are selected is used.
+ This module also shows a Venn diagram of corresponding revealed hotspot SNP markers. The input data are prepared
+ using the function \link{process_venn_data}, corresponding colors for Venn sets are created using the function \link{create.colors} and plotted using the function \link{creating_venn}. The user may select a Venn diagram subset and the
  table will be reduced accordingly using the function \link{prepare_table_venn}.
 }
 \seealso{
-\link{transformdata_hotspot}, \link{scatterPlot_hotspot}, \link{scatterPlot_hotspot_all}, \link{hovering}, \link{process_venn_data}, \link{creating_venn} and \link{prepare_table_venn}
+* \link{transformdata_hotspot_bc} \cr
+* \link{scatterPlot_hotspot} \cr
+* \link{scatterPlot_hotspot_all} \cr
+* \link{process_venn_data} \cr
+* \link{create.colors} \cr
+* \link{creating_venn} \cr
+* \link{prepare_table_venn}
 }
 \keyword{internal}

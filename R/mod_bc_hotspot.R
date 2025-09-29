@@ -3,12 +3,11 @@
 #' @title mod_bc_hotspot_ui and mod_bc_hotspot_server
 #' @description A shiny module to generate the outcome for the tabpanel "General information" for the sidebar "Breed comparison".
 #'
-#' @details Within the module the input data are prepared using the function \link{transformdata_hotspot}. To produce the hotspot plot, the function
-#' \link{scatterPlot_hotspot} or \link{scatterPlot_hotspot_all} depending on the user choice of chromosome is used. The hover information are obtained from the function \link{hovering}.
-#'  This module also shows a Venn diagram of corresponding hotspot markers. The input data are prepared
-#'  using the function \link{process_venn_data} and plotted using the function \link{creating_venn}. The user may select a Venn diagram subset and the
+#' @details Within the module the input data are prepared using the function \link{transformdata_hotspot_bc}. To produce the hotspot plot, the function
+#' \link{scatterPlot_hotspot} for a selected chromosome or \link{scatterPlot_hotspot_all} when all chromosomes are selected is used.
+#'  This module also shows a Venn diagram of corresponding revealed hotspot SNP markers. The input data are prepared
+#'  using the function \link{process_venn_data}, corresponding colors for Venn sets are created using the function \link{create.colors} and plotted using the function \link{creating_venn}. The user may select a Venn diagram subset and the
 #'  table will be reduced accordingly using the function \link{prepare_table_venn}.
-#'
 #'
 #' @rdname mod_bc_hotspot
 #'
@@ -23,30 +22,37 @@
 #' @importFrom rlang is_empty
 #' @import htmltools
 #'
-#' @seealso \link{transformdata_hotspot}, \link{scatterPlot_hotspot}, \link{scatterPlot_hotspot_all}, \link{hovering}, \link{process_venn_data}, \link{creating_venn} and \link{prepare_table_venn}
+#' @seealso
+#' * \link{transformdata_hotspot_bc} \cr
+#' * \link{scatterPlot_hotspot} \cr
+#' * \link{scatterPlot_hotspot_all} \cr
+#' * \link{process_venn_data} \cr
+#' * \link{create.colors} \cr
+#' * \link{creating_venn} \cr
+#' * \link{prepare_table_venn}
 #' @export
 #'
 mod_bc_hotspot_ui <- function(id){
   ns <- shiny::NS(id)
   htmltools::tagList(
-    shiny::fluidRow(
+  shiny::fluidRow(id=ns("no.likelihood"),
+                    htmltools::br(),htmltools::br(),
+                    shiny::column(width=12,htmltools::tags$h3(htmltools::HTML("<span style=color:red;margin-left: 6px;> Hotspots cannot be detected for the likelihood-based approach.</span>")))
+    ),
+    shiny::fluidRow(id=ns("wo.likelihood1"),
       shiny::column(width=12,h2("Genome-wide landscape of putative recombination",tags$a(href="#","hotspot", onclick = "openTab('methodology')",style='text-decoration-line: underline;')," intervals.")),
       htmltools::br(),
       htmltools::br(),
-      shinydashboard::box(width=12, title=tags$b("Recombination hotspots"),status="danger",solidHeader = TRUE,collapsible = TRUE,
+      shinydashboard::box(width=12, title=htmltools::tags$b("Recombination hotspots"),status="danger",solidHeader = TRUE,collapsible = TRUE,
           h5("Interactive graphic: brush and double click to zoom-in specific regions. Use double click to return."),
-          shiny::column(width=12,shiny::downloadButton(outputId=ns("downloadHotspot"),"Save plot",class="butt1")),
-          shiny::column(width= 12, shiny::plotOutput(ns("plothotspot"),height="750px", dblclick = ns("plothotspot_dblclick"),brush = brushOpts(id = ns("plothotspot_brush"), resetOnNew = TRUE),
-                     hover = hoverOpts(ns("plothotspot_hover"), delay = 400, delayType = "throttle",clip=TRUE)) %>% shinycssloaders::withSpinner(color="#0dc5c1"),shiny::uiOutput(ns("hoverhotspot_info")),style="width: calc(100% - 100px); !important;")
-
+          shiny::column(width= 12,plotly::plotlyOutput(ns("plothotspot"),height="100%") %>% shinycssloaders::withSpinner(color="#0dc5c1"))
       )
     ),
 
     htmltools::br(),
-    shiny::fluidRow(
+    shiny::fluidRow(id=ns("wo.likelihood2"),
       shinydashboard::box(width=12,title = tags$b("Markers in hotspot intervals depending on threshold") ,status="danger",
           solidHeader = TRUE,collapsible = TRUE,collapsed = FALSE,
-
           shiny:: fluidRow(shiny::column(width=12,"Use the slider to define the threshold to hotspot region (standard deviation of recombination rate). This accordingly changes the figure and table.
                                          The default threshold is 2.5.", div(style="margin-bottom:30px")),
                           shiny::column(width=4,
@@ -58,21 +64,16 @@ mod_bc_hotspot_ui <- function(id){
           shiny::fluidRow(shinyjs::useShinyjs(),id=ns("venn_hot2"),
                             shiny::column(width=10,shiny::downloadButton(ns("downloadVenn"),label="Download venn diagram",style="background-color: #87CEFA",class="butt1"),
                                           shiny::actionButton(ns("venn_hotspot2"), "Hide venn diagram",style="background-color: #87CEFA"),
-                                   shiny::actionButton(ns("ButtonAll_bc_hotspot"),"Reset table to all",style="background-color: #87CEFA")),
+                                          shiny::actionButton(ns("ButtonAll_bc_hotspot"),"Reset table to all",style="background-color: #87CEFA")),
                             shiny::column(width=10,style="padding-top:30px", ""),
                             shiny::column(width=10,"When you click on a specific subset of interest, only the markers for that set are listed in the table."),
                             shiny::column(width=5,shiny::plotOutput(ns("venn_diagram"), click = ns("plot_click"),width = "100%",
                                                                          height = "300px",inline=TRUE))
-
-          ),
+         ),
          htmltools:: br(),
          htmltools::hr(style = "border-top: 1px solid #68838B;"),
          htmltools::br(),
-
          shiny::fluidRow(shiny::column(width=7,DT::dataTableOutput(outputId=ns("tablehotspot")),style = "overflow-y: scroll;overflow-x: scroll;")),
-         shiny::fluidRow(shiny::column(9,shiny::checkboxInput(ns("checkbox3"), "Show/hide legend", TRUE), ## tried to make the HTML as htmlOutput but it does not work - must be checked later for a better solution
-                           htmltools::p(id = "element30",HTML("Chr: chromosome<br>bp: chromosome position in base pairs<br>cM: chromosome position in centiMorgan based on <a href='#' onclick = openTab('methodology') style='text-decoration-line: underline;'>deterministic approach</a>")))
-          )
          )
       )
     )
@@ -82,272 +83,112 @@ mod_bc_hotspot_ui <- function(id){
 #' @rdname mod_bc_hotspot
 #'
 #' @param filter character contains the selected chromosome
-#' @param breed.select.bc vector containing the names of selected breeds
-#' @param color.shape.def data frame containing the definition for coloring, shapes, size for plots
-#' @param names.bc.venn vector containing the first the letter of the selected breed name
-#' @param names.files string containing the concatenate breed names
+#' @param breed.infos data frame containing the predefined settings and names for the selected breeds (\link{table_breed_information})
+#' @param names.files character containing the concatenate breed names for file naming
+#' @param approach data frame containing the predefined settings and names for the selected approach (\link{table_approach_information})
 #'
 #'@export
-mod_bc_hotspot_server <- function(id,filter, breed.select.bc,color.shape.def,names.bc.venn,names.files){
+mod_bc_hotspot_server <- function(id,filter, breed.infos,names.files,approach){
   shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
 
     adjacentRecRate<-NULL
 
-    ## show / hide legend
-    shiny::observe({
-      shinyjs::toggle(id = "element30", condition = input$checkbox3, asis=TRUE)
-    })
+    if(approach$Approach=="Likelihood_male"){
+      shinyjs::show(id="no.likelihood")
+      shinyjs::hide(id="wo.likelihood1")
+      shinyjs::hide(id="wo.likelihood2")
+    }else{
 
-    shinyjs::hide("ButtonAll_bc_hotspot")
-    shinyjs::hide(id="venn_hot1")
-    shinyjs::show(id="venn_hot2")
+      shinyjs::hide(id="no.likelihood")
+      shinyjs::show(id="wo.likelihood1")
+      shinyjs::show(id="wo.likelihood2")
 
-    #### make Table column
-    ## Table header with internal link to methodology
-    thead<-tr<-th<-NULL
-    sketch2 = htmltools::withTags(table(
-      class = 'display',
-      thead(
-        tr(
-          th(colspan=3,""),
-          th(colspan=length(breed.select.bc),"Genetic Map")
+      shinyjs::hide("ButtonAll_bc_hotspot")
+      shinyjs::hide(id="venn_hot1")
+      shinyjs::show(id="venn_hot2")
 
-        ),
-      #  tr(
-      #   th(colspan=3,""),
-      #   lapply(colspan=1,breed.select.bc,th)
-      #  ),
-        tr(
-          th(colspan=1,"Marker"),
-          th(colspan=1,"Chr"),
-          th(colspan=1,"Position (bp)"),
-          lapply(colspan=1, paste(rep("Position (cM)", length(breed.select.bc)),breed.select.bc,sep=" "), th)
-        )
-      )
-    ))
+      ## Table header with internal link to methodology
+      sketch2<-create_table_header_bc3(breed.select.bc=breed.infos$Name)
 
-   #########
-    shiny::observeEvent(input$threshold,
-    {
+      shiny::observeEvent(input$threshold,
+      {
           req(input$threshold)
 
-          dat=list();  data12=list(); data123=list()
-          data12.1=list(); legend1=c()
-          venn.data.all=list()
-          venn.data.chr=list()
+          rem<-NULL
+          adjacent.mat <- mapply(function(x) {
+            load(system.file("extdata",paste0(x,"/adjacentRecRate.Rdata"),package="CLARITY"))
+            if(length(which(is.na(adjacentRecRate$cM)==TRUE))!=0){
+              adjacentRecRate=adjacentRecRate[-which(is.na(adjacentRecRate$cM)==T),]
+            }
 
-          names=names.bc.venn
-
-          for(i in 1:length(breed.select.bc)){
-
-            load(system.file("extdata",paste0(breed.select.bc[i],"/adjacentRecRate.Rdata"),package="CLARITY"))
-            if(length(which(is.na(adjacentRecRate$cM)==T))!=0)adjacentRecRate=adjacentRecRate[-which(is.na(adjacentRecRate$cM)==T),]
-            if(class(adjacentRecRate$BP)=="numeric"){
-              adjacentRecRate$BP=as.integer(adjacentRecRate$BP)
+            if(is.numeric(adjacentRecRate$Dis)==TRUE){
               adjacentRecRate$Dis=as.integer(adjacentRecRate$Dis)
             }
+            adjacentRecRate
+          },breed.infos$Name , SIMPLIFY = FALSE)
 
-            dat[[i]]=transformdata_hotspot(data.trans=adjacentRecRate,value=input$threshold,color1=color.shape.def[i,1:2],shape1=color.shape.def[i,3:4],ord=color.shape.def[i,5:6])
-
-            if(i==1)legend1=rbind(c(unlist(paste0("No hotspot ",breed.select.bc[i])),unlist(color.shape.def[i,c(2,4)]),unlist(color.shape.def[i,5])),c(unlist(paste0("Hotspot ",breed.select.bc[i])),unlist(color.shape.def[i,c(1,3)]),unlist(color.shape.def[i,6])))
-            else legend1=rbind(legend1,c(unlist(paste0("No hotspot ",breed.select.bc[i])),unlist(color.shape.def[i,c(2,4)]),unlist(color.shape.def[i,5])),c(unlist(paste0("Hotspot ",breed.select.bc[i])),unlist(color.shape.def[i,c(1,3)]),unlist(color.shape.def[i,6])))
-
-            data12[[i]]=dat[[i]][which(dat[[i]]$ord==sort(unique(dat[[i]]$ord))[1]),c(2,1,4,3,7)] ##snp, chr, bp, cm, ord
-            data12[[i]]=data12[[i]][which(data12[[i]]$ord<100),1:4] ## selecting only hotspot markers
-
-            venn.data.all[[names[i]]]=data12[[i]]$SNP  ##
-
-            if(filter!="All")
-            {
-              data12.1[[i]]=data12[[i]][which(data12[[i]]$Chr==filter),]
-              venn.data.chr[[names[i]]]=data12.1[[i]]$SNP
-            }
-          }
-          colnames(legend1)<-c("label","breaks","shape","ord")
-          legend1=as.data.frame(legend1)
-
+          dat<-transformdata_hotspot_bc(data.trans=adjacent.mat,value=input$threshold,filter=filter,infos=breed.infos,approach=approach)
+          venn.data.all<-dat[[3]]
 
           ranges <- shiny::reactiveValues(x = NULL, y = NULL)
+          #table
+          data12.2<-dat[[2]]
 
-          if(filter=="All")data12.1=data12
-
-          ## make check that not an empty set is plotted - than also no venn diagram has to be shown
-              use1=4; use2=5
-              for(ik in 1:(length(breed.select.bc)-1))
-              {
-                use1=use1+1
-                use2=use2+1
-
-                if(ik ==1)
-                {
-                  if(rlang::is_empty(data12.1[[1]])==TRUE && rlang::is_empty(data12.1[[2]])==TRUE)data12.2=c()
-                  if(rlang::is_empty(data12.1[[1]])==TRUE && rlang::is_empty(data12.1[[2]])==FALSE){
-                    data12.2=data12.1[[2]]
-                    use1=use1-1
-                    use2=use2-1
-                  }
-                  if(rlang::is_empty(data12.1[[2]])==FALSE && rlang::is_empty(data12.1[[2]])==TRUE){
-                    data12.2=data12.1[[1]]
-                    use1=use1-1
-                    use2=use2-1
-                  }
-                  if(rlang::is_empty(data12.1[[1]])==FALSE && rlang::is_empty(data12.1[[2]])==FALSE)
-                  {
-                    data12.2=merge(as.data.frame(data12.1[[1]]),as.data.frame(data12.1[[2]]),by.x=1,by.y=1,all.x=TRUE,all.y=TRUE)
-                    data12.2[which(is.na(data12.2[,6])==F),3]=data12.2[which(is.na(data12.2[,6])==F),6]
-                    data12.2[which(is.na(data12.2[,5])==F),2]=data12.2[which(is.na(data12.2[,5])==F),5]
-                    data12.2=data12.2[,-c(use1,use2)]
-                  }
-                }
-                else
-                {
-                  if(rlang::is_empty(data12.2)==TRUE && rlang::is_empty(data12.1[[ik+1]])==TRUE)data12.2=c()
-                  if(rlang::is_empty(data12.2)==TRUE && rlang::is_empty(data12.1[[ik+1]])==FALSE){
-                    data12.2=c()
-                    use1=use1-1
-                    use2=use2-1
-                  }
-                  else{
-                  data12.2=merge(data12.2,as.data.frame(data12.1[[ik+1]]),by.x=1,by.y=1,all.x=TRUE,all.y=TRUE)
-                  data12.2[which(is.na(data12.2[,use2])==F),3]=data12.2[which(is.na(data12.2[,use2])==F),use2]
-                  data12.2[which(is.na(data12.2[,use1])==F),2]=data12.2[which(is.na(data12.2[,use1])==F),use1]
-                  data12.2=data12.2[,-c(use1,use2)]
-                  }
-                }
-              }
-              len=dim(data12.2)[1]
-
-          if(len>=50)
-          {
-            ll1=c(10, 25,50,-1)
-            ll2=c(as.character(c(ll1[1:3])),"All")
-          }
-          if(len<50 && len>25)
-          {
-            ll1=c(10,25,len)
-            ll2=c(as.character(c(ll1[1:2])),"All")
-          }
-          if(len<=25 && len>10 )
-          {
-            ll1=c(10,len)
-            ll2=c(as.character(ll1[1]),"All")
-          }
-          if(len<=10)
-          {
-            ll1=c(len)
-            ll2="All"
-          }
-
+          output.name.tab=paste0(names.files,"_hotspot_BTA-",filter,"_",input$threshold,"_",approach$Abbreviation)
           if(filter=="All"){
             output$tablehotspot= DT::renderDataTable({
-            output.name.tab=paste0(names.files,"_hotspot_BTA-",filter,"_",input$threshold)
              DT::datatable(data12.2,  container=sketch2,  extensions = c("Buttons"), rownames=FALSE ,options = list(searching=FALSE,dom='Bfrtip',
                                                                                 columnDefs = list(list(className = 'dt-left', targets = "_all")),
                                                                                 dom = 'Bt', buttons = list('pageLength', 'copy', list(extend='csv',title= output.name.tab),list(extend='excel',title= output.name.tab)),
                                                                                 pagelength = 10, lengthMenu = list(c(10,20,30, -1), c('10', '20','30','All'))))
             },server=FALSE)
-          }
-
-          if(filter!="All")
+          }else
           {
-            output$tablehotspot=DT::renderDataTable({
-              output.name.tab=paste0(names.files,"_hotspot_BTA-",filter,"_",input$threshold)
+             output$tablehotspot=DT::renderDataTable({
               DT::datatable(data12.2, container=sketch2, filter="none" , options=list(searching = FALSE,dom='Bfrtip',buttons = list('pageLength', 'copy', list(extend='csv',title= output.name.tab),list(extend='excel',title= output.name.tab)),
-                                                                  pagelength = 10, lengthMenu = list(ll1, ll2)),escape=FALSE,rownames=FALSE) #
+                                                                  pagelength = 10, lengthMenu = list(c(10,20,30, -1), c('10', '20','30','All'))),escape=FALSE,rownames=FALSE) #
             },server=FALSE)
           }
 
-
-              ### graphical output
-              for(i in 1:length(breed.select.bc))
-              {
-                dat.0=dat[[i]]
-                dat.0=cbind(dat.0,rep(breed.select.bc[i],nrow(dat.0)))
-                if(i==1)dat0=dat.0
-                else dat0=rbind(dat0,dat.0)
-              }
-
-
-              scale=200
-              dat0$BP=as.numeric(as.character(dat0$BP))/1e+6
-              dat0=cbind(dat0,dat0$Chr)
-              colnames(dat0)[(ncol(dat0)-1):ncol(dat0)]=c("ChrTheta","Breed")
-              dat0$ChrTheta=as.numeric(as.character(dat0$Chr))/scale + as.numeric(as.character(dat0$Theta))
-
-              if(filter!="All")
-              {
-                dat.0=dat0[dat0$Chr==filter,]
-                dat0=dat.0[order(as.numeric(dat.0$ord)),]
-
-                pos=match(unique(dat0$coloring),legend1$breaks)
-
-                tt=scatterPlot_hotspot(dat0,fil=filter,ranges,legend1=legend1[pos,])
-                InputPlot=shiny::reactive(tt)
-
-                output$plothotspot <- shiny::renderPlot({
-                  scatterPlot_hotspot(dat0,fil=filter,ranges,legend1=legend1[pos,]) # needed for brush and hovering,
-
-               })
-              }
-              else
-              {
-                dat0=dat0[order(as.numeric(dat0$ord)),]
-
-                pos=match(unique(dat0$coloring),legend1$breaks)
-
-                tt=scatterPlot_hotspot_all(dat0,ranges,scale,legend1=legend1[pos,])
-                InputPlot=shiny::reactive(tt)
-
-                output$plothotspot <- shiny::renderPlot({
-                  scatterPlot_hotspot_all(dat0,ranges,scale,legend1=legend1[pos,]) ## needed for brush
-                })
-              }
-
-              shiny::observeEvent(input$plothotspot_dblclick, {
-                req(input$plothotspot_dblclick)
-                brush <- input$plothotspot_brush
-                if (!is.null(brush)) {
-                  ranges$x <- c(brush$xmin, brush$xmax)
-                  ranges$y <- c(brush$ymin, brush$ymax)
-                }
-                else {
-                  ranges$x <- NULL
-                  ranges$y <- NULL
-                }
-              })
-
-              output$hoverhotspot_info<- shiny::renderUI({
-                if(!is.null(input$plothotspot_hover)){
-                  hovering(dat1=dat0,hover=input$plothotspot_hover,what=4)
-                }
-              })
-
-          ### venn diagramm  -- enabling save
-          if(filter=="All")venn <- RVenn::Venn(venn.data.all)
-          else venn <- RVenn::Venn(venn.data.chr)
-
-          venn_data <-process_venn_data(venn)
-          if(length(breed.select.bc)==2) ## changed on 12.04.2023 / changed 06.03.2024 - could be set once for all modules
+          dat0<-as.data.frame(dat[[1]])
+          if(filter!="All")
           {
-            width1= 500 #500
-            height1= 200 #550
+              output$plothotspot <- plotly::renderPlotly({
+                tt=scatterPlot_hotspot(dat0,file.name=paste0("Plot_",names.files,"_hotspot_BTA-",filter,"_",input$threshold,"_",approach$Abbreviation))
+                tt%>%toWebGL()
+             })
+          }else
+          {
+              output$plothotspot <- plotly::renderPlotly({
+                  tt=scatterPlot_hotspot_all(dat0,file.name =paste0("Plot",names.files,"_hotspot_BTA-",filter,"_",input$threshold,"_",approach$Abbreviation) )
+                  tt%>%toWebGL()
+              })
+          }
+
+          venn<-RVenn::Venn(venn.data.all)
+          venn_data <-process_venn_data(venn)
+
+          if(nrow(breed.infos)==2)
+          {
+            width1= 500
+            height1= 200
             width1.venn.plot=6 ## for print-out
             height1.venn.plot=3
           }
           else
           {
-            width1= 700 #700
-            height1= 560 #750
+            width1= 600 #700
+            height1= 350 #750
             width1.venn.plot=9
             height1.venn.plot=6
           }
 
-          InputPlot5=shiny::reactive(creating_venn(venn_data,breed.bc=breed.select.bc,bc.venn=names.bc.venn))
+          col1<-create.colors(colo=breed.infos$Color)
+          InputPlot5=shiny::reactive(creating_venn(venn_data,long.names=breed.infos$Name,abbreviations=breed.infos$Abbreviation,venn.colors=col1))
           output$venn_diagram <- shiny::renderPlot({
             InputPlot5()
           },width=width1, height=height1)
-
 
           ## select  specific set from venn diagram
           observeEvent(input$plot_click, {
@@ -355,7 +196,7 @@ mod_bc_hotspot_server <- function(id,filter, breed.select.bc,color.shape.def,nam
             data2=prepare_table_venn(venn.dat=venn_data,venn=venn,click=input$plot_click, table.bc=data12.2)
 
             output$tablehotspot <-DT::renderDataTable({
-              output.name.tab=paste0(names.files,"_hotspot_BTA-",filter,"_",input$threshold,"_set-",data2[[2]])
+              output.name.tab=paste0(names.files,"_hotspot_BTA-",filter,"_",input$threshold,"_set-",data2[[2]],"_",approach$Abbreviation)
                 DT::datatable(data2[[1]],container=sketch2, extensions = c("Buttons"),  rownames=FALSE,
                                                       options = list(searching=FALSE,dom='Bfrtip',columnDefs = list(list(className = 'dt-left', targets = "_all")),
                                                                      dom = 'Bt', buttons = list('pageLength', 'copy',list(extend='csv',title= output.name.tab),list(extend='excel',title= output.name.tab)),
@@ -366,7 +207,7 @@ mod_bc_hotspot_server <- function(id,filter, breed.select.bc,color.shape.def,nam
 
           ### hier reset to all
           shiny::observeEvent(input$ButtonAll_bc_hotspot,{
-            output.name.tab=paste0(names.files,"_hotspot_BTA-",filter,"_",input$threshold)
+            output.name.tab=paste0(names.files,"_hotspot_BTA-",filter,"_",input$threshold,"_",approach$Abbreviation)
             output$tablehotspot <-DT::renderDataTable({
               DT::datatable(data12.2,container=sketch2, extensions = c("Buttons"),  rownames=FALSE,
                                                       options = list(searching=FALSE,dom='Bfrtip',columnDefs = list(list(className = 'dt-left', targets = "_all")),
@@ -377,36 +218,26 @@ mod_bc_hotspot_server <- function(id,filter, breed.select.bc,color.shape.def,nam
           })
 
 
-          ## download Plot
-          output$downloadHotspot <- shiny::downloadHandler(
-            filename = paste0(names.files,"_hotspots_BTA-",filter,"_", input$threshold,".png") ,
-            content = function(file){
-              ggplot2::ggsave(file, plot = InputPlot(), device = "png",width=20,height=10,units="in",dpi=300)
-            }
-          )
-
           #download Venn Plot
           output$downloadVenn <- shiny::downloadHandler(
-            filename = paste0(names.files,"_Venn_hotspots_BTA-",filter,"_", input$threshold,".png") ,
+            filename = paste0(names.files,"_Venn_hotspots_BTA-",filter,"_", input$threshold,"_",approach$Abbreviation,".png") ,
             content = function(file){
               ggplot2::ggsave(file, plot =  InputPlot5(), bg="white",device = "png",width= width1.venn.plot,height= height1.venn.plot,units="in",dpi=300)
             }
           )
 
-    }) ## end observe sliderInput threshhold
+      }) ## end observe sliderInput threshhold
 
-    shiny::observeEvent(input$venn_hotspot1,{
-      shinyjs::hide(id="venn_hot1")
-      shinyjs::show(id="venn_hot2")
-    })
+      shiny::observeEvent(input$venn_hotspot1,{
+        shinyjs::hide(id="venn_hot1")
+        shinyjs::show(id="venn_hot2")
+      })
 
-    shiny::observeEvent(input$venn_hotspot2,{
-      shinyjs::show(id="venn_hot1")
-      shinyjs::hide(id="venn_hot2")
-    })
-
-
-
+      shiny::observeEvent(input$venn_hotspot2,{
+        shinyjs::show(id="venn_hot1")
+        shinyjs::hide(id="venn_hot2")
+      })
+    }
   })
 }
 

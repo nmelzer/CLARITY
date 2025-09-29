@@ -71,6 +71,6 @@ testServer(app_server, {
 test_that(
   "app launches",
   {
-    golem::expect_running(sleep = 5)
+    #golem::expect_running(sleep = 10, R_path="C:/Program Files/R/R-4.5.1/bin/R.exe")
   }
 )

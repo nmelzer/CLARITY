@@ -1,0 +1,7 @@
+Column.No,Column.Name,Meaning,Class
+1,Chr,Chromosome,integer
+2,X,Position of SNP marker based on physical map in megabase pair,numeric
+3,Y,Position of SNP marker based on genetic map (approach) in centiMorgan,numeric
+4,Marker,SNP marker name,character
+5,Legend,Names of the selected approaches or breeds,character
+6,Color,Color for selected approaches or breeds,character

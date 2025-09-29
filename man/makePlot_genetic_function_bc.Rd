@@ -12,7 +12,7 @@ makePlot_genetic_function_bc(chromo, df.list, names.bc.plot, name.file)
 \item{df.list}{list whereby the first list element contains a matrix of recombination rate and distance for marker pairs, second list element includes a matrix of X-values for all genetic-map functions,
 third list element includes a matrix of Y-values for all genetic-map functions.}
 
-\item{names.bc.plot}{vector containing the selected breeds}
+\item{names.bc.plot}{character vector containing the selected breeds}
 
 \item{name.file}{character name of output file}
 }

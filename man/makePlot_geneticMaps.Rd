@@ -2,28 +2,25 @@
 % Please edit documentation in R/mod_genetic_map_fct_functions.R
 \name{makePlot_geneticMaps}
 \alias{makePlot_geneticMaps}
-\title{Creating the genetic map plot for breed analysis}
+\title{Creating the genetic map plot for selected chromosome}
 \usage{
-makePlot_geneticMaps(chr, dat_maps, name.file, colo)
+makePlot_geneticMaps(dat, name.file)
 }
 \arguments{
-\item{chr}{character contains the selected chromosome}
-
-\item{dat_maps}{data frame containing the genetic map data}
+\item{dat}{data frame containing the genetic map data \link{data_plot_geneticMap}}
 
 \item{name.file}{character contains the name for image file}
-
-\item{colo}{vector contains the predefined colors}
 }
 \value{
 The function returns a plotly object.
 }
 \description{
-The function creates the plot for a single chromosome for one breed.
+The function creates the plot for a single chromosome for selected approaches (breed analysis) or the selected breeds (breed comparison)
 }
 \details{
 function
 }
 \seealso{
-\link{mod_genetic_map_server}
+* \link{mod_genetic_map_server} \cr
+* \link{mod_bc_genetic_map_server}
 }

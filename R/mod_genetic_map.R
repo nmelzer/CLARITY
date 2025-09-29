@@ -3,29 +3,35 @@
 #' @title mod_genetic_map_ui and mod_genetic_map_server
 #' @description  A shiny module to generate the outcome for the tabpanel "Genetic map" for the sidebar "Breed analysis".
 #'
-#' @details Depending on the user choice, when a specific chromosome is selected than the function \link{makePlot_geneticMaps} is used to create the plot.
-#' If all chromosomes are selected than genetic map data are prepared for the plot using the function \link{transformdata_genetic_map}
-#' and plotted using the function \link{makePlot_all_geneticMaps}. Moreover, the corresponding plot is cached to increase the app performance.
-#' Finally, the quality of the likelihood approach is also shown here by means of a traffic light (also termed as likelihood quality signal).
+#' @details Independent from the user choice regarding chromosome selection, the data are prepared for the plot
+#' using the function \link{transformdata_genetic_map}. Depending on the user's selection, when a specific chromosome is chosen, the function \link{makePlot_geneticMaps} is used to create the plot,
+#' otherwise the function \link{makePlot_all_geneticMaps} is used to create the plot. In addition, when all chromosome is selected than the corresponding plot
+#' is cached to increase the app performance.
+#' Finally, the quality of the likelihood approach is also shown here by means of a traffic light
+#'  (also termed as likelihood quality signal (\link{make_traffic_light})).
 #'
 #' @param id module id
 #'
 #' @rdname mod_genetic_map
 #'
 #' @keywords internal, genetic map
-#' @export
 #'
 #' @import shiny
 #' @importFrom shinydashboard box
 #' @importFrom shinycssloaders withSpinner
+#' @rawNamespace import(shinyjs, except = runExample)
 #' @import htmltools
-#' @import ggplot2
-#' @rawNamespace import(plotly, except = last_plot)
-#' @rawNamespace importFrom(utils,write.csv)
-#' @rawNamespace importFrom(writexl,write_xlsx)
+#' @importFrom ggplot2 ggsave
+#' @importFrom plotly plotlyOutput renderPlotly toWebGL
+#' @importFrom writexl write_xlsx
 #'
-#'@seealso  \link{transformdata_genetic_map}, \link{makePlot_geneticMaps}, \link{makePlot_all_geneticMaps} and \link{make_traffic_light}
-
+#' @seealso
+#' * \link{transformdata_genetic_map} \cr
+#' * \link{makePlot_geneticMaps} \cr
+#' * \link{makePlot_all_geneticMaps} \cr
+#' * \link{make_traffic_light}
+#' @export
+#'
 mod_genetic_map_ui<-function(id)
 {
   ns<-shiny::NS(id)
@@ -36,13 +42,11 @@ mod_genetic_map_ui<-function(id)
              shinydashboard::box(title= tags$b("Interactive graphical visualization: Genetic vs. physical distance"),status="danger",width=12,
                  solidHeader = TRUE,collapsible = TRUE,collapsed = FALSE,
                  shiny::column(width=9,""),
-                 shiny::column(width=2,tags$a(href="#","Likelihood quality signal", onclick = "openTab('methodology')",style='text-decoration-line: underline;'),
-                               plotOutput(ns("TrafficLight"),width="80%",height="auto") ),
-                 shiny::column(width=12,plotly::plotlyOutput(ns("genetic"),width="90%",height="90%")%>% shinycssloaders::withSpinner(color="#0dc5c1"))
-
+                 shiny::column(width=3,id=ns("showhideSignal2"),tags$a(href="#","Likelihood quality signal", onclick = "openTab('methodology')",style='text-decoration-line: underline;'),
+                               shiny::plotOutput(ns("TrafficLight"),width="80%",height="auto") ),
+                 shiny::column(width=11,plotly::plotlyOutput(ns("genetic"),width="100%",height="auto")%>% shinycssloaders::withSpinner(color="#0dc5c1"))
               ),
               htmltools::br(),htmltools::br(),
-              ########## new insert - take may out again
               shinydashboard::box(title= tags$b("Genetic distance in selected interval"),status="danger",width=12,
                  solidHeader = TRUE,collapsible = TRUE,collapsed = FALSE,
                  shiny::fluidRow(
@@ -54,18 +58,18 @@ mod_genetic_map_ui<-function(id)
                  ),
                  htmltools::br(),
                  htmltools::hr(style = "border-top: 1px solid #68838B;"),htmltools::br(),htmltools::br(),
-                 shiny::column(width=12,downloadButton(ns("csvstore1"),label="CSV",class="butt1",icon=NULL,style="margin-right: 5px; width=100px; position:absolute;left:0em;"),downloadButton(ns("excelstore1"),label="Excel",icon=NULL,class="butt1",style="margin-left: 40px")),
                  shiny::fluidRow(shiny::column(width=11,DT::dataTableOutput(outputId=ns("TableMaps")),style = "overflow-y: scroll;overflow-x: scroll;"))
               )
     ),
-    shiny::fluidRow(id=ns("output3"),shiny::column(width=1),
+    shiny::fluidRow(id=ns("output2"),shiny::column(width=1),
                                     shiny::column(width=2,shiny::downloadButton(outputId=ns("download11"),label="Save figure",class="butt1")),
-                                    shiny::column(width=9),
-                                    shiny::column(width=9),
-                                  shiny::column(width=2,tags$a(href="#","Likelihood quality signal", onclick = "openTab('methodology')",style='text-decoration-line: underline;'),
-                                  plotOutput(ns("TrafficLight2"),width="80%",height="auto") ),
-                                      shinydashboard::box(width=12,style='auto;overflow-x: scroll;height:1000px;overflow-y: scroll;',
-                                       shinycssloaders::withSpinner(shiny::plotOutput(ns('GM_all_chromosomes'),width="1600px",height="2800px"),color="#0dc5c1",proxy.height = "200px"))
+                                    shiny::column(width=1,shiny::radioButtons(inputId=ns("filetype"), "Select file extension:", choices = c("CSV" = "csv", "Excel" = "xlsx"))),
+                                    shiny::column(width=2,shiny::downloadButton(outputId=ns("downloadData11"),label="Save genetic map data",class="butt1")),
+                                    shiny::column(width=1),
+                                    shiny::column(width=2,id=ns("showhideSignal1"),tags$a(href="#","Likelihood quality signal", onclick = "openTab('methodology')",style='text-decoration-line: underline;'),
+                                    shiny::plotOutput(ns("TrafficLight2"),width="80%",height="auto") ),
+                                    shinydashboard::box(width=12,style='auto;overflow-x: scroll;height:1000px;overflow-y: scroll;',
+                                    shinycssloaders::withSpinner(shiny::plotOutput(ns('GM_all_chromosomes'),width="1600px",height="2800px"),color="#0dc5c1",proxy.height = "200px"))
     )
   )
 }
@@ -76,95 +80,71 @@ mod_genetic_map_ui<-function(id)
 #' @param filter character contains the selected chromosome
 #' @param breed.select character contains the name of the selected breed
 #' @param geneticMap data frame containing the genetic map
-#' @param color.breed.dl vector containing the predefined colors
-#' @param make.traff.light object containing the ggplot for the likelihood quality signal
+#' @param make.traff.light object containing the ggplot for the likelihood quality signal (\link{make_traffic_light})
+#' @param approach.info data frame containing the predefined settings for selected approaches (\link{table_approach_information})
+#' @param add.approach.names character containing the concatenated approach abbreviations and is used as an addition to the file name
 #'
 #' @export
 
-mod_genetic_map_server=function(id, filter,breed.select,geneticMap,color.breed.dl,make.traff.light){
+mod_genetic_map_server=function(id, filter,breed.select,geneticMap,make.traff.light,approach.info,add.approach.names){
   shiny::moduleServer(id, function(input, output, session){
 
     ns <- session$ns
-
-    X<-Y<-Approach<-NULL
-
-
-    ## Table header with internal link to methodology
-    thead<-tr<-th<-NULL
-    sketch2 = htmltools::withTags(table(
-      class = 'display',
-      thead(
-        tr(
-          th(colspan=2,""),
-          th(colspan=3,"Physical Map "),
-          th(colspan=3,"Genetic Map")
-        ),
-        tr(
-          th(colspan=5,""),
-          th(colspan=1,tags$a(href="#","Deterministic approach", onclick = "openTab('methodology')",style='text-decoration-line: underline;') ),
-          th(colspan = 2,tags$a(href="#","Likelihood-based approach", onclick = "openTab('methodology')",style='text-decoration-line: underline;'))
-        ),
-        tr(
-          th(colspan=1,"Chromosome"),
-          th(colspan=1,"Marker"),
-          th(colspan=1,"Position (Mbp)"),
-          th(colspan=1,"Inter-marker distance (Mbp)"),
-          th(colspan=1,"Position (BP)"),
-          th(colspan=1,"Position (cM)"),
-          th(colspan=1,"Position (cM)"),
-          th(colspan=1,"Recombination rate adjacent")
-        )
-      )
-    ))
 
     if(filter!="All")
     {
       shinyjs::show(id="output1")
       shinyjs::hide(id="output2")
-      shinyjs::hide(id="output3")
 
-      ## render traffic light
-      output$TrafficLight <- renderPlot({
-        make.traff.light()
-      }, width=80, height=30)
-      ##
+      #if(match("Likelihood",approach.info$Approach,0)!=0){
+      if(length(grep("Likelihood",approach.info$Approach))!=0){
+        shinyjs::show("showhideSignal2")
+        ## render traffic light
+        output$TrafficLight <- renderPlot({
+          make.traff.light()
+        }, width=80, height=30)
+      }else  shinyjs::hide("showhideSignal2")
 
-      genetMap=geneticMap[geneticMap$Chr %in% filter,c(1:3,8,4,6,5,7)]
-      file.name=paste0(breed.select,"_genetic-maps_BTA-",filter)
+      ## determine needed cols
+      pos.list=lapply(1:nrow(approach.info),function(inner){
+        grep(approach.info$Abbreviation[inner],colnames(geneticMap))
+      })
+      pos.use=do.call("c",pos.list)
+      use.cols=c(1:5,pos.use)
+
+      ## Table header with internal link to methodology - change depending on approach
+      sketch2<-create_table_header2(approach.info=approach.info,no.cols=length(pos.use))
 
       ## initialize
       output$sliderRangeMap <- shiny::renderUI({
         shiny::sliderInput(ns("rangeMap"), "Range based on Mbp", min= genetMap$Mbp_position[1], max= genetMap$Mbp_position[length(genetMap$Mbp_position)], step=0.1, value=c(20,30))
       })
-      output$genetic <- plotly::renderPlotly({
-        pp=makePlot_geneticMaps(chr=filter,dat_maps=genetMap,name.file=file.name,colo=color.breed.dl)
-        pp%>%toWebGL()
-      })
+
+      #table
+      genetMap=geneticMap[geneticMap$Chr %in% filter,use.cols]
 
       output$TableMaps=DT::renderDataTable({
-        DT::datatable(genetMap,filter="none",container=sketch2, options=list(searching = TRUE,dom='Bfrtip',buttons = list('pageLength'), #,'copy', list(extend='csv',title=file.name),list(extend='excel',title=file.name)),
+        DT::datatable(genetMap,filter="none",container=sketch2, options=list(searching = TRUE,dom='Bfrtip',buttons = list('pageLength','copy', list(extend='csv',title=file.name),list(extend='excel',title=file.name)),
                                                                            pagelength = 10,lengthMenu = list(c(10, 20 ,30, -1), c('10', '20','30','All'))),
                                                                            escape=FALSE,rownames=FALSE)
       }, server = FALSE)
 
-      ## storing table information
-      output$csvstore1<-shiny::downloadHandler(
-        paste0(file.name,".csv") , content = function(file) {
-          utils::write.csv(genetMap, file, row.names = FALSE
-          )
-        })
+      #### plot
+      plot.data<-transformdata_genetic_map(input=genetMap,approach.info=approach.info)
 
-      output$excelstore1<-shiny::downloadHandler(
-        paste0(file.name,".xlsx"), content = function(file) {
-          writexl::write_xlsx(genetMap, file)
-        })
+      file.name=paste0(breed.select,"_geneticMap_BTA-",filter,"_",add.approach.names)
 
+      output$genetic <- plotly::renderPlotly({
+        pp=makePlot_geneticMaps(dat=plot.data[[1]],name.file=file.name)
+        pp%>%toWebGL()
+      })
       ### end initialize
 
+      #####
       shiny::observeEvent(input$ButtonshowRangeMap,{
         req(input$ButtonshowRangeMap)
 
-        file.name=paste0(breed.select,"_genetic-maps_BTA-",filter,"_range-",input$rangeMap[1],"-",input$rangeMap[2])
+        file.name=paste0(breed.select,"_genetic-maps_BTA-",filter,"_range-",input$rangeMap[1],"-",input$rangeMap[2],"_",add.approach.names)
 
         range<-input$rangeMap
         range1 <<- which(as.numeric(genetMap$Mbp_position)>=input$rangeMap[1])
@@ -173,85 +153,65 @@ mod_genetic_map_server=function(id, filter,breed.select,geneticMap,color.breed.d
         if(length(range1)==0)range1=1
         if(length(range2)==0)range2=dim(genetMap)[1]
 
+        ## table
         data=genetMap[range1[1]:range2[length(range2)],]
 
         output$TableMaps=DT::renderDataTable({
-          DT::datatable(data,filter="none" , container=sketch2, options=list(searching = FALSE,dom='Bfrtip',buttons = list('pageLength'),#'copy', list(extend='csv',title=file.name), list(extend='excel',title=file.name)),
+          DT::datatable(data,filter="none" , container=sketch2, options=list(searching = FALSE,dom='Bfrtip',buttons = list('pageLength','copy', list(extend='csv',title=file.name), list(extend='excel',title=file.name)),
                                                                              pagelength = 10,lengthMenu = list(c(10, 20 ,30, -1), c('10', '20','30','All'))),escape=FALSE,rownames=FALSE)
         }, server = FALSE)
 
+        ## plot
         output$genetic <- plotly::renderPlotly({
-          pp=makePlot_geneticMaps(chr=filter,dat_maps=data,name.file=file.name,colo=color.breed.dl)
+          plot.data1<-transformdata_genetic_map(input=data,approach.info=approach.info)
+          pp=makePlot_geneticMaps(dat=plot.data1[[1]],name.file=file.name)
           pp%>% toWebGL()
          })
-
-        output$csvstore1<-shiny::downloadHandler(
-          paste0(file.name,".csv") , content = function(file) {
-            utils::write.csv(data, file, row.names = FALSE
-            )
-          })
-
-        output$excelstore1<-shiny::downloadHandler(
-          paste0(file.name,".xlsx"), content = function(file) {
-            writexl::write_xlsx(data, file)
-          })
-
       })
 
        ### hier reset to all
       shiny::observeEvent(input$ButtonAll,{
         req(input$ButtonAll)
 
-        file.name=paste0(breed.select,"_genetic-maps_BTA-",filter)
+        file.name=paste0(breed.select,"_geneticMap_BTA-",filter,"_",add.approach.names)
 
         output$TableMaps=DT::renderDataTable({
-          DT::datatable(genetMap,filter="none", container=sketch2, options=list(searching = FALSE,dom='Bfrtip',buttons = list('pageLength'),#'copy', list(extend='csv',title=file.name), list(extend='excel',title=file.name)),
+          DT::datatable(genetMap,filter="none", container=sketch2, options=list(searching = FALSE,dom='Bfrtip',buttons = list('pageLength','copy', list(extend='csv',title=file.name), list(extend='excel',title=file.name)),
                                                                                                 pagelength = 10, lengthMenu = list(c(10, 20 ,30, -1), c('10', '20','30','All'))),escape=FALSE,rownames=FALSE)
         }, server = FALSE)
 
         output$sliderRangeMap <- shiny::renderUI({
           shiny::sliderInput(ns("rangeMap"), "Range based on Mbp", min= genetMap$Mbp_position[1], max= genetMap$Mbp_position[length( genetMap$Mbp_position)],
-                               step=0.1, value=c( genetMap$Mbp_position[1], genetMap$Mbp_position[length( genetMap$Mbp_position)]))
+                               step=0.1, value=c(genetMap$Mbp_position[1], genetMap$Mbp_position[length( genetMap$Mbp_position)]))
         })
 
         output$genetic <- plotly::renderPlotly({
-          pp=makePlot_geneticMaps(chr=filter,dat_maps= genetMap,name.file=file.name,colo=color.breed.dl)
+          pp=makePlot_geneticMaps(dat=plot.data[[1]],name.file=file.name)
           pp%>%plotly::toWebGL()
         })
-
-        output$csvstore1<-shiny::downloadHandler(
-          paste0(file.name,".csv") , content = function(file) {
-            utils::write.csv(genetMap, file, row.names = FALSE
-            )
-          })
-
-        output$excelstore1<-shiny::downloadHandler(
-          paste0(file.name,".xlsx"), content = function(file) {
-            writexl::write_xlsx(genetMap, file)
-          })
       })
-    }
-
-    if(filter=="All")
+    }else
     {
+
       shinyjs::hide(id="output1")
       shinyjs::show(id="output2")
-      shinyjs::show(id="output3")
 
-      ## render traffic light
-      output$TrafficLight2 <- renderPlot({
-        make.traff.light()
-      }, width=80, height=30)
+      if(match("Likelihood_male,",approach.info$Approach,0)!=0){
+        shinyjs::show("showhideSignal1")
+        output$TrafficLight2 <- renderPlot({
+          make.traff.light()
+        }, width=80, height=30)
+      }else shinyjs::hide("showhideSignal1")
 
+      filename.gm.single_all=paste0(breed.select,"_geneticMaps_",add.approach.names,".png")
 
-      filename.gm.single_all=paste0(breed.select,"_genetic-maps_all.png")
+      ll.single=transformdata_genetic_map(input=geneticMap,approach.info=approach.info)
 
-      ll.single=transformdata_genetic_map(n=29,input=geneticMap)
-      InputPlot_gm_single=shiny::reactive(makePlot_all_geneticMaps(ll.gm.s=ll.single,colo=color.breed.dl))
+      InputPlot_gm_single<-shiny::reactive(makePlot_all_geneticMaps(ll.gm.s=ll.single))
 
       output$GM_all_chromosomes <-shiny::renderPlot({
         InputPlot_gm_single()
-      })%>%shiny::bindCache(breed.select,filter)
+       })%>%shiny::bindCache(breed.select,filter,add.approach.names)
 
       output$download11 <- shiny::downloadHandler(
         filename =  filename.gm.single_all,
@@ -261,10 +221,37 @@ mod_genetic_map_server=function(id, filter,breed.select,geneticMap,color.breed.d
           ggplot2::ggsave(file, plot = InputPlot_gm_single(), device = "png",width=20,height=40,units="in",dpi=300)
         }
       )
+
+      ## All for table output
+
+      pos.list=lapply(1:nrow(approach.info),function(inner){
+        grep(approach.info$Abbreviation[inner],colnames(geneticMap))
+      })
+      pos.use=do.call("c",pos.list)
+      use.cols=c(1:5,pos.use)
+
+      ## create table header accordingly to selected approaches
+      headerOutputTable<-create_table_header2_all(approach.info=approach.info,no.cols=length(pos.use))
+
+      #create table
+      genetMap=geneticMap[,use.cols]
+      colnames(genetMap)<-headerOutputTable
+      genetMap2=shiny::reactive(genetMap)
+
+      output$downloadData11 <- shiny::downloadHandler(
+        filename = function(){
+            paste0(breed.select,"_geneticMap_BTA-ALL_",add.approach.names, ifelse(input$filetype == "csv", ".csv", ".xlsx"))
+          },
+        content = function(file) {
+          showModal(modalDialog("Loading", footer=NULL))
+          on.exit(removeModal())
+          if(input$filetype=="csv")utils::write.table(genetMap2(), file, row.names = FALSE,col.names = TRUE,sep=",")
+          else if(input$filetype=="xlsx")writexl::write_xlsx(genetMap2(), file)
+        }
+      )
     }
   })
 }
-
 
 ## To be copied in the UI
 # mod_genetic_map_ui("mod_genetic_map_1")

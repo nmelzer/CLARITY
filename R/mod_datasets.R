@@ -19,46 +19,40 @@ mod_datasets_ui <- function(id){
  shiny::tagList(
     shiny::fluidRow(
       htmltools::br(),htmltools::br(),
-      shinydashboard::box(title =tags$b(tags$b("The German Holstein data set")),status="danger",width=12,collapsible=F,solidHeader = TRUE,
+      shinydashboard::box(title =tags$b(tags$b("The German Holstein data set (Holstein-DE)")),status="danger",width=12,collapsible=F,solidHeader = TRUE,
           tags$h4(HTML("Data were provided by the German Evaluation Center <a href = 'https://www.vit.de' target='_blank'> <u>vit</u></a> (IT solutions for animal production). Permission for data access was granted by the
-                   <a href='https://www.fbf-forschung.de/' target='_blank'> <u>Association for Bioeconomy Research</u></a> (FBF, Bonn) as representative of German cattle breeders.")),
-            htmltools::br(),
-            tags$h4("This study used a large pedigree including 367,056 German Holstein cattle (i.e., 1053 half-sib families with sires born between 1979-2017).",
-            HTML("Data included genotypes of the Illumina Bovine SNP50 genotype array mapped to the coordinates of the <a href='https://bovinegenome.elsiklab.missouri.edu/downloads/ARS-UCD1.2' target='_blank'> <u>ARS-UCD1.2 assembly</u></a>.")),
-            htmltools::br(),
-            htmltools::tags$h4(tags$span(tags$a(href="#info","After preprocessing", onclick = "openTab('methodology')",.noWS = "outside", style='text-decoration-line: underline;'),", recombination rates were eventually estimated based on 44,631 SNPs and across 876 half-sib families
-               with sires having a minimum number of 39 progeny.",.noWS=c("after-begin", "before-end"))),
-
+                   <a href='https://www.fbf-forschung.de/' target='_blank'> <u>Association for Bioeconomy Research</u></a> (FBF, Bonn) as representative of German cattle breeders. Genotyping was performed with the Illumina Bovine SNP50 genotype array.")),
+            tags$h4(tags$span(htmltools::tags$a(href="#info","After preprocessing", onclick = "openTab('methodology')",.noWS = "outside", style='text-decoration-line: underline;'),
+                              ", the dataset includes 367,056 genotyped German Holstein cattle belonging to 1,052 half-sib families.",.noWS=c("after-begin", "before-end")),
+            htmltools::tags$h4("Recombination rates were estimated based on 44,631 SNPs. ", htmltools::tags$a(href="#", "Likelihood-based", onclick = "openTab('methodology')",.noWS = "outside", style='text-decoration-line: underline')," and ",
+                                          htmltools::tags$a(href="#","deterministic", onclick = "openTab('methodology')",.noWS = "outside", style='text-decoration-line: underline'), " approach considered a subset of 366,544 genotyped progeny across 876 half-sib families
+                                        with sires having more than 30 progeny.")),
       ),
       htmltools::br(),htmltools::br(),
-      shinydashboard::box(title =tags$b(tags$b("The German/Austrian Fleckvieh data set")),status="danger",width=12,collapsible=F,solidHeader = TRUE,
+      shinydashboard::box(title =tags$b(tags$b("The German/Austrian Fleckvieh data set (Fleckvieh)")),status="danger",width=12,collapsible=F,solidHeader = TRUE,
                         htmltools::tags$h4(htmltools::HTML("Data were provided by <a href = 'https://www.rinderzucht.at/zuchtdata.html' target='_blank'><u>ZuchtData</u></a> (Vienna, Austria) with
-                          permission granted by the representatives of cattle breeders.")),
-                        htmltools::br(),
-                        htmltools::tags$h4(htmltools::HTML("The data set included 298,850 genotyped Fleckvieh cattle belonging to 6,866 half-sib families. Genotyping was performed with the Illumina Bovine SNP50
-                          genotype array. Genotype data were provided for 40,144 SNPs and physical coordinates were mapped to the
-                          <a href='https://bovinegenome.elsiklab.missouri.edu/downloads/ARS-UCD1.2' target='_blank'><u>ARS-UCD1.2 assembly</u></a>.")),
-                        htmltools::br(),
-                       htmltools::tags$h4(tags$span(tags$a(href="#info","After preprocessing", onclick = "openTab('methodology')",.noWS = "outside", style='text-decoration-line: underline;'),",
-                                                    recombination rates were estimated based on 40,003 SNPs and across 1,577 half-sib families with sires having a minimum number of 30 progeny.",
-                                                    .noWS=c("after-begin", "before-end")))
-
-
+                          permission granted by the representatives of cattle breeders. Genotyping was performed with the Illumina Bovine SNP50 genotype array. ")),
+                    #    htmltools::br(),
+                        tags$h4(tags$span(htmltools::tags$a(href="#info","After preprocessing", onclick = "openTab('methodology')",.noWS = "outside", style='text-decoration-line: underline;'),
+                        ", the data set included 298,761 genotyped Fleckvieh cattle belonging to 6,865 half-sib families.",
+                        .noWS=c("after-begin", "before-end"))),
+                      #  htmltools::br(),
+                       htmltools::tags$h4(tags$span("Recombination rates were estimated based on 40,003 SNPs. ", htmltools::tags$a(href="#", "Likelihood-based", onclick = "openTab('methodology')",.noWS = "outside", style='text-decoration-line: underline')," and ",
+                                                    htmltools::tags$a(href="#","deterministic", onclick = "openTab('methodology')",.noWS = "outside", style='text-decoration-line: underline'), " approach considered a subset of 270,548 genotyped progeny
+                                                    across 1,578 half-sib families with sires having a minimum number of 30 progeny." ))
     ),
     htmltools::br(),htmltools::br(),
     shinydashboard::box(title =tags$b(tags$b("The Swiss cattle breeds")),status="danger",width=12,collapsible=F,solidHeader = TRUE,
                         htmltools::tags$h4(htmltools::HTML("Data of six cattle breeds were provided by <a href = 'https://qualitasag.ch/' target='_blank'><u> Qualitas AG </u></a> (Zug, Switzerland)
-                                                           with permission granted by the representatives of Swiss cattle breeders.")),
+                                                           with permission granted by the representatives of Swiss cattle breeders. Genotyping was performed with various genotype arrays and
+                                                           marker densities ranging from 6,607 to 125,839 SNPs. A SNP sub-panel being similar to the Illumina Bovine SNP50 array was selected for further investigations.")),
                         htmltools::br(),
-                        htmltools::tags$h4(htmltools::HTML(" The data set included <em> n<sub>1</sub> </em> genotyped cattle belonging to <em> N<sub>1</sub> </em>")," half-sib families.
-                        Genotyping was performed with various genotype arrays and marker densities. Imputed genotype data were provided for about 120K SNPs and 90K SNPs for dairy/dual-purpose and beef breeds, respectively.
-                        Physical coordinates were mapped to the", htmltools::HTML(" <a href='https://bovinegenome.elsiklab.missouri.edu/downloads/ARS-UCD1.2' target='_blank' ><u>ARS-UCD1.2 assembly</u></a>.")),
-                        htmltools::br(),
-                        htmltools::tags$h4(htmltools::HTML("The dataset <q>Unifying-CH</q> comprises all Swiss cattle breeds plus some small cattle populations not considered separately
-                                                            with genotype data merged before imputation.")),
-                        htmltools::br(),
-                        htmltools::tags$h4(tags$span(tags$a(href="#info","After preprocessing", onclick = "openTab('methodology')",.noWS="outside", style='text-decoration-line: underline;'),", recombination rates
-                                                     were estimated for a subset of",.noWS=c("after-begin", "before-end")),htmltools::HTML("<em> p </em> SNPs, which is similar to the Illumina 50K array, and across <em> N<sub>2</sub> </em> half-sib families with sires having a minimum number of 30 progeny.")),
+                        tags$h4(tags$span(htmltools::tags$a(href="#info","After preprocessing", onclick = "openTab('methodology')",.noWS = "outside", style='text-decoration-line: underline;'),
+                                          ", the datasets included",htmltools::HTML("<em> n<sub>1</sub> </em> genotyped cattle belonging to  <em> N<sub>1</sub> </em> half-sib families.",.noWS=c("after-begin", "before-end")))),
+
+                        htmltools::tags$h4(tags$span(htmltools::HTML("Recombination rates were estimated based on <em>p</em> SNPs. "),  htmltools::tags$a(href="#", "Likelihood-based", onclick = "openTab('methodology')",.noWS = "outside", style='text-decoration-line: underline')," and ",
+                                                     htmltools::tags$a(href="#","deterministic", onclick = "openTab('methodology')",.noWS = "outside", style='text-decoration-line: underline'), htmltools::HTML(" approach considered
+                                                     <em> n<sub>2</sub></em> genotyped progeny across <em>N<sub>2</sub></em> half-sib families with sires having a minimum number of 30 progeny."))),
                         htmltools::br(),
                         shiny:: fluidRow(
                           htmltools::br(),htmltools::br(),
@@ -67,11 +61,11 @@ mod_datasets_ui <- function(id){
                         shiny::fluidRow(
                           shiny::column(width=10,shiny::checkboxInput(ns("checkbox2"), "Show/hide legend", FALSE),
                                       htmltools::p(id = "element2",
-                                                   htmltools::HTML("n<sub>1</sub>:"), "number of genotyped animals ",htmltools::br(),
-                                                   htmltools::HTML("N<sub>1</sub>:"), "number of half-sib families",htmltools::br(),
-                                                   htmltools::HTML("n<sub>2</sub>:"), "number of genotyped animals in half-sib families with at least 30 progeny",htmltools::br(),
-                                                   htmltools::HTML("N<sub>2</sub>:"), "half-sib families with sires having at least 30 progenies",htmltools::br(),
-                                                                    "p: number of SNPs",htmltools::br()
+                                                   htmltools::HTML("n<sub>1</sub>:"), "Number of genotyped animals ",htmltools::br(),
+                                                   htmltools::HTML("N<sub>1</sub>:"), "Number of half-sib families",htmltools::br(),
+                                                   htmltools::HTML("n<sub>2</sub>:"), "Number of genotyped animals in half-sib families with at least 30 progeny",htmltools::br(),
+                                                   htmltools::HTML("N<sub>2</sub>:"), "Half-sib families with sires having at least 30 progenies",htmltools::br(),
+                                                                    "p: Number of SNPs",htmltools::br()
                                                    ))
                         )
 
@@ -108,7 +102,7 @@ mod_datasets_server=function(id, BreedOverview){
       )
     )
 
-    swissBreeds=c("Holstein-CH","BrownSwiss", "Braunvieh", "Simmental","Limousin","Angus","Unifying-CH") ## changed 22.08.2023
+    swissBreeds=c("Holstein-CH","BrownSwiss", "Braunvieh", "Simmental","Limousin","Angus")
     data2=BreedOverview[match(swissBreeds,BreedOverview$Breed),]
 
     output$tableSwissData=DT::renderDataTable({
@@ -124,8 +118,6 @@ mod_datasets_server=function(id, BreedOverview){
     shiny::observe({
       shinyjs::toggle(id = "element2", condition = input$checkbox2,asis=TRUE)
     })
-
-    output$try <- renderUI("")
   })
 }
 

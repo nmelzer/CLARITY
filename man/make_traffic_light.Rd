@@ -9,17 +9,22 @@ make_traffic_light(selected.breed, dat.tl)
 \arguments{
 \item{selected.breed}{vector containing the full names of selected breeds}
 
-\item{dat.tl}{data frame containing Breed, n1 (number of genotyped animals), N1 (number of half-sib families), n2 (number of genotyped animals in half-sib families with at least 30 progeny), N2 (half-sib families with sires having at least 30 progenies), and p (number of SNPs).}
+\item{dat.tl}{data frame containing the breed size information for selected breeds (\link{data_traffic_light})}
 }
 \value{
-The function returns the plotted likelihood quality signal (ggplot object).
+The function returns the plotted likelihood quality signal (ggplot object or patchwork object (containing multiple ggplot objects)).
 }
 \description{
-The function creates likelihood quality signal plot.
+The function creates the likelihood quality signal plot.
 }
 \details{
 traffic_light
 }
 \seealso{
-\link{mod_general_server}, \link{mod_genetic_map_server}, \link{mod_genetic_function_server}, \link{mod_bc_general_server}, \link{mod_bc_genetic_map_server} and \link{mod_bc_genetic_function_server}
+* \link{mod_general_server} \cr
+* \link{mod_genetic_map_server} \cr
+* \link{mod_genetic_function_server} \cr
+* \link{mod_bc_general_server} \cr
+* \link{mod_bc_genetic_map_server}\cr
+* \link{mod_bc_genetic_function_server}
 }

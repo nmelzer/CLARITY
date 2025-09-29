@@ -2,27 +2,21 @@
 % Please edit documentation in R/mod_genetic_map_fct_functions.R
 \name{makePlot_all_geneticMaps}
 \alias{makePlot_all_geneticMaps}
-\title{Creating genetic map plots for all chromosomes for breed analysis}
+\title{Creating genetic map plots for all chromosomes}
 \usage{
-makePlot_all_geneticMaps(ll.gm.s, colo)
+makePlot_all_geneticMaps(ll.gm.s)
 }
 \arguments{
-\item{ll.gm.s}{list each list element contains a data frame, including chromosome, position in Mbp and cM, as well as approach for a chromosome}
-
-\item{colo}{vector containing the pre-defined colors}
+\item{ll.gm.s}{list each list element contains a data frame (\link{data_plot_geneticMap}) for a chromosome for selected approaches (breed analysis) or the selected breeds (breed comparison)}
 }
 \value{
-The function return a grid with arranged ggplots.
+The function returns a patchwork object (containing multiple ggplot objects)).
 }
 \description{
-The function creates the plots for all chromosomes for a breed and grid arrange them. To obtain only one
-legend for all plots, the function \link{get_only_legend} is called inside.
+The function creates the plots for all chromosomes and arranges them together in a single plot.
 }
 \details{
 function
-}
-\note{
-adopted from https://www.geeksforgeeks.org/add-common-legend-to-combined-ggplot2-plots-in-r/
 }
 \seealso{
 \link{mod_genetic_map_server}

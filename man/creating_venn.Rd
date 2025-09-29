@@ -2,26 +2,31 @@
 % Please edit documentation in R/fct_general_venn_diagram.R
 \name{creating_venn}
 \alias{creating_venn}
-\title{Creating Venn diagram}
+\title{Creating the Venn diagram plot}
 \usage{
-creating_venn(venn_data, breed.bc, bc.venn)
+creating_venn(venn_data, long.names, abbreviations, venn.colors)
 }
 \arguments{
-\item{venn_data}{object of class "Venn" processed data (containing the plot data)}
+\item{venn_data}{object of class "Venn" processed data (containing the plot data; created in \link{process_venn_data})}
 
-\item{breed.bc}{vector containing the full names of selected breeds}
+\item{long.names}{vector containing the full names of selected breeds or approaches}
 
-\item{bc.venn}{vector containing only the first letter of the selected breeds}
+\item{abbreviations}{vector containing the predefined abbreviations for selected breeds or approaches}
+
+\item{venn.colors}{vector containing the colors for the Venn sets (\link{create.colors})}
 }
 \value{
 The function returns the plotted Venn diagram (ggplot object).
 }
 \description{
-The function creates Venn diagram plot.
+This function is used to create the legend text and the text used for each Venn set. The Venn diagram plot is then created.
 }
 \details{
 function
 }
 \seealso{
-\link{mod_bc_general_server}, \link{mod_bc_genetic_map_server} and \link{mod_bc_hotspot_server}
+* \link{mod_bc_general_server} \cr
+* \link{mod_bc_genetic_map_server} \cr
+* \link{mod_bc_hotspot_server} \cr
+* \link{mod_hotspot_server}
 }

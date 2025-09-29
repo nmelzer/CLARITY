@@ -48,7 +48,7 @@ mod_misplaced_ui <-function(id)
           solidHeader = TRUE,collapsible = TRUE,collapsed=TRUE,
           htmltools::br(),htmltools::br(),
           shiny::fluidRow(
-            shiny::column(10,htmltools::tags$h4("Specifically, we identified a panel of 65 SNP markers with strong evidence for being misplaced based on the analysis of linkage disequilibrium and recombination rate in Holstein cattle."))
+            shiny::column(10,htmltools::tags$h4("Specifically, we identified a panel of 65 SNP markers with strong evidence for being misplaced based on the analysis of linkage disequilibrium and recombination rate in German Holstein cattle."))
           ),
           htmltools::br(),htmltools::br(),
           shiny:: fluidRow(
@@ -86,9 +86,9 @@ mod_misplaced_ui <-function(id)
                         solidHeader = TRUE,collapsible = TRUE,collapsed=TRUE,
                        htmltools::br(),htmltools::br(),
                        shiny:: fluidRow(
-                         shiny::column(width=5,shiny::selectInput(inputId = ns('breedSelect_misplaced'), label = 'Select breed(s):',choices= c("","All","Holstein-CH","Fleckvieh","BrownSwiss","Braunvieh","Angus","Simmental","Limousin","Unifying-CH"),
+                         shiny::column(width=5,shiny::selectInput(inputId = ns('breedSelect_misplaced'), label = 'Select breed(s):',choices= c("","All","Holstein-CH","Fleckvieh","BrownSwiss","Braunvieh","Angus","Simmental","Limousin"),
                                                                   selected=" ",multiple=TRUE)),
-                         shiny::column(width=5,id=ns("show_hide_common"), checkboxInput(ns("common"),label="Show shared",value=FALSE))
+                         shiny::column(width=5,id=ns("show_hide_common"),shiny::checkboxInput(ns("common"),label="Show shared",value=FALSE))
 
                        ),
                         shiny::fluidRow(
@@ -173,8 +173,8 @@ mod_misplaced_server <- function(id){
                                                                                      pagelength = 10, lengthMenu = list(ll1, ll2)))
    },server=FALSE)
 
-    shiny::observeEvent(input$old_chr,
-    {
+  shiny::observeEvent(input$old_chr,
+  {
       if(input$old_chr!=" ")
       {
         if(input$old_chr=="All")
@@ -203,8 +203,8 @@ mod_misplaced_server <- function(id){
       }
     })
 
-   shiny::observeEvent(input$new_chr,
-   {
+  shiny::observeEvent(input$new_chr,
+  {
      if(input$new_chr!=" ")
      {
       if(input$new_chr=="All")
@@ -246,12 +246,12 @@ mod_misplaced_server <- function(id){
 
   load(system.file("extdata","general/misplaced_all_breeds.Rdata",package="CLARITY"))
   data3=tab
-
+  colnames(data3)[1]<-"Breed"
 
   thead<-tr<-th<-NULL
 
- sketch3 = htmltools::withTags(
-    table( ##
+  sketch3 = htmltools::withTags(
+    table(
       class = 'display',
       thead(
         tr(
@@ -274,40 +274,40 @@ mod_misplaced_server <- function(id){
   },server=FALSE)
 
 
- shinyjs::hide(id="show_hide_common")
+  shinyjs::hide(id="show_hide_common")
 
- shiny::observeEvent(input$breedSelect_misplaced,
-   {
-     req(input$breedSelect_misplaced)
+  shiny::observeEvent(input$breedSelect_misplaced,
+  {
+    req(input$breedSelect_misplaced)
 
-     if(is.na(match("All",input$breedSelect_misplaced))==FALSE)
+    if(is.na(match("All",input$breedSelect_misplaced))==FALSE)
+    {
+     if(input$breedSelect_misplaced[1]!="All")
      {
-       if(input$breedSelect_misplaced[1]!="All")
-       {
-          shiny::updateSelectInput(session,'breedSelect_misplaced',label="Select breed(s):",choices=c("All","Holstein-CH","Fleckvieh","BrownSwiss","Braunvieh","Angus","Simmental","Limousin","Unifying-CH"), selected="All")
-          data4=data3
-          shinyjs::hide(id="show_hide_common")
-          title1.tab="Misplaced_markers-All-breeds-except-HOL-DE"
-       }
-       if(length(input$breedSelect_misplaced)==1)
-       {
-         shiny::updateSelectInput(session,'breedSelect_misplaced',label="Select breed(s):",choices=c("All","Holstein-CH","Fleckvieh","BrownSwiss","Braunvieh","Angus","Simmental","Limousin","Unifying-CH"), selected="All")
-         data4=data3
-         shinyjs::hide(id="show_hide_common")
-         title1.tab="Misplaced_markers-All-breeds-except-HOL-DE"
-
-       }
-       if(input$breedSelect_misplaced[1]=="All" && length(input$breedSelect_misplaced)>1)
-       {
-         shiny::updateSelectInput(session,'breedSelect_misplaced',label="Select breed(s):",choices=c("All","Holstein-CH","Fleckvieh","BrownSwiss","Braunvieh","Angus","Simmental","Limousin","Unifying-CH"), selected=input$breedSelect_misplaced[2])
-         data4=data3 %>% filter(Breed %in% input$breedSelect_misplaced[2])
-         nam=c()
-         nam=paste0(nam,"-",input$breedSelect_misplaced[2])
-         title1.tab=paste0("Misplaced_markers",nam)
-        }
+        shiny::updateSelectInput(session,'breedSelect_misplaced',label="Select breed(s):",choices=c("All","Holstein-CH","Fleckvieh","BrownSwiss","Braunvieh","Angus","Simmental","Limousin"), selected="All")
+        data4=data3
+        shinyjs::hide(id="show_hide_common")
+        title1.tab="Misplaced_markers-All-breeds-except-HOL-DE"
      }
+     if(length(input$breedSelect_misplaced)==1)
+     {
+       shiny::updateSelectInput(session,'breedSelect_misplaced',label="Select breed(s):",choices=c("All","Holstein-CH","Fleckvieh","BrownSwiss","Braunvieh","Angus","Simmental","Limousin"), selected="All")
+       data4=data3
+       shinyjs::hide(id="show_hide_common")
+       title1.tab="Misplaced_markers-All-breeds-except-HOL-DE"
+     }
+     if(input$breedSelect_misplaced[1]=="All" && length(input$breedSelect_misplaced)>1)
+     {
+       shiny::updateSelectInput(session,'breedSelect_misplaced',label="Select breed(s):",choices=c("All","Holstein-CH","Fleckvieh","BrownSwiss","Braunvieh","Angus","Simmental","Limousin"), selected=input$breedSelect_misplaced[2])
+       data4=data3 %>% filter(Breed %in% input$breedSelect_misplaced[2])
+       nam=c()
+       nam=paste0(nam,"-",input$breedSelect_misplaced[2])
+       title1.tab=paste0("Misplaced_markers",nam)
+      }
+    }
     if(is.na(match("All",input$breedSelect_misplaced))==TRUE)
     {
+
       data4=data3 %>% filter(Breed %in% input$breedSelect_misplaced)
 
       if(length(input$breedSelect_misplaced)>1) shinyjs::show(id="show_hide_common")
@@ -337,40 +337,37 @@ mod_misplaced_server <- function(id){
    })
 
 
-    shiny::observeEvent(input$common,
-    {
-      req(input$breedSelect_misplaced)
+   shiny::observeEvent(input$common,
+   {
+     req(input$breedSelect_misplaced)
 
-         if(input$common==TRUE)
-         {
-           data4=data3 %>% filter(Breed %in% input$breedSelect_misplaced)
-           data4=data4 %>% group_by(Name) %>%filter(n()==length(input$breedSelect_misplaced))
-           print(data4)
-           nam=c()
-           for(ik in 1:length(input$breedSelect_misplaced)) nam=paste0(nam,"-",input$breedSelect_misplaced[ik])
-           title1.tab=paste0("Misplaced_markers",nam,"-shared")
-         }
-         else
-         {
-            data4=data3 %>% filter(Breed %in% input$breedSelect_misplaced)
-            nam=c()
-            for(ik in 1:length(input$breedSelect_misplaced)) nam=paste0(nam,"-",input$breedSelect_misplaced[ik])
-            title1.tab=paste0("Misplaced_markers",nam)
-       }
+     if(input$common==TRUE)
+     {
+       data4=data3 %>% filter(Breed %in% input$breedSelect_misplaced)
+       data4=data4 %>% group_by(Name) %>%filter(n()==length(input$breedSelect_misplaced))
+       nam=c()
+       for(ik in 1:length(input$breedSelect_misplaced)) nam=paste0(nam,"-",input$breedSelect_misplaced[ik])
+          title1.tab=paste0("Misplaced_markers",nam,"-shared")
+      }
+      else
+      {
+        data4=data3 %>% filter(Breed %in% input$breedSelect_misplaced)
+        nam=c()
+        for(ik in 1:length(input$breedSelect_misplaced)) nam=paste0(nam,"-",input$breedSelect_misplaced[ik])
+        title1.tab=paste0("Misplaced_markers",nam)
+      }
 
-        output$tableMisAllBreeds=DT::renderDT({
-         DT::datatable(
-            data4, extensions = c("Buttons"), container=sketch3,rownames=FALSE,
-            options = list(searching=FALSE,dom='Btfip',
+      output$tableMisAllBreeds=DT::renderDT({
+       DT::datatable(
+          data4, extensions = c("Buttons"), container=sketch3,rownames=FALSE,
+          options = list(searching=FALSE,dom='Btfip',
                          columnDefs = list(list(className = 'dt-left', targets = "_all")),
                          buttons = list('pageLength', 'copy',list(extend='csv',title=title1.tab),list(extend='excel',title=title1.tab)),
                          pagelength = 10, lengthMenu = list(c(10, 30 ,50, -1), c('10', '20','30','All'))))
-          },server=FALSE)
-
-      })
+        },server=FALSE)
+    })
 
   })
-
 }
 
 ## To be copied in the UI

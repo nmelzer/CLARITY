@@ -10,10 +10,10 @@ mod_bc_genetic_function_ui(id)
 mod_bc_genetic_function_server(
   id,
   filter,
-  breed.select.bc,
-  color.shape.def,
+  breed.infos,
   names.files,
-  make.traff.light.bc
+  make.traff.light.bc,
+  approach
 )
 }
 \arguments{
@@ -21,20 +21,24 @@ mod_bc_genetic_function_server(
 
 \item{filter}{character contains the selected chromosome}
 
-\item{breed.select.bc}{vector containing the names of selected breeds}
-
-\item{color.shape.def}{data frame containing the definition for coloring, shapes, size for plots}
+\item{breed.infos}{data frame containing the predefined settings and names for the selected breeds (\link{table_breed_information})}
 
 \item{names.files}{string containing the concatenate breed names}
 
-\item{make.traff.light.bc}{object containing the ggplot for the likelihood quality signal}
+\item{make.traff.light.bc}{object containing the ggplot for the likelihood quality signal (\link{make_traffic_light})}
+
+\item{approach}{data frame containing the predefined settings and names for the selected approach (\link{table_approach_information})}
 }
 \description{
 A shiny module to generate the outcome for the tabpanel "Genetic-map functions" for the sidebar "Breed comparison".
 }
 \details{
-The module uses the function \link{makePlot_genetic_function_bc} for plotting. Moreover, the quality of the likelihood approach is shown here by means of a traffic light (also termed as likelihood quality signal).
+The module uses the function \link{makePlot_genetic_function_bc} for plotting.
+ Moreover, the quality of the likelihood approach is shown here by means of a traffic light (also termed as
+ likelihood quality signal; \link{make_traffic_light}). \link{make_barplot_bc}
 }
 \seealso{
-\link{makePlot_genetic_function_bc} and \link{make_traffic_light}
+* \link{makePlot_genetic_function_bc}
+* \link{make_traffic_light}
+* \link{make_barplot_bc}
 }

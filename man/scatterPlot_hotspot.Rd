@@ -4,28 +4,23 @@
 \alias{scatterPlot_hotspot}
 \title{Creating the hotspot scatter plot for a specific chromosomome}
 \usage{
-scatterPlot_hotspot(dat1, fil, ranges, legend1)
+scatterPlot_hotspot(dat1, file.name)
 }
 \arguments{
-\item{dat1}{data frame (containing: Chr, SNP, cM, BP, Theta, Dis, ord, size, coloring, and shape)}
+\item{dat1}{data frame \link{data_plot_hotspot}}
 
-\item{fil}{character contains the selected chromosome}
-
-\item{ranges}{reactive values containing the brush information}
-
-\item{legend1}{data frame containing the legend information (contains: label, breaks, shape, and ord)}
+\item{file.name}{character containing the file name}
 }
 \value{
-The function returns a ggplot object.
+The function returns a plotly object.
 }
 \description{
 The function creates the hotspot plot for a specific selected chromosome.
 }
 \details{
 function
-
-Note: legend1, the column breaks contains the color for the corresponding label, and column ord contains numbers used for sorting to keep the sequence (corresponds to ord in dat1).
 }
 \seealso{
-\link{mod_hotspot_server} and \link{mod_bc_hotspot_server}
+* \link{mod_hotspot_server}
+* \link{mod_bc_hotspot_server}
 }

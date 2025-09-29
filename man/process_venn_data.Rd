@@ -14,10 +14,15 @@ The function returns the processed Venn data object (containing the plot data).
 }
 \description{
 This function prepares the data for the Venn plot.
+Moreover the shape of the Venn diagram is set within the function
+(two sets: shape is set to 201; three sets: shape is set to 301).
 }
 \details{
 function
 }
 \seealso{
-\link{mod_bc_general_server}, \link{mod_bc_genetic_map_server} and \link{mod_bc_hotspot_server}
+* \link{mod_bc_general_server} \cr
+* \link{mod_bc_genetic_map_server} \cr
+* \link{mod_bc_hotspot_server} \cr
+* \link{mod_hotspot_server}
 }

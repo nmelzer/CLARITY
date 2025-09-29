@@ -63,7 +63,6 @@ golem::add_module( name = "bc_genetic_function")
 ## Creates fct_* and utils_*
 golem::add_fct( "functions",module="general")
 golem::add_fct( "functions",module="hotspot")
-golem::add_fct( "general_hovering")
 golem::add_fct( "functions",module="genetic_function")
 golem::add_fct( "functions",module="genetic_map")
 golem::add_fct( "traffic_light")

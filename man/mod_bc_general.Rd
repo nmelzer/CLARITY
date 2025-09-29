@@ -10,12 +10,12 @@ mod_bc_general_ui(id)
 mod_bc_general_server(
   id,
   filter,
-  breed.select.bc,
   geneticMap.bc,
-  color.shape.def,
-  names.bc.venn,
   names.files,
-  make.traff.light.bc
+  make.traff.light.bc,
+  breed.infos,
+  approach,
+  dt
 )
 }
 \arguments{
@@ -23,28 +23,32 @@ mod_bc_general_server(
 
 \item{filter}{character contains the selected chromosome}
 
-\item{breed.select.bc}{vector containing the names of selected breeds}
-
 \item{geneticMap.bc}{list containing the genetic maps for all selected breeds (each list element is a breed)}
 
-\item{color.shape.def}{data frame containing the definition for coloring, shapes, size for plots}
+\item{names.files}{character containing the concatenated breed names and is used as an addition to the file name}
 
-\item{names.bc.venn}{vector containing the first letter of the selected breed names}
+\item{make.traff.light.bc}{object containing the ggplot for the likelihood quality signal (\link{make_traffic_light})}
 
-\item{names.files}{string containing the concatenate breed names}
+\item{breed.infos}{data frame containing the predefined settings and names for the selected breeds (\link{table_breed_information})}
 
-\item{make.traff.light.bc}{object containing the ggplot for the likelihood quality signal}
+\item{approach}{character containing the abbreviation for the selected approach}
+
+\item{dt}{list whereby each list element contains for each selected breed the genetic map summary information}
 }
 \description{
 A shiny module to generate the outcome for the tabpanel "General information" for the sidebar "Breed comparison".
 }
 \details{
-Within the module the data are prepared for plotting using the function \link{transformdata_general_bc}. The plots are created using the functions
-\link{scatterPlot_general_all_bc} or \link{scatterPlot_general_selected_bc} depending on user's selected chromosome.
- Corresponding hovering information and style are generated using the function \link{hovering}. This module also shows a Venn diagram of corresponding markers.
- The input data are prepared using the function \link{process_venn_data} and plotted using the function \link{creating_venn}.
- Finally, the quality of the likelihood approach is also shown here by means of a traffic light (also termed as likelihood quality signal).
+Within the module the data are prepared for the table and for plotting using the function \link{transformdata_general_bc} depending on user's selected chromosome.
+The corresponding plots are created using the function \link{scatterPlot_general}.
+ This module also shows a Venn diagram of corresponding markers. The corresponding input data are
+ prepared using the function \link{process_venn_data} and plotted using the function \link{creating_venn}.
+ Finally, the quality of the likelihood approach is also shown here by means of a traffic light (also termed as likelihood quality signal \link{make_traffic_light}).
 }
 \seealso{
-\link{transformdata_general_bc}, \link{scatterPlot_general_all_bc}, \link{scatterPlot_general_selected_bc}, \link{hovering}, \link{process_venn_data}, \link{creating_venn} and \link{make_traffic_light}.
+* \link{transformdata_general_bc} \cr
+* \link{scatterPlot_general} \cr
+* \link{process_venn_data} \cr
+* \link{creating_venn} \cr
+* \link{make_traffic_light}
 }

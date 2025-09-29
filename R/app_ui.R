@@ -13,7 +13,6 @@
 #' @import metathis
 #' @export
 
-
 ## main ui function
 app_ui <- function(request){
 
@@ -30,7 +29,8 @@ app_ui <- function(request){
 
   #####
   no.chr=c("","All",paste(1:29))
-  breeds=c("", "Holstein-CH","Holstein-DE","Fleckvieh","BrownSwiss","Braunvieh","Angus","Simmental","Limousin","Unifying-CH")
+  breeds=c("", "Holstein-CH","Holstein-DE","Fleckvieh","BrownSwiss","Braunvieh","Angus","Simmental","Limousin")
+  approaches=c("Deterministic_male","Likelihood_male","HMM_male","HMM_female","HMM_average")
   options(scipen=999)
 
 
@@ -38,7 +38,7 @@ app_ui <- function(request){
   #### definition header of the dashboard
   dbHeader <- shinydashboard::dashboardHeader(title = "CLARITY",
                                               htmltools::tags$li(htmltools::tags$a(href = 'https://www.fbn-dummerstorf.de/',
-                                                                 htmltools::tags$img(src = 'www/FBN_Logo_Bildmarke_RGB_black.png',width=50,height=50, alt="FBN"), target="blank",
+                                                                 htmltools::tags$img(src = 'www/FBN_Logo_Bildmarke_RGB_black.png',width=50,height=50, alt="FBN logo"), target="blank",
                                                                  style = "padding-top:10px; padding-bottom:10px;"),
                                                                  class = "dropdown"),
 
@@ -69,12 +69,18 @@ app_ui <- function(request){
                           ),"info"),
         convertMenuItem(shinydashboard::menuItem("Breed analysis",tabName="single",startExpanded=FALSE,  ### Extension for other breeds
                           shiny::selectInput(inputId = 'breed', label = 'Breed',choices= breeds,selectize=FALSE),
-                          shiny::selectInput(inputId = 'chromosome',label = "Chromosome",choices="",selectize=FALSE)## changed on 25.07.2022 that user cannot select any chromosome without
+                          shiny::selectInput(inputId = 'chromosome',label = "Chromosome",choices="",selectize=FALSE),
+                          shiny::checkboxGroupInput(inputId = "approachselection",label="Select approaches",selected=c("Deterministic","Likelihood"),choices=approaches)
                           ),"single"),
+        hidden(shiny::htmlOutput(outputId="notworking",inline=TRUE)),
         convertMenuItem(shinydashboard::menuItem("Breed comparison",tabName="breedcomparison",startExpanded=FALSE,  ### Extension for other breeds
-                                                 shiny::selectInput(inputId = 'breed1', label = 'Select breeds', choices=breeds ,multiple=TRUE,selectize=TRUE),#
-                                                 shiny::selectInput(inputId = 'chromosome1',label = "Chromosome",choices="",selectize=FALSE) ## changed on 25.07.2022 that user cannot select any chromosome without
-                          ),"breedcomparison")
+                                                 shiny::selectizeInput(inputId = 'breed1', label = 'Select breeds', choices=breeds ,multiple=TRUE,options=list(maxItems=3)),
+                                                 shiny::selectInput(inputId = 'chromosome1',label = "Chromosome",choices="",selectize=FALSE),
+                                                 shiny::radioButtons(inputId = "approachselection_bc",label="Select approach",selected=c("Deterministic_male"),choices=c("Deterministic_male"="Deterministic_male",
+                                                                                                                    "Likelihood_male"="Likelihood_male","HMM_male"="HMM_male","HMM_female"="HMM_female","HMM_average"="HMM_average"))#approaches)
+                        ),"breedcomparison"),
+        hidden(shiny::htmlOutput(outputId="notworking2",inline=TRUE)),
+        hidden(shiny::htmlOutput(outputId="notworking3",inline=TRUE))
       ),
     shinydashboard::sidebarMenuOutput("menu")
   )
@@ -88,9 +94,9 @@ app_ui <- function(request){
     htmltools::tags$head(
        tags$meta(name="author", content="Nina Melzer"),
        tags$meta(name="creation_date", content="2022-10-27"),
-       tags$meta(name="modified_date", content="2024-09-23"),
+       tags$meta(name="modified_date", content="2025-09-24"),
        tags$meta(name="url", content="https://nmelzer.shinyapps.io/clarity"),
-       tags$meta(name="version",content="2.0.0")
+       tags$meta(name="version",content="3.0.0 (pre-release)"),
     ),
     metathis::meta()%>%
       metathis::meta_general(
@@ -117,7 +123,8 @@ app_ui <- function(request){
     ## include favicon
     tags$head(tags$link(rel = "shortcut icon", href = "www/favicon.ico")),
 
-    ## for the sidebar toogle icon -  working now
+
+    ## for the sidebar toogle icon
     tags$head(
      tags$script(HTML("
       document.addEventListener('DOMContentLoaded', function() {

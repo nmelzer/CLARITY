@@ -17,7 +17,7 @@ makePlot_genetic_function(
 \item{df.list}{list first element contains a matrix of recombination rate and distance for marker pairs, second element includes a matrix of X-values for all genetic-map functions,
 third element includes a matrix of Y-values for all genetic-map functions.}
 
-\item{name.file}{character contains name of output file.}
+\item{name.file}{character contains name of output file}
 
 \item{breed.select}{character contains the selected breed}
 }

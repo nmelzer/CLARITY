@@ -1,19 +1,19 @@
 ---
 title: 'CLARITY: Documentation of data sets'
 author: "N. Melzer, D. Wittenburg"
-date: "June 12, 2024"
+date: "September 29, 2025"
 output:
+  word_document: default
+  pdf_document: default
   html_document:
     df_print: paged
-  pdf_document: default
-  word_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo =TRUE)
 library(DT)
 options(DT.options = list(pageLength = 100, language = list(search = 'Filter:'))) ## used to show all rows otherwise only the first ten rows are displayed
-path.input <- "inst/extdata/Holstein-DE"
+path.input <- "inst/extdata/Fleckvieh"
 path.input2 <- "inst/extdata/general"
 ```
 
@@ -46,16 +46,21 @@ datatable(df,rownames=F,options=list(searching=F,dom=""))
 ```
 
 <font size="2">
-Chr: Chromosome <br>
 Name: SNP name <br>
-Mbp_position: Chromosome position in million base pair <br>
-bp_position: Chromosome position in million base pair <br>
-cM_likelihood: Chromosome position in centiMorgan based on likelihood approach<br>
-cM_deterministic: Chromosome position in centiMorgan based on deterministic approach <br>
-recrate_adjacent_deterministic: Recombination rate adjacent markers based on deterministic approach <br>
-Mbp_inter_marker_distanc: Inter-marker distance in Mbp <br>
+Chr: Chromosome <br>
+Mbp_position: Chromosome position in megabase pair <br>
+bp_position: Chromosome position in base pair <br>
+L_cM: Chromosome position in centiMorgan relying on a likelihood approach<br>
+D_cM: Chromosome position in centiMorgan relying on a deterministic approach <br>
+D_recrate_adjacent: Recombination rate adjacent markers relying on a deterministic approach <br>
+Mbp_inter_marker_distance: Inter-marker distance in Mbp <br>
+Hm_cM: Chromosome position in centiMorgan relying on an HMM-based approach (male) <br>
+Hm_recrate_adjacent: Recombination rate adjacent markers relying on an HMM-based approach (male) <br>
+Hf_cM: Chromosome position in centiMorgan relying on an HMM-based approach (female) <br>
+Hf_recrate_adjacent: Recombination rate adjacent markers relying on an HMM-based approach (female) <br>
+Ha_cM: Chromosome position in centiMorgan relying on an HMM-based approach (sex-average) <br>
+Ha_recrate_adjacent: Recombination rate adjacent markers relying on an HMM-based approach (sex-average) <br>
 </font> 
-
 &nbsp;&nbsp;
 
 
@@ -84,11 +89,20 @@ nSNP: Number of SNPs <br>
 max_bp: Chromosome length in base pairs <br>
 Gap_bp: Maximum gap size between pairs of adjacent markers in bp <br>
 Space_kb: Inter-marker space in kilobase (kb) <br>
-nRec: Number of cross-overs detected <br>
+D_nRec: Number of cross-overs detected relying on deterministic approach<br>
 D_M: Genetic length in Morgan estimated based on deterministic approach <br>
+D_cMMb: centiMorgan per megabase pair for the deterministic approach <br>
 L_M: Genetic length in Morgan estimated with the likelihood-based approach <br>
-cMMb_D: centiMorgan per megabase pair for the deterministic approach <br>
-cMMb_L: centiMorgan per megabase pair for the likelihood-based approach <br>
+L_cMMb: centiMorgan per megabase pair for the likelihood-based approach <br>
+Hm_nRec: Number of cross-overs detected relying on an HMM-based approach (male)<br>
+Hm_M: Genetic length in Morgan estimated relying on an HMM-based approach (male) <br>
+Hm_cMMb: centiMorgan per megabase pair for an HMM-based approach (male) <br>
+Hf_nRec: Number of cross-overs detected relying on an HMM-based approach (female)<br>
+Hf_M: Genetic length in Morgan estimated relying on an HMM-based approach (female) <br>
+Hf_cMMb: centiMorgan per megabase pair for an HMM-based approach (female) <br>
+Ha_nRec: Number of cross-overs detected relying on an HMM-based approach (sex-average)<br>
+Ha_M: Genetic length in Morgan estimated relying on an HMM-based approach (sex-average) <br>
+Ha_cMMb: centiMorgan per megabase pair for an HMM-based approach (sex-average) <br>
 </font> 
 
 &nbsp;&nbsp;
@@ -107,7 +121,7 @@ Class=c()
 for(i in 1:ncol(adjacentRecRate))Class[i]=class(adjacentRecRate[,i])
 df=cbind(df,Class)
                    
- colnames(df)<-c("Column no.","Column name","Class")                  
+colnames(df)<-c("Column no.","Column name","Class")                  
  
 # output the table in a format suitable for HTML/PDF/docx conversion
 datatable(df,rownames=F,options=list(searching=F,dom=""))
@@ -116,9 +130,15 @@ datatable(df,rownames=F,options=list(searching=F,dom=""))
 <font size="2"> 
 Chr: Chromosome <br>
 SNP: SNP name <br>
-cM: Chromosome position in centiMorgan based on deterministic approach <br>
 BP: Chromosome position in base pairs <br>
-Theta: Recombination rate <br>
+D_cM:  Chromosome position in centiMorgan based on deterministic approach <br>
+D_Theta: Recombination rate based on deterministic approach <br>
+Hm_cM: Chromosome position in centiMorgan relying on an HMM-based approach (male)<br>
+Hm_Theta: Recombination rate relying on an HMM-based approach (male)<br>
+Hf_cM: Chromosome position in centiMorgan relying on an HMM-based approach (female)<br>
+Hf_Theta: Recombination rate relying on an HMM-based approach (female)<br>
+Ha_cM: Chromosome position in centiMorgan relying on an HMM-based approach (sex-average)<br>
+Ha_Theta: Recombination rate relying on an HMM-based approach (sex-average)<br>
 Dis: Distance to preceeding marker <br>
 </font>
 
@@ -137,12 +157,17 @@ Class=c()
 for(i in 1:ncol(out))Class[i]=class(out[,i])
 df=cbind(df,Class)
                    
- colnames(df)<-c("Column no.","Column name","Class")                  
+colnames(df)<-c("Column no.","Column name","Class")                  
  
 # output the table in a format suitable for HTML/PDF/docx conversion
 datatable(df,rownames=F,options=list(searching=F,dom=""))
 ```
 
+<font size="2"> 
+Chr: Chromosome <br>
+mse: Mean squared error <br>
+par: Parameter <br>
+</font>
 
 &nbsp;&nbsp;
 
@@ -167,15 +192,14 @@ data.frame *BreedOverview*
 
 ```{r table5, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
 load(file.path(path.input2, "OverviewBreeds.Rdata"))
-out=BreedOverview
+out=OverviewBreed
 df=cbind(1:ncol(out),colnames(out))
-
 
 Class=c()
 for(i in 1:ncol(out))Class[i]=class(out[,i])
 df=cbind(df,Class)
                    
- colnames(df)<-c("Column no.","Column name","Class")                  
+colnames(df)<-c("Column no.","Column name","Class")                  
  
 # output the table in a format suitable for HTML/PDF/docx conversion
 datatable(df,rownames=F,options=list(searching=F,dom=""))
@@ -189,9 +213,7 @@ N2: Half-sib families with sires having at least 30 progenies <br>
 p: Number of SNPs <br>
 </font> 
 
-
 &nbsp;&nbsp;
-
 
 ### 2.2 misplaced_all_breeds.Rdata
 
@@ -202,21 +224,21 @@ load(file.path(path.input2, "misplaced_all_breeds.Rdata"))
 out=data.frame(tab)
 df=cbind(1:ncol(out),colnames(out))
 
-
 Class=c()
 for(i in 1:ncol(out))Class[i]=class(out[,i])
 df=cbind(df,Class)
                    
- colnames(df)<-c("Column no.","Column name","Class")                  
+colnames(df)<-c("Column no.","Column name","Class")                  
  
 # output the table in a format suitable for HTML/PDF/docx conversion
 datatable(df,rownames=F,options=list(searching=T,dom=""))
 
 ```
 <font size="2"> 
-Chr: chromosome <br>
+leg.breeds.i: Breed name <br>
+Chr: Chromosome <br>
 Name: SNP name <br>
-Mbp_position: chromosomal position in million base pairs <br>
+Mbp_position: Chromosomal position in million base pairs <br>
 </font> 
 
 &nbsp;&nbsp;
@@ -234,7 +256,7 @@ Class=c()
 for(i in 1:ncol(out))Class[i]=class(out[,i])
 df=cbind(df,Class)
                    
- colnames(df)<-c("Column no.","Column name","Class")                  
+colnames(df)<-c("Column no.","Column name","Class")                  
  
 # output the table in a format suitable for HTML/PDF/docx conversion
 datatable(df,rownames=F,options=list(searching=T,dom=""))
@@ -243,15 +265,15 @@ datatable(df,rownames=F,options=list(searching=T,dom=""))
 
 <font size="2"> 
 snp: SNP name <br>
-old_chr: Chromosome number according to ARS-UCD1.2 <br>
-old_bp: Chromosomal position in bp according to ARS-UCD1.2  <br>
+old_chr: Chromosome number according to [ARS-UCD1.2](https://bovinegenome.elsiklab.missouri.edu/downloads/ARS-UCD1.2) <br>
+old_bp: Chromosomal position in bp according to [ARS-UCD1.2](https://bovinegenome.elsiklab.missouri.edu/downloads/ARS-UCD1.2)  <br>
 new_chr: Chromosome number based on linkage disequilibrium (LD) analysis. Negative values indicate inconclusive results and the analysis continued on the original chromosome. <br>
 new_bp: Chromosomal position denotes the coordinate of the SNP to which the minimum recombination rate was achieved <br>
 theta: Minimum recombination rate on new chromosome<br>
 clear_recrate: Coded as 1 if the recombination rate < 0.01 at the new coordinate (bp), zero otherwise; in total 34 <br>
-BLAST_probeA_chr.bp: The position of alternate match when the probe sequence of candidate SNP was aligned to the reference genome. No entry implies a single hit coinciding with the map coordinate in ARS-UCD1.2 or no hit. <br>
-candidate:  Coded as 1 if the SNP was identified as candidate of misplacement based on estimates of recombination rate in the original study Qanbari and Wittenburg (2020); in total 51 <br>
-problemregion:  Identifier of coherent problematic region ; in total 15<br>
+BLAST_probeA_chr.bp: The position of alternate match when the probe sequence of candidate SNP was aligned to the reference genome. No entry implies a single hit coinciding with the map coordinate in [ARS-UCD1.2](https://bovinegenome.elsiklab.missouri.edu/downloads/ARS-UCD1.2) or no hit. <br>
+candidate:  Coded as 1 if the SNP was identified as candidate of misplacement based on estimates of recombination rate in the original study [Qanbari and Wittenburg (2020)](https://doi.org/10.1186/s12711-020-00593-z); in total 51 <br>
+problemregion:  Identifier of coherent problematic region; in total 15<br>
 start: Start of position of problematic region<br>
 end: End of position of problematic region<br>
 n_heterozygous: Number of heterozygous sires based on which recombination rates were estimated <br>
@@ -268,12 +290,11 @@ load(file.path(path.input2, "generalProblematicRegions.Rdata"))
 out=data.frame(generalProblematicRegions)
 df=cbind(1:ncol(out),colnames(out))
 
-
 Class=c()
 for(i in 1:ncol(out))Class[i]=class(out[,i])
 df=cbind(df,Class)
                    
- colnames(df)<-c("Column no.","Column name","Class")                  
+colnames(df)<-c("Column no.","Column name","Class")                  
  
 # output the table in a format suitable for HTML/PDF/docx conversion
 datatable(df,rownames=F,options=list(searching=F,dom=""))

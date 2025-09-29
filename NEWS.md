@@ -1,3 +1,26 @@
+# CLARITY 3.0.0 [uploaded on September 2025]
+
+* Results from the Hidden-Markow-Model (HMM) are included. The HMM approach allows to estimate sex-specific recombination rates (male, female), and also the sex-average. On this basis, significant changes as well as further optimization were made to the App. 
+* Generally, improved differentiation of approaches within "Hotspot detection" (possible for the HMM-approach and deterministic approach) and "Genetic map  functions" (only available for the likelihood-based approach) has been implemented.
+* "Breed analysis": approach comparison is now possible and also within the "Hotspot detection" the functional Venn diagram was added to enable hotspot comparison across approaches.
+* "Breed comparison": approach selection was added
+* Removed functions:
+    * fct_general_hovering.R
+    * scatterPlot_general_all_bc
+    * scatterPlot_general_selected_bc 
+    * get_only_legend 
+    * makePlot_all_geneticMaps_bc
+    * makePlot_geneticMaps_bc
+* New functions:
+    * create.output
+    * create.colors
+    * create_table_* (the custom created table headers were separated in individual functions to simplify the code)
+* Added "Save genetic map data" for "Breed analysis" and "Breed comparison" to the "Genetic map" tab when all chromosomes are selected 
+* Added description of used internal data and linked within the manual
+* Adapt and modify corresponding documentations
+
+
+
 # CLARITY 2.0.0 [uploaded on September 2024]
 
 * Integrated Swiss cattle breeds (Angus, Braunvieh, Brown Swiss, Holstein-CH, Simmental, Limousin, Unifying-CH) and corresponding data sets information and misplaced markers were added

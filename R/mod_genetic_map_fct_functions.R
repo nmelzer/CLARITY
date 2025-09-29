@@ -1,263 +1,269 @@
 #' function
-#' @title Prepare genetic map data for plotting
+#' @title Prepare genetic map data for plotting for breed analysis
 #'
-#' @description The function prepares the genetic map information for a single breed.
+#' @description The function prepares the genetic map information for a single breed and selected approaches.
 #'
-#' @param n number of chromosomes
 #' @param input data frame containing the genetic map information
+#' @param approach.info data frame containing the predefined settings for selected approaches (\link{table_approach_information})
 #'
-#' @return The function returns a list containing the desired information for each chromosome.
+#' @return The function returns list containing the desired information in data frame (\link{data_plot_geneticMap}) for each chromosome.
 #' @export
 #' @seealso \link{mod_genetic_map_server}
 
-transformdata_genetic_map=function(n,input)
+transformdata_genetic_map=function(input,approach.info)
 {
- ll=list()
-  for(i in 1:n)
-  {
-    df.p = input[which(input$Chr==i),]
+ Mbp_position<-Chr<-Name<-NULL
 
-    a=cbind(df.p$"Chr",df.p$"Mbp_position",df.p$"cM_deterministic")
-    colnames(a)=c("chr","X","Y")
+ col.nam=colnames(input)[match(paste0(approach.info$Abbreviation,"_cM"),colnames(input))]
 
-    b=cbind(df.p$"Chr",df.p$"Mbp_position",df.p$"cM_likelihood")
-    colnames(b)=c("chr","X","Y")
+ a<- lapply(1:nrow(approach.info),function(appr)
+ {
+   dat<-input%>%dplyr::select(Chr,X=Mbp_position,Y=col.nam[appr],Marker=Name)
+   dat<-dat%>%dplyr::mutate(Legend=approach.info$Approach[appr],Color=approach.info$Color[appr])
+   dat$X=as.numeric(dat$X)
+   dat$Y=as.numeric(dat$Y)
+   dat
+ })
 
-    df.p2=rbind(a,b)
-
-    colnames(df.p2)=c("chr","X","Y")
-    Approach=c(rep("deterministic",nrow(df.p)),rep("likelihood",nrow(df.p)))
-    df.p2=as.data.frame(cbind(df.p2,Approach))
-    df.p2$chr=as.numeric(df.p2$chr)
-    df.p2$X=as.numeric(df.p2$X)
-    df.p2$Y=as.numeric(df.p2$Y)
-
-    ll[[i]]=df.p2
- }
+ ll1<-do.call("rbind",a)
+ ll<-split(ll1,f=~Chr)
  ll
 }
-
 
 #' function
 #' @title Prepare genetic map data for plotting for breed comparison
 #'
-#' @description The function prepares the genetic map information for more than one breed.
-#' @param n number of chromosomes
-#' @param input list of genetic maps for the selected breeds
-#' @param meth name of approach ("deterministic", "likelihood-based")
-#' @param names.bc.plot contains the names of the selected breeds
+#' @description The function prepares the genetic map information for a single approach and chosen breeds.
 #'
-#' @return The function returns a list containing the desired information for all selected breeds for each chromosome.
+#' @param input list of genetic maps for the selected breeds
+#' @param breed.infos data frame containing the predefined settings for selected breeds (\link{table_breed_information})
+#' @param approach character containing the selected approach
+#'
+#' @return The function returns a list containing the desired information in data frame for each chromosome (\link{data_plot_geneticMap})
 #' @export
 #' @seealso \link{mod_bc_genetic_map_server}
 
-transformdata_genetic_map_bc=function(n,input,meth,names.bc.plot)
+transformdata_genetic_map_bc=function(input,breed.infos,approach)
 {
+  Mbp_position<-Chr<-Name<-NULL
 
-  ll=list()
-  for(i in 1:n)
+  col.nam=colnames(input[[1]])[grep(approach$Abbreviation,colnames(input[[1]]))[1]]
+
+  ll1<-lapply(1:nrow(breed.infos),function(ij)
   {
-    for(ij in 1:length(names.bc.plot))
-    {
-     df.p = input[[ij]][which(input[[ij]]$Chr==i),]
+    dat2<-input[[ij]]%>%dplyr::select(Chr,X=Mbp_position,Y=col.nam,Marker=Name)
 
-     if(meth=="deterministic")a=cbind(df.p$"Chr",df.p$"Mbp_position",df.p$"cM_deterministic")
-     else a=cbind(df.p$"Chr",df.p$"Mbp_position",df.p$"cM_likelihood")
+    dat2<-dat2%>%dplyr::mutate(Legend=breed.infos$Name[ij],Color=breed.infos$Color[ij])
+    dat2
+  })
 
-     colnames(a)<-c("chr","X","Y")
-
-     Breed=rep(ij,nrow(a))
-     df.p2=as.data.frame(cbind(a,Breed))
-
-     if(ij==1) df.22=as.data.frame(df.p2)
-     else df.22=as.data.frame(rbind(df.22,df.p2))
-
-     if(ij ==length(names.bc.plot)){
-        df.0=df.22
-        df.0$chr=as.numeric(df.0$chr)
-        df.0$X=as.numeric(df.0$X)
-        df.0$Y=as.numeric(df.0$Y)
-        df.0$Breed=as.character(df.0$Breed)
-
-        bind.breeds=df.0
-     }
-    }
-    ll[[i]]=bind.breeds
-  }
+  input2<-do.call("rbind",ll1)
+  ll<-split(input2,f=~Chr)
   ll
 }
 
-
-
 #' function
-#' @title Creating the genetic map plot for breed analysis
-#' @description The function creates the plot for a single chromosome for one breed.
+#' @title Creating the genetic map plot for selected chromosome
+#' @description The function creates the plot for a single chromosome for selected approaches (breed analysis) or the selected breeds (breed comparison)
 #'
-#' @param chr character contains the selected chromosome
-#' @param dat_maps data frame containing the genetic map data
+#' @param dat data frame containing the genetic map data \link{data_plot_geneticMap}
 #' @param name.file character contains the name for image file
-#' @param colo vector contains the predefined colors
 #'
 #' @rawNamespace import(plotly, except = last_plot)
 #' @return The function returns a plotly object.
+#'
 #' @export
-#' @seealso \link{mod_genetic_map_server}
+#' @seealso
+#' * \link{mod_genetic_map_server} \cr
+#' * \link{mod_bc_genetic_map_server}
 
-makePlot_geneticMaps<-function(chr,dat_maps,name.file,colo)
+makePlot_geneticMaps<-function(dat,name.file)
 {
-   if(length(which(is.na(dat_maps$cM_likelihood)==TRUE))!=0)dat_maps=dat_maps[-which(is.na(dat_maps$cM_likelihood)==TRUE),]
+  dat=dat[order(dat$Legend),]
 
-   p <- plotly::plot_ly(dat_maps, x = dat_maps$"Mbp_position", y = dat_maps$"cM_deterministic", type = "scatter",size=20, text=dat_maps[,2],hovertemplate = paste("<b>%{text}</b><br>","Genetic distance (cM): %{y:.}<br>","Physical length (Mbp): %{x:.}<br>","<extra></extra>"
-   ), mode = "markers",height=800,name="Deterministic",color=I(colo[1]))%>% layout(title=list(text=paste0("BTA ",chr),font=18), xaxis=list(title="Physical length (Mbp)"),yaxis=list(title="Genetic distance (cM)"),
-                                                                                                margin=list(t=100)) %>% config(displayModeBar=TRUE,displaylogo = FALSE, modeBarButtonsToRemove = list(
-                                                                                              'sendDataToCloud','zoom2d', 'autoScale2d', 'hoverClosestCartesian','hoverCompareCartesian', 'pan2d', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d','resetScale2d'),
-                                                                                                toImageButtonOptions= list(filename = name.file)) ### Ooms, Jeroen. 2018. Rsvg: Render Svg Images into Pdf, Png, Postscript, or Bitmap Arrays. https://CRAN.R-project.org/package=rsvg. adopted from website: https://plotly-r.com/control-modebar.html 05.08.2021
-
-   p=add_markers(p,x=dat_maps$"Mbp_position",y=dat_maps$"cM_likelihood",color=I(colo[2]), text=dat_maps[,2],hovertemplate = paste("<b>%{text}</b><br>","Genetic distance (cM): %{y:.}<br>","Physical length (Mbp): %{x:.}<br>","<extra></extra>"),name="Likelihood")
-   p
-}
-
-
-
-#' function
-#' @title Creating the genetic map plot for breed comparison
-#'
-#' @description The function creates the plot for a single chromosome for more than one breed.
-#'
-#' @param chr selected chromosome
-#' @param dat_maps.list list each list element contains the genetic map data for a breed
-#' @param colo vector containing the pre-defined colors
-#' @param plot.pos contains the column which should be used
-#' @param what contains the approach name ("deterministic" or "likelihood-based") to create plot title
-#' @param name.file name of output file
-#'
-#' @rawNamespace import(plotly, except = last_plot)
-#' @return The function return a plotly object.
-#' @export
-#' @seealso \link{mod_bc_genetic_map_server}
-
-makePlot_geneticMaps_bc<-function(chr,dat_maps.list,colo,plot.pos,what,name.file)
-{
-  p <- plotly::plot_ly(dat_maps.list[[1]], x = dat_maps.list[[1]]$"Mbp_position", y = dat_maps.list[[1]][,plot.pos], type = "scatter",size=20, text=dat_maps.list[[1]][,2],hovertemplate = paste("<b>%{text}</b><br>","Genetic distance (cM): %{y:.}<br>","Physical length (Mbp): %{x:.}<br>","<extra></extra>"
-  ), mode = "markers",height=800,name=names(dat_maps.list)[1],color=I(colo[1]))%>% plotly::layout(title=list(text=paste0("BTA ",chr," - ", what),font=18), xaxis=list(title="Physical length (Mbp)"),yaxis=list(title="Genetic distance (cM)")) %>%
-                                                                                        plotly::config(displayModeBar=TRUE,displaylogo = FALSE, modeBarButtonsToRemove = list(
-                                                                                          'sendDataToCloud','zoom2d', 'autoScale2d', 'hoverClosestCartesian','hoverCompareCartesian', 'pan2d', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d','resetScale2d'),
-                                                                                          toImageButtonOptions= list(filename = name.file)) ### Ooms, Jeroen. 2018. Rsvg: Render Svg Images into Pdf, Png, Postscript, or Bitmap Arrays. https://CRAN.R-project.org/package=rsvg. adopted from website: https://plotly-r.com/control-modebar.html 05.08.2021
-
-  for(j in 2:length(colo))p=plotly::add_markers(p,x=dat_maps.list[[j]]$"Mbp_position",y=dat_maps.list[[j]][,plot.pos],color=I(colo[j]), text=dat_maps.list[[j]][,2],hovertemplate = paste("<b>%{text}</b><br>","Genetic distance (cM): %{y:.}<br>","Physical length (Mbp): %{x:.}<br>","<extra></extra>"),name=names(dat_maps.list)[j])
+  p <- plotly::plot_ly(dat, x = ~X, y = ~Y,color=~Legend, marker=list(size=8),type = "scatter", mode="markers", text=~Marker, hovertemplate = paste("<b>%{text}</b><br>","Genetic distance (cM): ", sprintf("%.3f", dat$Y),"<br>","Physical length (Mbp):", sprintf("%.3f", dat$X),"<br>","<extra></extra>"),
+                       colors=~unique(dat$Color))%>%
+    plotly::layout(hovermode="closest",plot_bgcolor = '#F5F5F5',
+                   xaxis = list(
+                     title=list(text="Physical length (Mbp)",font=list(family="Arial",size=16)),
+                     tickfont = list(size = 14),
+                     showgrid = TRUE,
+                     gridcolor = 'white',
+                     fixedrange = TRUE
+                   ),
+                   yaxis = list(
+                     title=list(text="Genetic distance (cM)",font=list(family="Arial",size=16)),
+                     tickfont = list(size = 14),
+                     showgrid = TRUE,
+                     gridcolor = 'white',
+                     fixedrange = TRUE
+                   ),
+                   legend=list(title=list(text="Legend",font=list(size=16,family="Arial")),font=list(family="Arial",size=15)))%>%
+    plotly::config(displayModeBar=TRUE, displaylogo = FALSE, modeBarButtonsToRemove = list('sendDataToCloud','zoom2d', 'autoScale2d', 'hoverClosestCartesian','hoverCompareCartesian', 'pan2d',
+                                                                                           'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d','resetScale2d'), toImageButtonOptions= list(filename = name.file))
   p
 }
 
-
-
-#############################################################
 #' function
-#' @title Creating genetic map plots for all chromosomes for breed analysis
+#' @title Creating genetic map plots for all chromosomes
 #'
-#' @description The function creates the plots for all chromosomes for a breed and grid arrange them. To obtain only one
-#' legend for all plots, the function \link{get_only_legend} is called inside.
+#' @description The function creates the plots for all chromosomes and arranges them together in a single plot.
 #'
-#' @param ll.gm.s list each list element contains a data frame, including chromosome, position in Mbp and cM, as well as approach for a chromosome
-#' @param colo vector containing the pre-defined colors
+#' @param ll.gm.s list each list element contains a data frame (\link{data_plot_geneticMap}) for a chromosome for selected approaches (breed analysis) or the selected breeds (breed comparison)
 #'
 #' @import ggplot2
+#' @importFrom patchwork wrap_plots plot_layout
 #' @import gridExtra
 #'
-#' @return The function return a grid with arranged ggplots.
+#' @return The function returns a patchwork object (containing multiple ggplot objects)).
 #' @export
 #' @seealso \link{mod_genetic_map_server}
-#' @note adopted from https://www.geeksforgeeks.org/add-common-legend-to-combined-ggplot2-plots-in-r/
 
-makePlot_all_geneticMaps <-function(ll.gm.s,colo)
+makePlot_all_geneticMaps <-function(ll.gm.s)
 {
-  X<-Y<-Approach<-NULL
-  pl<-lapply(1:29,function(.x) ggplot2::ggplot(ll.gm.s[[.x]],aes(x=X, y=Y,col=Approach)) +
-               geom_point(size=3, na.rm=TRUE)+
-               ggtitle(paste0("BTA ",.x))+
-               scale_color_manual(values=colo,labels=c("Deterministic","Likelihood"))+
-               theme(axis.ticks=element_line(colour = "black", size = 2),plot.title = element_text(hjust = 0.5),
-                     text = element_text(size = 19),legend.position="none")+
-               labs(x="Physical length (Mbp)",y="Genetic distance (cM)")
-  )
-  gg= gridExtra::grid.arrange(grobs=pl,ncol=3)
+  X<-Y<-Legend<-NULL
 
-    plot1_legend <- ggplot2::ggplot(ll.gm.s[[1]],aes(x=X, y=Y,col=Approach)) +
-                  geom_point(size=3, na.rm=TRUE)+
-                  ggtitle(paste0("BTA 1"))+
-                  scale_color_manual(values=colo,labels=c("Deterministic","Likelihood"))+
-                  theme(axis.ticks=element_line(colour = "black", size = 2),plot.title = element_text(hjust = 0.5),
-                        text = element_text(size = 19),legend.position="top")+
-                  labs(x="Physical length (Mbp)",y="Genetic distance (cM)")
+  ll.gm.s.sort=ll.gm.s[[1]][order(ll.gm.s[[1]]$Legend),]
+  colo=unique(ll.gm.s.sort$Color)
+  uni.approaches=unique(ll.gm.s.sort$Legend)
 
-  # extract legend from plot1 using above function
-  legend <- get_only_legend(plot1_legend)
+  pl <- mapply(function(x) {
+      ggplot2::ggplot(ll.gm.s[[x]][order(ll.gm.s[[x]]$Legend),],aes(x=X, y=Y,col=Legend)) +
+      ggplot2::geom_point(size=3, na.rm=TRUE)+
+      ggplot2::ggtitle(paste0("BTA ",x))+
+      ggplot2::scale_color_manual(values=colo,labels=uni.approaches)+
+      ggplot2::theme(axis.ticks=ggplot2::element_line(colour = "black", size = 2),plot.title = ggplot2::element_text(hjust = 0.5),
+            text = element_text(size = 19),legend.position="none")+
+      labs(x="Physical length (Mbp)",y="Genetic distance (cM)")
+  }, 1:29, SIMPLIFY = FALSE)
 
-  gg2=gridExtra::grid.arrange(legend,gg,nrow=2,heights = c(0.2, 20.5))
+  gg2=patchwork::wrap_plots(pl, ncol = 3) + patchwork::plot_layout(guides = 'collect') & ggplot2::theme(legend.position='top')
   gg2
 }
 
-############  plot for all chromosomes - breed comparison
-#' function
-#' @title Extracting legend
-#' @description The function extracts the legend of a ggplot object.
-#'
-#' @param plot ggplot object
-#'
-#' @import ggplot2
-#'
-#' @return The function return the legend from a ggplot object.
-#' @export
-#' @seealso The function is called from \link{makePlot_all_geneticMaps_bc}.
-#' @note adopted from https://www.geeksforgeeks.org/add-common-legend-to-combined-ggplot2-plots-in-r/
 
-get_only_legend <- function(plot) {
-  plot_table <- ggplot2::ggplot_gtable(ggplot2::ggplot_build(plot))
-  legend_plot <- which(sapply(plot_table$grobs, function(x) x$name) == "guide-box")
-  legend <- plot_table$grobs[[legend_plot]]
-  return(legend)
+#' function
+#' @title Creates table header for genetic map table for specific selected chromosome for breed analysis
+#' @param approach.info data.frame containing relevant \link{table_approach_general}
+#' @param no.cols integer number of columns for genetic map used
+#' @return The function returns a shiny.tag.
+#'
+#' @noRd
+create_table_header2 <- function(approach.info,no.cols) {
+
+  need.col3<-c()
+
+  pl4=lapply(1:nrow(approach.info),function(inn){
+    if(approach.info$Approach[inn]!="Likelihood_male"){
+      need.col3<-c(need.col3,paste0(approach.info$Abbreviation[inn]," position <br> (cM)"))
+      need.col3<-c(need.col3,paste0(approach.info$Abbreviation[inn]," recombination <br> rate adjacent"))
+    } else {
+      need.col3<-c(need.col3,paste0(approach.info$Abbreviation[inn]," position <br> (cM)"))
+    }
+  })
+  need.col2<-do.call("c",pl4)
+
+  thead<-tr<-th<-NULL
+  sketch2 = htmltools::withTags(table(
+    class = 'display',
+    thead(
+      tr(
+        th(colspan=2,""),
+        th(colspan=3,"Physical Map "),
+        th(colspan=no.cols,"Genetic Map")
+      ),
+      tr(
+        th(colspan=5,""),
+        lapply(1:nrow(approach.info), function(inn) {
+          if(approach.info$Approach[inn]!="Likelihood_male") {
+            th(colspan = 2, htmltools::tags$a(href="#", approach.info$Name[inn], onclick = "openTab('methodology')", style='text-decoration-line: underline'))
+          } else {
+            th(colspan = 1, htmltools::tags$a(href="#", approach.info$Name[inn], onclick = "openTab('methodology')", style='text-decoration-line: underline;'))
+          }
+        }),
+      ),
+      tr(
+        th(colspan=1,"Chromosome"),
+        th(colspan=1,"Marker"),
+        th(colspan=1,"Position (Mbp)"),
+        th(colspan=1,"Inter-marker distance (Mbp)"),
+        th(colspan=1,"Position (BP)"),
+        lapply(1:length(need.col2), function(inn) {
+          th(colspan=1, htmltools::HTML(need.col2[inn]))
+        })
+      )
+    )
+  ))
+  sketch2
 }
 
 #' function
-#' @title Creating all genetic map plots for all chromosomes for more than one breed
+#' @title Creates table header for genetic map table when all chromosomes are selected for breed analysis
+#' @param approach.info data.frame containing relevant \link{table_approach_general}
+#' @param no.cols integer number of columns for genetic map used
+#' @return The function returns a character vetor.
 #'
-#' @description The function creates the plots for all chromosomes for more than one breed and grid arrange them. To obtain only one
-#' legend for all plots, the function \link{get_only_legend} is called inside.
-#'
-#' @param ll list whereby each list element contains a data frame including chromosome number, the position in Mbp and cM, as well as breed information for a chromosome
-#' @param names.bc.plot vector containing names of selected breeds
-#' @param colo vector containing the pre-defined colors
-#'
-#' @import ggplot2
-#' @import gridExtra
-#' @note adopted from https://www.geeksforgeeks.org/add-common-legend-to-combined-ggplot2-plots-in-r/
-#' @return The function return a grid with arranged ggplots.
-#' @export
-#' @seealso \link{mod_bc_genetic_map_server}
+#' @noRd
+create_table_header2_all <- function(approach.info,no.cols) {
+  need.col3<-c()
 
-makePlot_all_geneticMaps_bc <-function(ll,names.bc.plot,colo)
+  pl4=lapply(1:nrow(approach.info),function(inn){
+    if(approach.info$Approach[inn]!="Likelihood_male"){
+      need.col3<-c(need.col3,paste0(approach.info$Abbreviation[inn]," position (cM)"))
+      need.col3<-c(need.col3,paste0(approach.info$Abbreviation[inn]," recombination rate adjacent"))
+     } else {
+     need.col3<-c(need.col3,paste0(approach.info$Abbreviation[inn]," position (cM)"))
+    }
+  })
+  need.col2<-do.call("c",pl4)
+  need.col3=c("Chromosome","Marker","Position (Mbp)","Inter-marker distance (Mbp)","Position (BP)",need.col2)
+  need.col3
+}
+
+#' function
+#' @title Creates table header for genetic map table when specific selected chromosome for breed comparison
+#' @param breed.infos data.frame containing relevant \link{table_breed_general}
+#' @return The function returns a shiny.tag.
+#' @noRd
+create_table_header_bc2<-function(breed.infos)
 {
-  X<-Y<-Breed <-NULL
-  pl<-lapply(1:29,function(.x) ggplot2::ggplot(ll[[.x]],aes(x=X, y=Y,col=Breed)) +
-               geom_point(size=3, na.rm=TRUE)+
-               ggtitle(paste0("BTA ",.x))+
-               scale_color_manual(values=colo[1:length(names.bc.plot),1],labels=names.bc.plot)+
-               theme(axis.ticks=element_line(colour = "black", size = 2),text = element_text(size = 19),
-                     plot.title = element_text(hjust = 0.5),legend.position="none")+
-               labs(x="Physical length (Mbp)",y="Genetic distance (cM)")
+  thead<-tr<-th<-NULL
+  sketch2 = htmltools::withTags(table(
+    class = 'display',
+    thead(
+      tr(
+        th(colspan=2,""),
+        th(colspan=2,"Physical Map"),
+        th(colspan=nrow(breed.infos),"Genetic Map"
+        ),
+        tr(
+          th(colspan=1,"Marker"),
+          th(colspan=1,"Chromosome"),
+          th(colspan=1,"Position (Mbp)"),
+          th(colspan=1,"Position (bp)"),
+
+          lapply(1:nrow(breed.infos), function(inn) {
+            th(colspan=1,HTML(paste(breed.infos$Name[inn],"<br> Position (cM)")))
+          })
+        )
+      )
+    ))
   )
-
-  gg= gridExtra::grid.arrange(grobs=pl,ncol=3)
-
-  plot1_legend <- ggplot2::ggplot(ll[[1]],aes(x=X, y=Y,col=Breed)) +
-    geom_point(size=3, na.rm=TRUE)+
-    scale_color_manual(values=colo[1:length(names.bc.plot),1],labels=names.bc.plot)+
-    theme(axis.ticks=element_line(colour = "black", size = 2),text = element_text(size = 19),
-          plot.title = element_text(hjust = 0.5),legend.position="top")
-
-  # extract legend from plot1 using above function
-  legend <- get_only_legend(plot1_legend)
-
-  gg2=gridExtra::grid.arrange(legend,gg,nrow=2,heights = c(0.2, 20.5))
-  gg2
+  sketch2
 }
 
+#' function
+#' @title Creates table header for genetic map table when all chromosomes are selected for breed comparison
+#' @param breed.infos data.frame containing relevant \link{table_breed_general}
+#' @return The function returns a character vector.
+#' @noRd
+create_table_header_bc2_all<-function(breed.infos)
+{
+  names=lapply(1:nrow(breed.infos), function(inn) {
+    paste0(breed.infos$Name[inn]," Position (cM)")
+  })
+
+  header.p1=do.call("c",names)
+  header.p2=c("Marker","Chromosome","Position (Mbp)","Position (bp)", header.p1)
+  header.p2
+}

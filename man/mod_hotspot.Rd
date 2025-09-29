@@ -7,7 +7,7 @@
 \usage{
 mod_hotspot_ui(id)
 
-mod_hotspot_server(id, filter, breed.select, color.shape.def)
+mod_hotspot_server(id, filter, breed.select, approach.info, add.approach.names)
 }
 \arguments{
 \item{id}{module id}
@@ -16,17 +16,28 @@ mod_hotspot_server(id, filter, breed.select, color.shape.def)
 
 \item{breed.select}{character contains the name of the selected breed}
 
-\item{color.shape.def}{data frame containing the definition for coloring, shapes, size for plots}
+\item{approach.info}{data.frame data frame containing the predefined settings and names for the selected approaches (\link{table_approach_information})}
+
+\item{add.approach.names}{character containing the concatenated approach abbreviations and is used as an addition to the file name}
 }
 \description{
 A shiny module to generate the outcome for the tabpanel "General information" for the sidebar "Breed analysis".
 }
 \details{
-Within the module the corresponding data are prepared using the function \link{transformdata_hotspot}. The prepared data are used to plot the hotspot figure using the function
-\link{scatterPlot_hotspot} or \link{scatterPlot_hotspot_all} depending on user chromosome choice. The hover information are obtained from the function \link{hovering}.
+Within the module the input data are prepared using the function \link{transformdata_hotspot}. To produce the hotspot plot, the function
+\link{scatterPlot_hotspot} for a selected chromosome or \link{scatterPlot_hotspot_all} when all chromosomes are selected is used.
+ This module also shows a Venn diagram of corresponding revealed hotspot SNP markers. The input data are prepared
+ using the function \link{process_venn_data}, corresponding colors for Venn sets are created using the function \link{create.colors} and plotted using the function \link{creating_venn}. The user may select a Venn diagram subset and the
+ table will be reduced accordingly using the function \link{prepare_table_venn}.
 }
 \seealso{
-\link{transformdata_hotspot}, \link{scatterPlot_hotspot}, \link{scatterPlot_hotspot_all} and \link{hovering}
+* \link{transformdata_hotspot},
+* \link{scatterPlot_hotspot},
+* \link{scatterPlot_hotspot_all}
+* \link{process_venn_data}
+* \link{create.colors} \cr
+* \link{creating_venn}
+* \link{prepare_table_venn}
 }
 \keyword{hotspot}
 \keyword{internal}

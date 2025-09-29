@@ -2,30 +2,25 @@
 % Please edit documentation in R/mod_hotspot_fct_functions.R
 \name{scatterPlot_hotspot_all}
 \alias{scatterPlot_hotspot_all}
-\title{Creating the Hotspot scatter plot for all chromosomomes}
+\title{Creating the hotspot scatter plot for all chromosomomes}
 \usage{
-scatterPlot_hotspot_all(dat1, ranges, scale, legend1)
+scatterPlot_hotspot_all(dat1, file.name)
 }
 \arguments{
-\item{dat1}{data frame (containing: Chr, SNP, cM, BP, Theta, Dis, ord, size, coloring, and shape)}
+\item{dat1}{data frame \link{data_plot_hotspot_all}}
 
-\item{ranges}{reactive values containing the brush information}
-
-\item{scale}{numeric contains the number to scale the plot}
-
-\item{legend1}{data frame containing the legend information (contains: label, breaks, shape, and ord)}
+\item{file.name}{character name of the output file}
 }
 \value{
-The function returns a ggplot object.
+The function returns a plotly object.
 }
 \description{
 The function creates the hotspot plot for all chromosomes.
 }
 \details{
 function
-
-Note: legend1, the column breaks contains the color for the corresponding label, and column ord contains numbers used for sorting to keep the sequence (corresponds to ord in dat1).
 }
 \seealso{
-\link{mod_hotspot_server} and \link{mod_bc_hotspot_server}
+* \link{mod_hotspot_server}
+* \link{mod_bc_hotspot_server}
 }

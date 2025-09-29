@@ -4,22 +4,20 @@
 \alias{transformdata_genetic_map_bc}
 \title{Prepare genetic map data for plotting for breed comparison}
 \usage{
-transformdata_genetic_map_bc(n, input, meth, names.bc.plot)
+transformdata_genetic_map_bc(input, breed.infos, approach)
 }
 \arguments{
-\item{n}{number of chromosomes}
-
 \item{input}{list of genetic maps for the selected breeds}
 
-\item{meth}{name of approach ("deterministic", "likelihood-based")}
+\item{breed.infos}{data frame containing the predefined settings for selected breeds (\link{table_breed_information})}
 
-\item{names.bc.plot}{contains the names of the selected breeds}
+\item{approach}{character containing the selected approach}
 }
 \value{
-The function returns a list containing the desired information for all selected breeds for each chromosome.
+The function returns a list containing the desired information in data frame for each chromosome (\link{data_plot_geneticMap})
 }
 \description{
-The function prepares the genetic map information for more than one breed.
+The function prepares the genetic map information for a single approach and chosen breeds.
 }
 \details{
 function

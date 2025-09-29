@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function() {
       togButtons.forEach(function(button) {
         var icon = button.querySelector('i');
         if (icon) {
-          icon.setAttribute('aria-label', 'tab');
+          icon.setAttribute('aria-label','tab');
           icon.setAttribute('role', 'button');
         }
       });
@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
   document.getElementById('chromosome').setAttribute('title', 'chromosome');
   document.getElementById('chromosome1').setAttribute('title', 'chromosome');
   document.getElementById('mod_misplaced_1-breedSelect_misplaced').setAttribute('title','Select breed(s)');
+
   var collapseButtons = document.querySelectorAll('[data-widget=\"collapse\"]');
           collapseButtons.forEach(function(button) {
             var icon = button.querySelector('i');

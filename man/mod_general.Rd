@@ -7,7 +7,15 @@
 \usage{
 mod_general_ui(id)
 
-mod_general_server(id, filter, breed.select, color.breed.dl, make.traff.light)
+mod_general_server(
+  id,
+  filter,
+  breed.select,
+  make.traff.light,
+  approach.info,
+  dt,
+  add.approach.names
+)
 }
 \arguments{
 \item{id}{module id}
@@ -16,20 +24,29 @@ mod_general_server(id, filter, breed.select, color.breed.dl, make.traff.light)
 
 \item{breed.select}{character contains the name of the selected breed}
 
-\item{color.breed.dl}{vector containing the predefined colors}
+\item{make.traff.light}{object containing the ggplot for the likelihood quality signal (\link{make_traffic_light})}
 
-\item{make.traff.light}{object containing the ggplot for the likelihood quality signal}
+\item{approach.info}{data frame containing the predefined settings and names for the selected approaches (\link{table_approach_information})}
+
+\item{dt}{data frame contains the genetic map summary for the selected breed}
+
+\item{add.approach.names}{character containing the concatenated approach abbreviations and is used as an addition to the file name}
 }
 \description{
 A shiny module to generate the outcome for the tabpanel "General information" for the sidebar "Breed analysis".
 }
 \details{
-Within the module the data are prepared for plotting using the function \link{transformdata_general}. Moreover,
-the plots are created using the function \link{scatterPlot_general_all} or \link{scatterPlot_general_selected} depending on the user selected chromosome.
-Corresponding hovering information and style are generated using \link{hovering}. Finally, the quality of the likelihood approach is also shown here by means of a traffic light (also termed as likelihood quality signal).
+Within the module the data are prepared for the table and for plotting using the function \link{transformdata_general}. Moreover,
+the plots are created using the function \link{scatterPlot_general}.
+The function \link{create.output} is used to create the outcome for the correlation depending on selected approaches.
+Finally, if the likelihood-based approach is selected, the quality of the likelihood approach is also shown here by means of a traffic light
+(also termed as likelihood quality signal (\link{make_traffic_light})).
 }
 \seealso{
-\link{transformdata_general},\link{scatterPlot_general_all}, \link{scatterPlot_general_selected}, \link{hovering} and \link{make_traffic_light}
+* \link{transformdata_general} \cr
+* \link{scatterPlot_general} \cr
+* \link{make_traffic_light} \cr
+* \link{create.output}
 }
 \keyword{general}
 \keyword{internal,}

@@ -4,20 +4,29 @@
 \alias{transformdata_general}
 \title{Transform data for breed analysis}
 \usage{
-transformdata_general(data1)
+transformdata_general(data1, approach.info, filter)
 }
 \arguments{
-\item{data1}{data frame}
+\item{data1}{data frame containing the genetic map summary for selected approaches for chosen breed}
+
+\item{approach.info}{data frame containing the predefined settings and names for the selected approaches (\link{table_approach_information})}
+
+\item{filter}{character contains the selected chromosome}
 }
 \value{
-The function returns a data frame with three columns: basepairs (bp), centiMorgan (cM) and chromosome (chr).
+The function returns a data.frame (\link{data_plot_general})
 }
 \description{
-The function transforms the data for plotting: basepairs (bp) into megabasepairs (Mbp) and Morgan (M) into centiMorgan (cM).
+The function transforms the data for plotting:
+1) basepairs (bp) into megabasepairs (Mbp) and Morgan (M) into centiMorgan (cM) for selected approaches,
+2) adds approach specific colors and approach names, and
+3) adds size values ("10" not selected chromosome and "18" selected chromosome; "14" when all chromosomes are selected)
+Moreover, the transformed data are also used in function \link{create.output} to create the correlation output.
 }
 \details{
 function
 }
 \seealso{
-\link{mod_general_server}
+* \link{mod_general_server} \cr
+* \link{create.output}
 }

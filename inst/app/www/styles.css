@@ -66,3 +66,11 @@ body */.content-wrapper, .right-side {background-color:#F0F6FB;},
                           .tabbable > .nav > li[class=active]    > a {background-color: #073763; color:white;}
 a:active, a:link, a:visited {color: #0000ff; }
 .butt1{color: black !important;font-size: 13px;}
+
+input[type=radio] {
+  accent-color: #1569C7
+}
+
+input[type=checkbox] {
+  accent-color: #1569C7
+}
