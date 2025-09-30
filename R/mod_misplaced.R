@@ -86,7 +86,7 @@ mod_misplaced_ui <-function(id)
                         solidHeader = TRUE,collapsible = TRUE,collapsed=TRUE,
                        htmltools::br(),htmltools::br(),
                        shiny:: fluidRow(
-                         shiny::column(width=5,shiny::selectInput(inputId = ns('breedSelect_misplaced'), label = 'Select breed(s):',choices= c("","All","Holstein-CH","Fleckvieh","BrownSwiss","Braunvieh","Angus","Simmental","Limousin"),
+                         shiny::column(width=5,shiny::selectInput(inputId = ns('breedSelect_misplaced'), label = 'Select breed(s):',choices= c("","All","Holstein_CH","Fleckvieh","BrownSwiss","Braunvieh","Angus","Simmental","Limousin"),
                                                                   selected=" ",multiple=TRUE)),
                          shiny::column(width=5,id=ns("show_hide_common"),shiny::checkboxInput(ns("common"),label="Show shared",value=FALSE))
 
@@ -284,21 +284,21 @@ mod_misplaced_server <- function(id){
     {
      if(input$breedSelect_misplaced[1]!="All")
      {
-        shiny::updateSelectInput(session,'breedSelect_misplaced',label="Select breed(s):",choices=c("All","Holstein-CH","Fleckvieh","BrownSwiss","Braunvieh","Angus","Simmental","Limousin"), selected="All")
+        shiny::updateSelectInput(session,'breedSelect_misplaced',label="Select breed(s):",choices=c("All","Holstein_CH","Fleckvieh","BrownSwiss","Braunvieh","Angus","Simmental","Limousin"), selected="All")
         data4=data3
         shinyjs::hide(id="show_hide_common")
         title1.tab="Misplaced_markers-All-breeds-except-HOL-DE"
      }
      if(length(input$breedSelect_misplaced)==1)
      {
-       shiny::updateSelectInput(session,'breedSelect_misplaced',label="Select breed(s):",choices=c("All","Holstein-CH","Fleckvieh","BrownSwiss","Braunvieh","Angus","Simmental","Limousin"), selected="All")
+       shiny::updateSelectInput(session,'breedSelect_misplaced',label="Select breed(s):",choices=c("All","Holstein_CH","Fleckvieh","BrownSwiss","Braunvieh","Angus","Simmental","Limousin"), selected="All")
        data4=data3
        shinyjs::hide(id="show_hide_common")
        title1.tab="Misplaced_markers-All-breeds-except-HOL-DE"
      }
      if(input$breedSelect_misplaced[1]=="All" && length(input$breedSelect_misplaced)>1)
      {
-       shiny::updateSelectInput(session,'breedSelect_misplaced',label="Select breed(s):",choices=c("All","Holstein-CH","Fleckvieh","BrownSwiss","Braunvieh","Angus","Simmental","Limousin"), selected=input$breedSelect_misplaced[2])
+       shiny::updateSelectInput(session,'breedSelect_misplaced',label="Select breed(s):",choices=c("All","Holstein_CH","Fleckvieh","BrownSwiss","Braunvieh","Angus","Simmental","Limousin"), selected=input$breedSelect_misplaced[2])
        data4=data3 %>% filter(Breed %in% input$breedSelect_misplaced[2])
        nam=c()
        nam=paste0(nam,"-",input$breedSelect_misplaced[2])

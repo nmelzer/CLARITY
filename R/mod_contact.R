@@ -70,9 +70,8 @@ mod_contact_server = function(id){
     <ul>
      <li> Wittenburg D (2025) <i>A pipeline for processing genotype data and an R script for composing data (v2.0.0) the CLARITY app input data. </i>Github Release v1.1.0.
             Available soon.</li> &nbsp
-      <li> Melzer N (2025) <i>CLARITY: A Shiny app for interactive visualisation of the bovine physical-genetic map (v3.0.0)</i>.
-            Available at <a href ='https://github.com/nmelzer/CLARITY' target='_blank'> <u>https://github.com/nmelzer/CLARITY </u></a>; &nbsp
-            DOI: coming soon</u></a> </li> &nbsp;
+      <li> Melzer N (2025) <i>CLARITY: A Shiny app for interactive visualisation of the bovine physical-genetic map (v3.0.0-pre)</i>.
+            Available at <a href ='https://github.com/nmelzer/CLARITY' target='_blank'> <u>https://github.com/nmelzer/CLARITY </u></a> </li> &nbsp;
       <li> Melzer N (2024) <i>CLARITY: A Shiny app for interactive visualisation of the bovine physical-genetic map (v2.0.0)</i>.
             Available at <a href ='https://github.com/nmelzer/CLARITY' target='_blank'> <u>https://github.com/nmelzer/CLARITY </u></a>;
             <a href ='https://doi.org/10.5281/zenodo.13832239' target='_blank'><u> https://doi.org/10.5281/zenodo.13832239</u></a> </li> &nbsp;
@@ -86,7 +85,7 @@ mod_contact_server = function(id){
 
    output$dataList <- renderUI(htmltools::tags$h4(htmltools::HTML("
     <ul>
-     <li> Wittenburg D (2025) <i>Processed data to R shiny app CLARITY (v3.0.0); DOI coming soon </li> &nbsp
+     <li> Wittenburg D (2025) <i>Processed data to R shiny app CLARITY (v2.0.0); DOI coming soon </li> &nbsp
     </ul>")))
 
   })

@@ -2,20 +2,18 @@
 physical-genetic map
 ================
 N. Melzer, D. Wittenburg
-(September 22, 2025)
+(September 30, 2025)
 
-<!-- badges: start 
-[![R CMD Check](https://github.com/nmelzer/CLARITY/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/nmelzer/CLARITY/actions/workflows/R-CMD-check.yaml)
+<!-- badges: start  -->
+
+[![R CMD
+Check](https://github.com/nmelzer/CLARITY/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/nmelzer/CLARITY/actions/workflows/R-CMD-check.yaml)
 ⁠<!-- badges: end -->
 
 ## Source
 
 An online version of CLARITY is available at
 <https://nmelzer.shinyapps.io/clarity/>
-
-A pipeline for creating a breed-specific male genetic map from genotypes
-of paternal half-siblings is available at
-<https://github.com/wittenburg/hsrecombi>
 
 ## Background
 
@@ -73,6 +71,9 @@ type:
 ``` r
 # install.packages("devtools")
 devtools::install_github("nmelzer/CLARITY")
+#> Using GitHub PAT from the git credential store.
+#> Skipping install of 'CLARITY' from a github remote, the SHA1 (3c4e675e) has not changed since last install.
+#>   Use `force = TRUE` to force installation
 ```
 
 ## Example

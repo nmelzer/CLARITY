@@ -180,6 +180,7 @@ mod_genetic_function_server=function(id, filter,breed.select,make.traff.light,ap
        })
 
         table.show <-out.2
+
       }
       else
       {
@@ -203,15 +204,17 @@ mod_genetic_function_server=function(id, filter,breed.select,make.traff.light,ap
 
       output$tableBestmapFunction=DT::renderDataTable({
         title1=paste0(breed.select,"_genetic-map-functions_BTA-",filter)
-        DT::datatable(table.show(),filter="none", container=sketch1,options=list(dom='Bt',buttons = list('copy',
-                                    list(extend='csv',title=title1, exportOptions = list(columns = ":visible",format = list(header = DT::JS(createHeader)))),
-                                    list(extend='excel',title=title1,exportOptions = list(columns = ":visible",format = list(header = DT::JS(createHeader)))))),
+        DT::datatable(table.show(),filter="none", container=sketch1,options=list(dom='Bt',buttons = list('pageLength','copy',
+                                                                                                         list(extend='csv',title=title1, exportOptions = list(columns = ":visible",format = list(header = DT::JS(createHeader)))),
+                                                                                                         list(extend='excel',title=title1,exportOptions = list(columns = ":visible",format = list(header = DT::JS(createHeader))))),
+                                                                                 pagelength = 10,lengthMenu = list(c(10, 20 ,30, -1), c('10', '20','30','All'))),
                       escape=FALSE,rownames=FALSE)%>%
           DT::formatStyle(if(length(pp[which(pp$Haldane_scaled_mse!=0),2])!=0)"Haldane_scaled_mse",backgroundColor=DT::styleEqual(pp[which(pp[,2]!=0),2], rep("orange",length(pp[which(pp[,2]!=0),2]))))%>%
           DT::formatStyle(if(length(pp[which(pp$Rao_mse!=0),4])!=0)"Rao_mse",backgroundColor=DT::styleEqual(pp[which(pp[,4]!=0),4], rep("orange",length(pp[which(pp[,4]!=0),4]))))%>%
           DT::formatStyle(if(length(pp[which(pp$Felsenstein_mse!=0),6])!=0)"Felsenstein_mse",backgroundColor=DT::styleEqual(pp[which(pp[,6]!=0),6], rep("orange",length(pp[which(pp[,6]!=0),6])))) %>%
           DT::formatStyle(if(length(pp[which(pp$Karlin_mse!=0),8])!=0)"Karlin_mse",backgroundColor=DT::styleEqual(pp[which(pp[,8]!=0),8], rep("orange",length(pp[which(pp[,8]!=0),8]))))
       }, server = FALSE)
+
     }
   })
 }## End server

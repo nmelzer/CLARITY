@@ -132,7 +132,7 @@ makePlot_all_geneticMaps <-function(ll.gm.s)
       ggplot2::geom_point(size=3, na.rm=TRUE)+
       ggplot2::ggtitle(paste0("BTA ",x))+
       ggplot2::scale_color_manual(values=colo,labels=uni.approaches)+
-      ggplot2::theme(axis.ticks=ggplot2::element_line(colour = "black", size = 2),plot.title = ggplot2::element_text(hjust = 0.5),
+      ggplot2::theme(axis.ticks=ggplot2::element_line(colour = "black", linewidth = 2),plot.title = ggplot2::element_text(hjust = 0.5),
             text = element_text(size = 19),legend.position="none")+
       labs(x="Physical length (Mbp)",y="Genetic distance (cM)")
   }, 1:29, SIMPLIFY = FALSE)

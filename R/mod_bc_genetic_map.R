@@ -24,7 +24,7 @@
 #' @importFrom plotly plotlyOutput renderPlotly toWebGL
 #' @importFrom writexl write_xlsx
 #' @rawNamespace import(shinyjs, except = runExample)
-#' @importFrom RVenn Venn
+#' @importFrom ggVennDiagram Venn
 #' @export
 #' @seealso
 #' *\link{transformdata_genetic_map_bc} \cr
@@ -197,7 +197,7 @@ mod_bc_genetic_map_server <- function(id, filter,geneticMap.bc,names.files,make.
         rem
       }, breed.infos$Name, SIMPLIFY = FALSE)
 
-      venn<-RVenn::Venn(venn.data.chr)
+      venn<-ggVennDiagram::Venn(venn.data.chr)
       venn_data <-process_venn_data(venn=venn)
       col1<-create.colors(colo=breed.infos$Color)
 
@@ -291,7 +291,7 @@ mod_bc_genetic_map_server <- function(id, filter,geneticMap.bc,names.files,make.
          file.name.tab0<<-paste0(names.files,"-geneticMap_BTA-",filter,"-range-",input$rangeMap_bc[1],"-",input$rangeMap_bc[2]) # may not working
 
          filename.venn<<-shiny::reactive(paste0("Venn-Diagram-",names.files,"_BTA-",filter,"_range-",input$rangeMap_bc[1],"-",input$rangeMap_bc[2],"-",approach$Abbreviation,".png"))
-         venn  <- RVenn::Venn(venn.data.chr.2)
+         venn  <- ggVennDiagram::Venn(venn.data.chr.2)
          venn_data <-process_venn_data(venn)
 
          col1<-create.colors(colo=breed.infos$Color) ## raus hier
@@ -330,7 +330,7 @@ mod_bc_genetic_map_server <- function(id, filter,geneticMap.bc,names.files,make.
       })
 
         filename.venn <<- shiny::reactive(paste0("Venn-Diagram-",names.files,"_BTA-",filter,"-",approach$Abbreviation,".png"))
-        venn <- RVenn::Venn(venn.data.chr)
+        venn <- ggVennDiagram::Venn(venn.data.chr)
         venn_data <-process_venn_data(venn) ## also changed
 
         col1<-create.colors(colo=breed.infos$Color)

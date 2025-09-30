@@ -21,6 +21,7 @@
 #' @rawNamespace import(shinyjs, except = runExample)
 #' @importFrom rlang is_empty
 #' @import htmltools
+#' @importFrom ggVennDiagram Venn
 #'
 #' @seealso
 #' * \link{transformdata_hotspot_bc} \cr
@@ -166,7 +167,7 @@ mod_bc_hotspot_server <- function(id,filter, breed.infos,names.files,approach){
               })
           }
 
-          venn<-RVenn::Venn(venn.data.all)
+          venn<-ggVennDiagram::Venn(venn.data.all)
           venn_data <-process_venn_data(venn)
 
           if(nrow(breed.infos)==2)

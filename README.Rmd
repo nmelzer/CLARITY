@@ -1,7 +1,7 @@
 ---
 title: "*CLARITY*: A Shiny app for interactive visualisation of the bovine physical-genetic map"
 author: "N. Melzer, D. Wittenburg"
-date: "(September 22, 2025)"
+date: "(September 30, 2025)"
 output: 
  github_document
 ---
@@ -15,15 +15,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-<!-- badges: start 
+<!-- badges: start  -->
 [![R CMD Check](https://github.com/nmelzer/CLARITY/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/nmelzer/CLARITY/actions/workflows/R-CMD-check.yaml)
 ⁠<!-- badges: end -->
 
 ## Source
 
 An online version of CLARITY is available at https://nmelzer.shinyapps.io/clarity/
-
-A pipeline for creating a breed-specific male genetic map from genotypes of paternal half-siblings is available at https://github.com/wittenburg/hsrecombi
 
 
 ## Background 

@@ -21,6 +21,7 @@
 #' @import ggplot2
 #' @importFrom shinycssloaders withSpinner
 #' @import htmltools
+#' @importFrom ggVennDiagram Venn
 #'
 #' @seealso
 #' * \link{transformdata_hotspot},
@@ -141,7 +142,7 @@ mod_hotspot_server=function(id, filter,breed.select,approach.info,add.approach.n
             shinyjs::show("showhideBoxVenn")
 
             colors<-create.colors(colo=approach.info$Color)
-            venn <- RVenn::Venn(dat[[3]])
+            venn <- ggVennDiagram::Venn(dat[[3]])
             venn_data <-process_venn_data(venn)
 
             if(nrow(approach.info)==2){

@@ -16,7 +16,7 @@
 #' @import shiny
 #' @importFrom shinydashboard box
 #' @import htmltools
-#' @importFrom RVenn Venn
+#' @importFrom ggVennDiagram Venn
 #' @importFrom shinycssloaders withSpinner
 #' @importFrom plotly plotlyOutput renderPlotly toWebGL
 #' @importFrom ggplot2 ggsave
@@ -196,7 +196,7 @@ mod_bc_general_server <- function(id,filter,geneticMap.bc,names.files,make.traff
     }
 
     names(venn.data.all)<-breed.infos$Abbreviation
-    venn <- RVenn::Venn(venn.data.all)
+    venn <- ggVennDiagram::Venn(venn.data.all)
     venn_data <-process_venn_data(venn)
 
     colors=create.colors(colo=breed.infos$Color)

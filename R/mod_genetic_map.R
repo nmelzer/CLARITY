@@ -123,10 +123,17 @@ mod_genetic_map_server=function(id, filter,breed.select,geneticMap,make.traff.li
       #table
       genetMap=geneticMap[geneticMap$Chr %in% filter,use.cols]
 
+      # determine once format for print-out table
+      pos.col1=grep("_cM",colnames(genetMap))
+      pos.col2=grep("_recrate_adjacent",colnames(genetMap))
+      pos.col3=grep("Mbp_",colnames(genetMap))
+      digit.cols=c(rep(8,length(pos.col1)),rep(8,length(pos.col2)),rep(6,length(pos.col3)))
+
+
       output$TableMaps=DT::renderDataTable({
         DT::datatable(genetMap,filter="none",container=sketch2, options=list(searching = TRUE,dom='Bfrtip',buttons = list('pageLength','copy', list(extend='csv',title=file.name),list(extend='excel',title=file.name)),
                                                                            pagelength = 10,lengthMenu = list(c(10, 20 ,30, -1), c('10', '20','30','All'))),
-                                                                           escape=FALSE,rownames=FALSE)
+                                                                           escape=FALSE,rownames=FALSE)%>%DT::formatRound(columns = c(pos.col1,pos.col2,pos.col3),digits=digit.cols)
       }, server = FALSE)
 
       #### plot
@@ -157,8 +164,9 @@ mod_genetic_map_server=function(id, filter,breed.select,geneticMap,make.traff.li
         data=genetMap[range1[1]:range2[length(range2)],]
 
         output$TableMaps=DT::renderDataTable({
+          for(i  in 1:length(pos.col2))print(class(data[,pos.col2[i]]))
           DT::datatable(data,filter="none" , container=sketch2, options=list(searching = FALSE,dom='Bfrtip',buttons = list('pageLength','copy', list(extend='csv',title=file.name), list(extend='excel',title=file.name)),
-                                                                             pagelength = 10,lengthMenu = list(c(10, 20 ,30, -1), c('10', '20','30','All'))),escape=FALSE,rownames=FALSE)
+                                                                             pagelength = 10,lengthMenu = list(c(10, 20 ,30, -1), c('10', '20','30','All'))),escape=FALSE,rownames=FALSE)%>%DT::formatRound(columns = c(pos.col1,pos.col2,pos.col3),digits=digit.cols)
         }, server = FALSE)
 
         ## plot
@@ -177,7 +185,7 @@ mod_genetic_map_server=function(id, filter,breed.select,geneticMap,make.traff.li
 
         output$TableMaps=DT::renderDataTable({
           DT::datatable(genetMap,filter="none", container=sketch2, options=list(searching = FALSE,dom='Bfrtip',buttons = list('pageLength','copy', list(extend='csv',title=file.name), list(extend='excel',title=file.name)),
-                                                                                                pagelength = 10, lengthMenu = list(c(10, 20 ,30, -1), c('10', '20','30','All'))),escape=FALSE,rownames=FALSE)
+                                                                                                pagelength = 10, lengthMenu = list(c(10, 20 ,30, -1), c('10', '20','30','All'))),escape=FALSE,rownames=FALSE)%>%DT::formatRound(columns = c(pos.col1,pos.col2,pos.col3),digits=digit.cols)
         }, server = FALSE)
 
         output$sliderRangeMap <- shiny::renderUI({

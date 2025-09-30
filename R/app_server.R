@@ -176,7 +176,7 @@ app_server <- function( input, output, session) {
       load(system.file("extdata",paste0(input$breed,"/geneticMap.Rdata"),package="CLARITY"))
       geneticMap2<<-geneticMap[,c(2,1,3,8,4,5,6,7,10,9,12,11,14,13)]
 
-      if(input$chromosome=="")
+      if(input$chromosome=="" || is.null(input$chromosome)==TRUE)
       {
         shiny::updateSelectInput(session,'chromosome',label="Chromosome",choices=no.chr,selected="")
 
@@ -350,6 +350,8 @@ app_server <- function( input, output, session) {
 
         shinyjs::hide(id="chromosome1")
         shinyjs::hide(id="approachselection_bc")
+        shinyjs::hide(id="notworking2")
+        shinyjs::hide(id="notworking3")
         shiny::hideTab(inputId = "navbar2","General information")
         shiny::hideTab(inputId = "navbar2","Genetic map")
         shiny::hideTab(inputId = "navbar2","Hotspot detection")
@@ -364,6 +366,7 @@ app_server <- function( input, output, session) {
 
      ## stop - exclude part when Holstein-DE HMM is included
      stop1<<-0
+
      if(run=="yes"){
        shinyjs::hide(id="notworking3") ##
 
@@ -383,8 +386,10 @@ app_server <- function( input, output, session) {
            shinyjs::show(id="notworking2")
            shinyjs::hide(id="notworking3")
          }
-       }else{
-         shinyjs::hide(id="notworking2")
+       }
+       else{
+
+           shinyjs::hide(id="notworking2")
        }
 
        names.bc <<- breed.selected
@@ -402,7 +407,7 @@ app_server <- function( input, output, session) {
        geneticMap.bc <<-geneticMap.ll
        names.files<<-paste(names.bc,collapse="-")
 
-       if(is.null(input$chromsome1)!=TRUE && input$chromosome1!="" && stop1==0) ## take out if when Holstein-DE is included only if here
+       if(is.null(input$chromosome1)!=TRUE && input$chromosome1!="" && stop1==0) ## take out if when Holstein-DE is included only if here
        {
          shiny::showTab(inputId = "navbar2","General information")
          shiny::showTab(inputId = "navbar2","Genetic map")

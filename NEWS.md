@@ -1,4 +1,4 @@
-# CLARITY 3.0.0 [uploaded on September 2025]
+# CLARITY 3.0.0-pre [uploaded on September 2025]
 
 * Results from the Hidden-Markow-Model (HMM) are included. The HMM approach allows to estimate sex-specific recombination rates (male, female), and also the sex-average. On this basis, significant changes as well as further optimization were made to the App. 
 * Generally, improved differentiation of approaches within "Hotspot detection" (possible for the HMM-approach and deterministic approach) and "Genetic map  functions" (only available for the likelihood-based approach) has been implemented.
