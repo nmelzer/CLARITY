@@ -46,8 +46,8 @@ make_traffic_light<-function(selected.breed,dat.tl)
           ylim(0.99,1.01)+
           theme_bw()+
            theme(
-            panel.border = element_rect(colour = 'black', size = ifelse(nrow(dat.tl)==2,2,1.8)),
-            panel.background = element_rect(fill = 'gray', size = 3),
+            panel.border = element_rect(colour = 'black', linewidth = ifelse(nrow(dat.tl)==2,2,1.8)),
+            panel.background = element_rect(fill = 'gray', linewidth = 3),
             panel.grid.major.x = element_blank(),
             panel.grid.minor.x = element_blank(),
             panel.grid.major.y = element_blank(),

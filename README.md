@@ -71,9 +71,6 @@ type:
 ``` r
 # install.packages("devtools")
 devtools::install_github("nmelzer/CLARITY")
-#> Using GitHub PAT from the git credential store.
-#> Skipping install of 'CLARITY' from a github remote, the SHA1 (3c4e675e) has not changed since last install.
-#>   Use `force = TRUE` to force installation
 ```
 
 ## Example
@@ -90,7 +87,3 @@ run_app()
 This work was supported by the grant from the German Federal Ministry of
 Education and Research (BMBF, [FKZ031L0166
 CompLS](https://www.gesundheitsforschung-bmftr.de/de/clarity-die-entwicklung-einer-kombinierten-physisch-genetischen-karte-fur-eine-9212.php)).
-
-## Cite
-
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13832239.svg)](https://doi.org/10.5281/zenodo.13832239)

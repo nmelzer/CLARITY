@@ -82,5 +82,4 @@ run_app()
 ## Acknowledgement
 This work was supported by the grant from the German Federal Ministry of Education and Research (BMBF,  [FKZ031L0166 CompLS](https://www.gesundheitsforschung-bmftr.de/de/clarity-die-entwicklung-einer-kombinierten-physisch-genetischen-karte-fur-eine-9212.php)).
 
-## Cite
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13832239.svg)](https://doi.org/10.5281/zenodo.13832239)
+
