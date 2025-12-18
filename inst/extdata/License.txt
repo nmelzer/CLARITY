@@ -1,5 +1,5 @@
-Wittenburg et al. (2025) A Resource of Bovine Genetic Maps. (submitted)
-
 The processed data are licensed under a Creative Commons Attribution 4.0 International License.
 
 https://creativecommons.org/licenses/by/4.0/
+
+Please cite dataset: Wittenburg, D. (2025). Data derived from sex-specific recombination rate analysis in cattle (v2.0). Zenodo. https://doi.org/10.5281/zenodo.17909700

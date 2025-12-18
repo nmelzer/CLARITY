@@ -1,4 +1,4 @@
-# CLARITY 3.0.0 [uploaded on September 2025]
+# CLARITY 3.0.0 [uploaded on December 2025]
 
 * added some relevant information and prepared for new tag version
 * fixed some bugs and smaller changes 
