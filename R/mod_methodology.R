@@ -25,12 +25,11 @@ mod_methodology_ui <- function(id){
       htmltools::br(),htmltools::br(),
       shiny::fluidRow(id="backtoanalysis",
              shiny::column(5,""),
-             shiny::column(5,htmltools::tags$a(href="#",htmltools::h3("Back to breed analysis"), onclick = "openTab('single')", style='text-decoration-line: underline;')) #
+             shiny::column(5,htmltools::tags$a(href="#",htmltools::h3("Back to breed analysis"), onclick = "openTab('single')", style='text-decoration-line: underline;'))
       ),
       shiny::fluidRow(id="backtobc",
              shiny::column(5,""),
              shiny::column(5,htmltools::tags$a(href="#",htmltools::h3("Back to breed comparison"), onclick = "openTab('breedcomparison')",style='text-decoration-line: underline;'))
-             #
       ),
       shiny::fluidRow(id="back_infodatasets",
                shiny::column(5,""),
@@ -124,6 +123,7 @@ mod_methodology_server=function(id){
       $(table.table().node()).removeClass("no-footer");
 
    }'
+
 
     ## Table header with internal link to methodology
     thead<-tr<-th<-NULL

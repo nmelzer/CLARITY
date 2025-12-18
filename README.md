@@ -2,7 +2,7 @@
 physical-genetic map
 ================
 N. Melzer, D. Wittenburg
-(September 30, 2025)
+(December 18, 2025)
 
 <!-- badges: start  -->
 
@@ -14,6 +14,10 @@ Check](https://github.com/nmelzer/CLARITY/actions/workflows/R-CMD-check.yaml/bad
 
 An online version of CLARITY is available at
 <https://nmelzer.shinyapps.io/clarity/>
+
+A pipeline for creating a breed-specific genetic map from genotypes of
+half-siblings is available at <https://github.com/wittenburg/hsrecombi>
+([v2.0.1](https://doi.org/10.5281/zenodo.17962688))
 
 ## Background
 
@@ -69,8 +73,8 @@ To get the current development version of CLARITY from github, please
 type:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("nmelzer/CLARITY")
+# install.packages("remotes") (if not installed)
+remotes::install_github("nmelzer/CLARITY")
 ```
 
 ## Example
@@ -82,8 +86,17 @@ library(CLARITY)
 run_app()
 ```
 
-## Acknowledgement
+## Cite
 
-This work was supported by the grant from the German Federal Ministry of
-Education and Research (BMBF, [FKZ031L0166
-CompLS](https://www.gesundheitsforschung-bmftr.de/de/clarity-die-entwicklung-einer-kombinierten-physisch-genetischen-karte-fur-eine-9212.php)).
+Code and app (v3.0.0):
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11620801.svg)](https://doi.org/10.5281/zenodo.11620801)
+
+Data (v2.0):
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17909700.svg)](https://doi.org/10.5281/zenodo.17909700)
+
+
+### Note
+
+The data in CLARITY
+[v2.0.0](https://github.com/nmelzer/CLARITY/tree/v2.0.0) was still in
+the development phase and should not be used.

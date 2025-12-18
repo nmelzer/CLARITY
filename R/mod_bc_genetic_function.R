@@ -63,8 +63,9 @@ mod_bc_genetic_function_ui <- function(id){
       shinydashboard::box(title = tags$b("Genetic-map functions"),status="danger",width=12, ## make Link
           solidHeader = TRUE,collapsible = TRUE, collapsed=FALSE,
           htmltools::br(),
-          shiny::fluidRow(shinyjs::useShinyjs(),id=ns("barplot"),
+          shiny::fluidRow(shinyjs::useShinyjs(),id=ns("barplot_sh"),
                           shiny::column(width=12,shiny::actionButton(ns("barplot_bc1"), "Show barplot",style = "color: black;background-color: #87CEFA"))),
+
           shiny:: fluidRow(shinyjs::useShinyjs(),id=ns("bar_bc"),
                            shiny::column(width=12,shiny::actionButton(ns("barplot_bc2"), "Hide barplot",style="background-color: #87CEFA")
                                          ,shiny::downloadButton(ns("downloadBarplot"),label="Save barplot",style="background-color: #87CEFA",class="butt1")),
@@ -163,7 +164,7 @@ mod_bc_genetic_function_server <- function(id,filter,breed.infos,names.files,mak
         shinyjs::hide(id="all_chromosome_bc")
         shinyjs::show(id="single_chromosome_bc")
         shinyjs::hide(id="bar_bc")
-        shinyjs::hide(id="barplot")
+        shinyjs::hide(id="barplot_sh")
         shinyjs::hide(id="show_line")
 
         ## render traffic light
@@ -202,7 +203,7 @@ mod_bc_genetic_function_server <- function(id,filter,breed.infos,names.files,mak
       {
         shinyjs::show(id="all_chromosome_bc")
         shinyjs::hide(id="single_chromosome_bc")
-        shinyjs::hide(id="barplot")
+        shinyjs::hide(id="barplot_sh")
         shinyjs::show(id="bar_bc")
         shinyjs::show(id="show_line")
 
@@ -266,11 +267,11 @@ mod_bc_genetic_function_server <- function(id,filter,breed.infos,names.files,mak
 
         ## show / hide
         shiny::observeEvent(input$barplot_bc1,{
-          shinyjs::hide(id="barplot")
+          shinyjs::hide(id="barplot_sh")
           shinyjs::show(id="bar_bc")
         })
         shiny::observeEvent(input$barplot_bc2,{
-          shinyjs::show(id="barplot")
+          shinyjs::show(id="barplot_sh")
           shinyjs::hide(id="bar_bc")
         })
 

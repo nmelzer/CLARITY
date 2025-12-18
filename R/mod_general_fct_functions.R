@@ -77,7 +77,6 @@ transformdata_general_bc=function(data1,breed.infos,filter)
     else dat<-dat %>% dplyr::mutate(Size = 14)
 
   })
-  dat0
   dat0.table=do.call("rbind",dat0)
   dat0.table
 }

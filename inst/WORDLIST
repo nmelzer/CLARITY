@@ -1,13 +1,9 @@
 ARS
-Acknowledgement
 Averag
-BMBF
 Braunvieh
 CMD
 Chr
 ChrTheta
-CompLS
-FKZ
 Felsenstein
 Fleckvieh
 Hm
@@ -41,6 +37,7 @@ makePlot
 megabase
 megabasepairs
 plotly
+pre
 progenies
 putatively
 scatterPlot

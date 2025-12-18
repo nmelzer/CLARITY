@@ -238,7 +238,7 @@ datatable(df,rownames=F,options=list(searching=T,dom=""))
 leg.breeds.i: Breed name <br>
 Chr: Chromosome <br>
 Name: SNP name <br>
-Mbp_position: Chromosomal position in million base pairs <br>
+Mbp_position: Chromosomal position in megabase pairs <br>
 </font> 
 
 &nbsp;&nbsp;
