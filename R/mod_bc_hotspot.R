@@ -68,13 +68,12 @@ mod_bc_hotspot_ui <- function(id){
                                           shiny::actionButton(ns("ButtonAll_bc_hotspot"),"Reset table to all",style="background-color: #87CEFA")),
                             shiny::column(width=10,style="padding-top:30px", ""),
                             shiny::column(width=10,"When you click on a specific subset of interest, only the markers for that set are listed in the table."),
-                            shiny::column(width=5,shiny::plotOutput(ns("venn_diagram"), click = ns("plot_click"),width = "100%",
-                                                                         height = "300px",inline=TRUE))
+                            shiny::column(width=11,style='overflow-x: auto;',shiny::plotOutput(ns("venn_diagram"), click = ns("plot_click"),width = "20%", height = "auto"))
          ),
          htmltools:: br(),
          htmltools::hr(style = "border-top: 1px solid #68838B;"),
          htmltools::br(),
-         shiny::fluidRow(shiny::column(width=7,DT::dataTableOutput(outputId=ns("tablehotspot")),style = "overflow-y: scroll;overflow-x: scroll;")),
+         shiny::fluidRow(shiny::column(width=11,DT::dataTableOutput(outputId=ns("tablehotspot"),width="60%",height="auto"),style = "overflow-y: auto;overflow-x: auto;")),
          )
       )
     )
@@ -172,15 +171,15 @@ mod_bc_hotspot_server <- function(id,filter, breed.infos,names.files,approach){
 
           if(nrow(breed.infos)==2)
           {
-            width1= 500
-            height1= 200
+            width1= 400
+            height1= 150
             width1.venn.plot=6 ## for print-out
-            height1.venn.plot=3
+            height1.venn.plot=2.5
           }
           else
           {
-            width1= 600 #700
-            height1= 350 #750
+            width1= 600
+            height1= 350
             width1.venn.plot=9
             height1.venn.plot=6
           }

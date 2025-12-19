@@ -60,8 +60,8 @@ make_traffic_light<-function(selected.breed,dat.tl)
             axis.ticks.y=element_blank(),
             plot.background = element_rect(colour = "transparent")
            )
-      if(nrow(dat.tl)!=1){
-        p<-p+annotation_custom(gridExtra::tableGrob(selected.breed[.x], rows=NULL,theme=ttheme_minimal()), xmin=unit(1,"npc"),xmax = unit(2.9,"npc"))
+     if(nrow(dat.tl)!=1){
+        p<-p+annotation_custom(gridExtra::tableGrob(selected.breed[.x], rows=NULL,theme=ttheme_minimal(base_size = 13, base_family = "Arial")), xmin=1,xmax=3)
         p<-p+theme(plot.margin = unit(c(0.0, 2.8, 0.0, .0),"cm"))
       }
       p

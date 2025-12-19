@@ -56,7 +56,7 @@ mod_datasets_ui <- function(id){
                         htmltools::br(),
                         shiny:: fluidRow(
                           htmltools::br(),htmltools::br(),
-                          shiny::column(width=8,DT::dataTableOutput(ns("tableSwissData"),width="auto",height="auto"),style = "height:auto; overflow-y: scroll;overflow-x: scroll;")
+                          shiny::column(width=12,DT::dataTableOutput(ns("tableSwissData"),width="50%",height="auto"),style = "height:auto; overflow-y: auto;overflow-x: auto;")
                         ),
                         shiny::fluidRow(
                           shiny::column(width=10,shiny::checkboxInput(ns("checkbox2"), "Show/hide legend", FALSE),

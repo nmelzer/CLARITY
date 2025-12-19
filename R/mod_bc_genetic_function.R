@@ -39,7 +39,7 @@ mod_bc_genetic_function_ui <- function(id){
                            shiny::column(width=12,style="padding-top:30px", ""),
                            shiny::column(width=9,""),
                            shiny::column(width=2,htmltools::tags$a(href="#","Likelihood quality signal", onclick = "openTab('methodology')",style='text-decoration-line: underline;'),
-                                        shiny::plotOutput(ns("TrafficLight_3"),width="80%",height="auto")),
+                                        shiny::plotOutput(ns("TrafficLight_3"),width="70%",height="auto")),
                            shiny::column(width=6,shiny::selectInput(inputId=ns('GenetMapchr1'),label = "Select chromosome",choices=c(seq(1,29,1)),selected=18,multiple=FALSE,selectize=FALSE),
                            plotly::plotlyOutput(ns("genetic_functions3"))%>% shinycssloaders::withSpinner(color="#0dc5c1")
                    ),
@@ -53,7 +53,7 @@ mod_bc_genetic_function_ui <- function(id){
                            shiny::column(width=12,style="padding-top:30px", ""),
                            shiny::column(width=9,""),
                            shiny::column(width=2,tags$a(href="#","Likelihood quality signal", onclick = "openTab('methodology')",style='text-decoration-line: underline;'),
-                                         shiny::plotOutput(ns("TrafficLight_2"),width="80%",height="auto")),
+                                         shiny::plotOutput(ns("TrafficLight_2"),width="70%",height="auto")),
                            shiny::column(width=12, "Remove a genetic-map function in the figure by clicking on the corresponding name in the legend."),
                            shiny::column(width=12,style="padding-top:30px", ""),
                            shiny::column(width=8,plotly::plotlyOutput(ns("genetic_functions5"))%>% shinycssloaders::withSpinner(color="#0dc5c1")))

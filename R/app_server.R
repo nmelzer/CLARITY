@@ -275,7 +275,7 @@ app_server <- function( input, output, session) {
       if(input$breed=="Holstein-DE" && length(grep("HMM",input$approachselection))!=0)
       {
          approach.selected<<-approach.selected[-grep("HMM",approach.selected)]
-         if(length(approach.selected)==0 || input$chromosome=="")
+         if(length(approach.selected)==0 || input$chromosome=="" || is.null(input$chromosome)==TRUE)
          {
            shiny::hideTab(inputId = "navbar","General information")
            shiny::hideTab(inputId = "navbar","Genetic map")

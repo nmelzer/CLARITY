@@ -45,8 +45,8 @@ mod_bc_genetic_map_ui <- function(id){
                      shinydashboard::box(title= tags$b("Interactive graphical visualization: Genetic vs. physical distance"),status="danger",width=12,
                         solidHeader = TRUE,collapsible = TRUE,collapsed = FALSE,
                         shiny::column(width=9,""),
-                        shiny::column(width=3,id=ns("showhideSignal1"),tags$a(href="#","Likelihood quality signal", onclick = "openTab('methodology')",style='text-decoration-line: underline;'),
-                                      shiny::plotOutput(ns("TrafficLight_1"),width="80%",height="auto")),
+                        shiny::column(width=2,id=ns("showhideSignal1"),tags$a(href="#","Likelihood quality signal", onclick = "openTab('methodology')",style='text-decoration-line: underline;'),
+                                      shiny::plotOutput(ns("TrafficLight_1"),width="70%",height="auto")),
                         shiny::column(width=11, plotly::plotlyOutput(ns("genetic1"),width="90%",height="10%")%>% shinycssloaders::withSpinner(color="#0dc5c1"))
                ),
                htmltools::br(),
@@ -70,17 +70,13 @@ mod_bc_genetic_map_ui <- function(id){
                                                  shiny::actionButton(ns("venn_chr_bc2"), "Hide venn diagram",style="background-color: #87CEFA"),
                                                  shiny::actionButton(ns("ButtonReset"),"Reset",style="background-color: #87CEFA")),
                                    shiny::column(width = 12,style="padding-top:30px", ""),
-                                   shiny::column(width=8,"When you click on a specific subset of interest, only the markers for that set are listed in the table. To return to all sets please use the button '",em("Reset"),"'."),
-                                   shiny::column(width=4,""),
-                                   shiny::column(width=12,""),
-                                   shiny::column(width=6,shiny::plotOutput(ns("venn_diagram"), click = ns("plot_click"),width = "100%",height = "500px",inline=TRUE)
-                                                      ),column(width=6,""),
-                   ),
+                                   shiny::column(width=12,"When you click on a specific subset of interest, only the markers for that set are listed in the table. To return to all sets please use the button '",em("Reset"),"'."),
+                                   shiny::column(width=11,style='overflow-x: auto;',shiny::plotOutput(ns("venn_diagram"), click = ns("plot_click"),height="auto",width = "20%"))),
                    htmltools::br(),
                    htmltools::hr(style = "border-top: 1px solid #68838B;"),
                    htmltools::br(),
                    shiny::fluidRow(
-                            shiny::column(width=8,DT::dataTableOutput(outputId=ns("rangeMaps")))
+                            shiny::column(width=11,style='overflow-x: auto;',DT::dataTableOutput(outputId=ns("rangeMaps"),width="80%"))
                    ))
       ),
       shiny::fluidRow(id=ns("output2"), ## all chromosomes output
@@ -91,7 +87,7 @@ mod_bc_genetic_map_ui <- function(id){
                                       shiny::column(width=1,shiny::radioButtons(inputId=ns("filetype.bc"), "Select file extension:", choices = c("CSV" = "csv", "Excel" = "xlsx"))),
                                       shiny::column(width=2,shiny::downloadButton(outputId=ns("downloadData_breeds"),label="Save genetic map data",class="butt1")),
                                       shiny::column(width=2,id=ns("showhideSignal2"),tags$a(href="#","Likelihood quality signal", onclick = "openTab('methodology')",style='text-decoration-line: underline;'),
-                                                    shiny::plotOutput(ns("TrafficLight_2"),width="80%",height="auto")),
+                                                    shiny::plotOutput(ns("TrafficLight_2"),width="70%",height="auto")),
                       shinydashboard::box(width=12,style='overflow-x: scroll;height:1000px;overflow-y:scroll;',
                          shinycssloaders::withSpinner(shiny::plotOutput(ns("figure_breeds"),width="1600px",height="2800px"),color="#0dc5c1",proxy.height = "200px")) ##
                         )
@@ -131,7 +127,7 @@ mod_bc_genetic_map_server <- function(id, filter,geneticMap.bc,names.files,make.
       {
         shinyjs::show("showhideSignal1")
 
-        height2=ifelse(nrow(breed.infos)==2,45,60)
+        height2=ifelse(nrow(breed.infos)==2,45,55)
         output$TrafficLight_1 <- renderPlot({
             make.traff.light.bc()
         }, width=165, height=height2)
@@ -206,17 +202,17 @@ mod_bc_genetic_map_server <- function(id, filter,geneticMap.bc,names.files,make.
       ## plot size for Venn diagram and print-out
       if(nrow(breed.infos)==2)
       {
-      width1= 450
-      height1= 180
+      width1= 400
+      height1= 150
       width1.venn.plot=6
-      height1.venn.plot=2.7
+      height1.venn.plot=2.5
     }
       else
       {
       width1= 600
       height1= 350
       width1.venn.plot=9
-      height1.venn.plot=5
+      height1.venn.plot=6
     }
 
       output$venn_diagram <- shiny::renderPlot({
@@ -391,10 +387,10 @@ mod_bc_genetic_map_server <- function(id, filter,geneticMap.bc,names.files,make.
       shinyjs::hide(id="venn_all2")
 
       ## check for likelihood approach render traffic light
-      if(match("Likelihood",approach$Approach,0)!=0){
+      if(match("Likelihood_male",approach$Approach,0)!=0){
 
         shinyjs::show("showhideSignal2")
-        height2=ifelse(nrow(breed.infos)==2,45,60)
+        height2=ifelse(nrow(breed.infos)==2,45,55)
 
         output$TrafficLight_2 <- renderPlot({
             make.traff.light.bc()

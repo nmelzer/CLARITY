@@ -39,7 +39,7 @@ mod_misplaced_ui <-function(id)
           ),
           shiny:: fluidRow(
             htmltools::br(),htmltools::br(),
-            shiny::column(width=6,DT::DTOutput(ns("tableGenProReg"),width="auto",height="auto"),style = "height:auto; overflow-y: scroll;overflow-x: scroll;")
+            shiny::column(width=12,DT::DTOutput(ns("tableGenProReg"),width="35%",height="auto"),style = "height:auto; overflow-y: auto;overflow-x: auto;")
           )
       )
     ),
@@ -56,7 +56,7 @@ mod_misplaced_ui <-function(id)
             shiny::column(5,shiny::selectInput(inputId = ns('new_chr'), label = 'Select based on New_Chr:', choices= c(" ","All",1,2,4:7,10,11,13:15,20,23,24,26,29),multiple = FALSE, selected=" ", selectize = FALSE)),
           ),
           shiny::fluidRow(
-            shiny::column(width=12,DT::DTOutput(ns("tableMis"),width="auto",height="auto"),style = "height:auto; overflow-y: scroll;overflow-x: scroll;")
+            shiny::column(width=12,DT::DTOutput(ns("tableMis"),width="90%",height="auto"),style = "height:auto; overflow-y: auto;overflow-x: auto;")
           ),
           shiny::fluidRow(
             shiny::column(width=10,shiny::checkboxInput(ns("checkbox22"), "Show/hide legend", TRUE), htmltools::p(id = "element22",
@@ -92,8 +92,8 @@ mod_misplaced_ui <-function(id)
 
                        ),
                         shiny::fluidRow(
-                         shiny::column(width=5,DT::DTOutput(ns("tableMisAllBreeds"),width="auto",height="auto"),
-                                        style = "height:auto; overflow-y: scroll;overflow-x: scroll;")
+                         shiny::column(width=12,DT::DTOutput(ns("tableMisAllBreeds"),width="40%",height="auto"),
+                                        style = "height:auto; overflow-y: auto;overflow-x: auto;")
                        )
                     )
     )

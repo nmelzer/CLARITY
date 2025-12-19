@@ -59,8 +59,8 @@ mod_contact_server = function(id){
     <ul>
      <li>Wittenburg D, Ding X, Melzer N, Abdollahi Sisi N, Seefried FR (2025) <i> A comparative study on recombination activity in cattle</i> (in revision)</li>  &nbsp;
 
-    <li>Melzer N, Qanbari S, Ding X and Wittenburg D (2023) <i>CLARITY: a Shiny app for interactive visualisation of the bovine physical-genetic
-    map.</i> Front. Genet. 14:1082782. doi: <a href = 'https://doi.org/10.3389/fgene.2023.1082782' target='_blank'> <u> https://doi.org/10.3389/fgene.2023.1082782 </u></a> </li>  &nbsp;
+    <li>Melzer N, Qanbari S, Ding X, Wittenburg D (2023) <i>CLARITY: a Shiny app for interactive visualisation of the bovine physical-genetic
+    map.</i> Front. Genet. 14:1082782. <a href = 'https://doi.org/10.3389/fgene.2023.1082782' target='_blank'> <u> https://doi.org/10.3389/fgene.2023.1082782 </u></a> </li>  &nbsp;
 
     <li> Qanbari S, Schnabel RD,  Wittenburg, D (2022) <i>Evidence of rare misassemblies in the bovine reference genome revealed by population genetic metrics.</i>
     Anim. Genet.,  53, 498-505. <a href = 'https://doi.org/10.1111/age.13205' target='_blank'> <u> https://doi.org/10.1111/age.13205 </u></a> </li>  &nbsp;

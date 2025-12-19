@@ -67,12 +67,11 @@ mod_hotspot_ui=function(id)
         shiny::column(width=8,"When you click on a specific subset of interest, only the markers for that set are listed in the table. To return to all sets please use the button '",em("Reset"),"'."),
         shiny::column(width=4,""),
         shiny::column(width=12,""),
-        shiny::column(width=6,shiny::plotOutput(ns("venn_diagram_hot"),click = ns("venn_click"),width = "100%",height = "500px", inline=TRUE)),
-        shiny::column(width=6,"")
+        shiny::column(width=11,style='overflow-x: auto;',shiny::plotOutput(ns("venn_diagram_hot"),click = ns("venn_click"),width="20%",height="auto")),
       ),
       htmltools::hr(style = "border-top: 1px solid #68838B;"),
       shiny::fluidRow(
-        shiny::column(width=10,DT::dataTableOutput(outputId=ns("tablehotspot")),style = "height:auto; overflow-y: scroll;overflow-x: scroll;")
+        shiny::column(width=12,DT::dataTableOutput(outputId=ns("tablehotspot"),height="auto",width="80%"),style = "overflow-y: auto;overflow-x: auto;")
         )
       )
     )
@@ -146,16 +145,16 @@ mod_hotspot_server=function(id, filter,breed.select,approach.info,add.approach.n
             venn_data <-process_venn_data(venn)
 
             if(nrow(approach.info)==2){
-              width1= 560
-              height1= 180
+              width1= 400
+              height1= 150
               width1.venn.plot=6
-              height1.venn.plot=2.7 ## for print-out
+              height1.venn.plot=2.5 ## for print-out
             }else if(nrow(approach.info)==3)
             {
               width1= 600
               height1= 350
               width1.venn.plot=9
-              height1.venn.plot=5
+              height1.venn.plot=6
             }
 
             InputPlot_hotspot_venn=shiny::reactive(creating_venn(venn_data,long.names=approach.info$Approach, abbreviations=approach.info$Abbreviation,venn.colors=colors))

@@ -49,19 +49,18 @@ mod_bc_general_ui <- function(id){
       )
     ),
     shiny::fluidRow(box(title=tags$b("Venn diagram of markers"), status="danger",width=12,solidHeader = TRUE,collapsible = TRUE,collapsed = TRUE,
-                        shiny::column(width=12,shiny::downloadButton(outputId=ns("download.venn.diagram.bc"),label="Download venn diagram",style="background-color: #87CEFA"),class="butt1"),
-                        shiny::column(width=6,shiny::plotOutput(ns("venn_diagram_gm"),width = "100%",
-                                                    height = "300px", inline=TRUE)),column(width=6,""))
+                        shiny::column(width=12,shiny::downloadButton(outputId=ns("download.venn.diagram.bc"),label="Download venn diagram",style="background-color: #87CEFA",class="butt1")),
+                        shiny::column(width=12,style='overflow-x: auto;',shiny::plotOutput(ns("venn_diagram_gm"),width = "20%",height="auto")))
     ),
     shiny::fluidRow(
       shinydashboard::box(title=htmltools::tags$b("Genetic versus physical length of the bovine autosomes"), status="danger",width=12,solidHeader = TRUE,collapsible = TRUE,collapsed = FALSE,
-          shiny::fluidRow(shiny::column(width=8,
+          shiny::fluidRow(shiny::column(width=12,
                           htmltools::tags$b( htmltools::tags$h5("Interactive graphic: moving the mouse over the points will show the corresponding information.")))
           ),
-          shiny::fluidRow(shiny::column(width=4,"")),
-          shiny::fluidRow(id=ns("showhideSignal"),shiny::column(width=8,""),
-                          shiny::column(width=2,tags$a(href="#","Likelihood quality signal", onclick = "openTab('methodology')",style='text-decoration-line: underline;'),
-                                        shiny::plotOutput(ns("TrafficLight_nn"),width="80%",height="auto") )
+         # shiny::fluidRow(shiny::column(width=4,"")),
+          shiny::fluidRow(id=ns("showhideSignal"),shiny::column(width=9,""),
+                          shiny::column(width=3,tags$a(href="#","Likelihood quality signal", onclick = "openTab('methodology')",style='text-decoration-line: underline;'),
+                                     style='overflow-x: auto;', shiny::plotOutput(ns("TrafficLight_nn"),width="20%",height="auto") )
           ),
           shiny::fluidRow(shiny::column(width=4,"")),
           shiny::fluidRow(shiny::column(width=11,
@@ -99,10 +98,10 @@ mod_bc_general_server <- function(id,filter,geneticMap.bc,names.files,make.traff
     InputPlot_gm_venn<-genetic_map_summary<-NULL
 
     # if the likelihood approach is selected than likelihood-quality signal is rendered and shown
-    if(approach=="L"){
+    if(approach=="Lm"){
       shinyjs::show("showhideSignal")
 
-      height2 <- ifelse(length(nrow(breed.infos))==2, 45, 60)
+      height2 <- ifelse(length(nrow(breed.infos))==2, 45, 55)
 
       output$TrafficLight_nn <- renderPlot({
         make.traff.light.bc()
@@ -163,17 +162,17 @@ mod_bc_general_server <- function(id,filter,geneticMap.bc,names.files,make.traff
     ## define output size for venn and plot
     if(nrow(breed.infos)==2)
     {
-      width1= 450
-      height1= 180
+      width1= 400
+      height1= 150
       width1.venn.plot=6
-      height1.venn.plot=2.7
+      height1.venn.plot=2.5
     }
     else
     {
       width1= 600
       height1= 350
       width1.venn.plot=9
-      height1.venn.plot=5
+      height1.venn.plot=6
     }
 
     ## prepare scatter plot

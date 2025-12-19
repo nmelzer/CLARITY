@@ -96,8 +96,7 @@ mod_genetic_map_server=function(id, filter,breed.select,geneticMap,make.traff.li
       shinyjs::show(id="output1")
       shinyjs::hide(id="output2")
 
-      #if(match("Likelihood",approach.info$Approach,0)!=0){
-      if(length(grep("Likelihood",approach.info$Approach))!=0){
+      if(length(grep("Likelihood_male",approach.info$Approach))!=0){
         shinyjs::show("showhideSignal2")
         ## render traffic light
         output$TrafficLight <- renderPlot({
@@ -204,7 +203,7 @@ mod_genetic_map_server=function(id, filter,breed.select,geneticMap,make.traff.li
       shinyjs::hide(id="output1")
       shinyjs::show(id="output2")
 
-      if(match("Likelihood_male,",approach.info$Approach,0)!=0){
+      if(length(grep("Likelihood_male",approach.info$Approach))!=0){
         shinyjs::show("showhideSignal1")
         output$TrafficLight2 <- renderPlot({
           make.traff.light()
