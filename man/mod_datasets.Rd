@@ -7,7 +7,7 @@
 \usage{
 mod_datasets_ui(id)
 
-mod_datasets_server(id, BreedOverview)
+mod_datasets_server(id)
 }
 \arguments{
 \item{id}{module id}
