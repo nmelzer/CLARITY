@@ -1,4 +1,4 @@
 library(testthat)
 library(CLARITY)
 
-test_check("CLARITY")
+testthat::test_check("CLARITY")

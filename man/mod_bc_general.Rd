@@ -15,7 +15,8 @@ mod_bc_general_server(
   make.traff.light.bc,
   breed.infos,
   approach,
-  dt
+  dt,
+  figure_rend2_g
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ mod_bc_general_server(
 \item{approach}{character containing the abbreviation for the selected approach}
 
 \item{dt}{list whereby each list element contains for each selected breed the genetic map summary information}
+
+\item{figure_rend2_g}{reactive value indicates if the plot in the module has been fully rendered. Used on the main server to enable or disable "Breed comparison" sidebar elements.}
 }
 \description{
 A shiny module to generate the outcome for the tabpanel "General information" for the sidebar "Breed comparison".

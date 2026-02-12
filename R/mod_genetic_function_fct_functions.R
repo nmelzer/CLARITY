@@ -21,13 +21,12 @@
 #'
 makePlot_genetic_function=function(chromo=chromo,df.list=df.list,name.file,breed.select)  ##
 {
-  a<-plotly::renderPlotly({
     genetic_functions=c("Haldane scaled","Rao","Felsenstein","Liberman & Karlin")
 
     xs=as.data.frame(df.list[[2]])
     ys=as.data.frame(df.list[[3]])
 
-    p <- plotly::plot_ly(as.data.frame(df.list[[1]]), x = ~dist_M, y = ~theta, type = "scatter", mode = "markers",hoverinfo="none",name="SNP data",color=I("lightgray"))%>%
+    p <- plotly::plot_ly(as.data.frame(df.list[[1]]), x = ~dist_M, y = ~theta, type = "scatter", mode = "markers",hoverinfo="none",name="Estimate from SNP data",color=I("lightgray"))%>%
       plotly::layout(title=paste0("BTA ",chromo),xaxis=list(title="Genetic distance (M)"),yaxis=list(title="Recombination rate"))%>%
       plotly::config(displayModeBar=TRUE, displaylogo = FALSE, modeBarButtonsToRemove = list('sendDataToCloud', 'autoScale2d','hoverClosestCartesian',
                                                                                     'hoverCompareCartesian'), toImageButtonOptions= list(filename = name.file))
@@ -35,10 +34,7 @@ makePlot_genetic_function=function(chromo=chromo,df.list=df.list,name.file,breed
 
     for(i in 1:4)p=plotly::add_lines(p,x=xs[,i],y=ys[,i],color=I(pp[i]),name=genetic_functions[i])
 
-    p%>% plotly::toWebGL()
-  })%>%shiny::bindCache(breed.select,chromo,"likelihood",cache="app")
-
-  a
+   p
 }
 
 #'function
@@ -57,10 +53,10 @@ makePlot_genetic_function=function(chromo=chromo,df.list=df.list,name.file,breed
 
 make_barplot_bc<-function(breed.infos,counts)
 {
- Breeds<-NULL
+  Breeds<-NULL
 
   ## order regarding methods
-  Methods=c(rep("Haldane scaled",nrow(breed.infos)),rep("Rao",nrow(breed.infos)),rep("Felsenstein",nrow(breed.infos)),rep("Liberman & Karlin",nrow(breed.infos)))
+  Methods=c(rep("Haldane \n scaled",nrow(breed.infos)),rep("Rao",nrow(breed.infos)),rep("Felsenstein",nrow(breed.infos)),rep("Liberman & \n Karlin",nrow(breed.infos)))
   ord3=rep(1:4,nrow(breed.infos))
   ord3=sort(ord3,index.return=T)
   Counts.ord=counts[ord3$ix]

@@ -4,12 +4,14 @@
 \alias{scatterPlot_hotspot_all}
 \title{Creating the hotspot scatter plot for all chromosomomes}
 \usage{
-scatterPlot_hotspot_all(dat1, file.name)
+scatterPlot_hotspot_all(dat1, file.name, max.plot)
 }
 \arguments{
 \item{dat1}{data frame \link{data_plot_hotspot_all}}
 
 \item{file.name}{character name of the output file}
+
+\item{max.plot}{numeric contains the chromosome end of the longest chromosome and the maximum theta}
 }
 \value{
 The function returns a plotly object.

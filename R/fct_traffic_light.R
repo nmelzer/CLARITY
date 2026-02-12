@@ -5,10 +5,10 @@
 #'
 #' @param selected.breed vector containing the full names of selected breeds
 #' @param dat.tl data frame containing the breed size information for selected breeds (\link{data_traffic_light})
-#'
+#' @rawNamespace import(dplyr, except = combine)
 #' @import ggplot2
 #' @importFrom gridExtra tableGrob
-#' @importFrom dplyr tibble
+#'
 #' @importFrom patchwork wrap_plots
 #'
 #' @seealso
@@ -61,8 +61,8 @@ make_traffic_light<-function(selected.breed,dat.tl)
             plot.background = element_rect(colour = "transparent")
            )
      if(nrow(dat.tl)!=1){
-        p<-p+annotation_custom(gridExtra::tableGrob(selected.breed[.x], rows=NULL,theme=ttheme_minimal(base_size = 13, base_family = "Arial")), xmin=1,xmax=3)
-        p<-p+theme(plot.margin = unit(c(0.0, 2.8, 0.0, .0),"cm"))
+        p<-p+ggplot2::annotation_custom(gridExtra::tableGrob(selected.breed[.x], rows=NULL,theme=gridExtra::ttheme_minimal(base_size = 13, base_family = "Arial")), xmin=1,xmax=3)
+        p<-p+ggplot2::theme(plot.margin = unit(c(0.0, 2.8, 0.0, .0),"cm"))
       }
       p
     })

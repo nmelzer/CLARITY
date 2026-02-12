@@ -13,7 +13,8 @@ mod_bc_genetic_function_server(
   breed.infos,
   names.files,
   make.traff.light.bc,
-  approach
+  approach,
+  figure_rend2_gf
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ mod_bc_genetic_function_server(
 \item{make.traff.light.bc}{object containing the ggplot for the likelihood quality signal (\link{make_traffic_light})}
 
 \item{approach}{data frame containing the predefined settings and names for the selected approach (\link{table_approach_information})}
+
+\item{figure_rend2_gf}{reactive value indicates if the plot in the module has been fully rendered. Used on the main server to enable or disable "Breed comparison" sidebar elements.}
 }
 \description{
 A shiny module to generate the outcome for the tabpanel "Genetic-map functions" for the sidebar "Breed comparison".

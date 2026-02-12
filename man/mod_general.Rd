@@ -14,7 +14,8 @@ mod_general_server(
   make.traff.light,
   approach.info,
   dt,
-  add.approach.names
+  add.approach.names,
+  figure_rendered_g
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ mod_general_server(
 \item{dt}{data frame contains the genetic map summary for the selected breed}
 
 \item{add.approach.names}{character containing the concatenated approach abbreviations and is used as an addition to the file name}
+
+\item{figure_rendered_g}{reactive value indicates if the plot in the module has been fully rendered. Used on the main server to enable or disable "Breed analysis" sidebar elements.}
 }
 \description{
 A shiny module to generate the outcome for the tabpanel "General information" for the sidebar "Breed analysis".

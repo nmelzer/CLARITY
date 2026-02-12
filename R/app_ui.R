@@ -27,12 +27,7 @@ app_ui <- function(request){
     mi
   }
 
-  #####
-  no.chr=c("","All",paste(1:29))
-  breeds=c("", "Holstein-CH","Holstein-DE","Fleckvieh","BrownSwiss","Braunvieh","Angus","Simmental","Limousin")
-  approaches=c("Deterministic_male","Likelihood_male","HMM_male","HMM_female","HMM_average")
   options(scipen=999)
-
 
   ###################################################################################################################################
   #### definition header of the dashboard
@@ -55,6 +50,7 @@ app_ui <- function(request){
   ###################################################################################################################################
   #### definition sidebar of the dashboard
   dbSidebar<-shinydashboard::dashboardSidebar(
+      useShinyjs(),
       #tags$style(".left-side, .main-sidebar {float:top;padding-top:100px}"), ## change header box more space is needed  ## 70px
        shinydashboard::sidebarMenu(
         id="tabs",
@@ -66,21 +62,26 @@ app_ui <- function(request){
                                                  shinydashboard::menuSubItem(HTML("<i class='fas fa-angles-right'></i> Information about <br> &nbsp; &emsp; the data sets"),tabName="infodatasets",icon=NULL), # set icon NULL and included as icon in the test - aria - friendly
                                                  shinydashboard::menuSubItem(HTML("<i class='fas fa-angles-right'></i> Misplaced markers"),tabName="misplaced_markers",icon=NULL),
                                                  shinydashboard::menuSubItem(HTML("<i class='fas fa-angles-right'></i> Methodology"),tabName="methodology",icon=NULL)
-                          ),"info"),
+                            ),"info"),
         convertMenuItem(shinydashboard::menuItem("Breed analysis",tabName="single",startExpanded=FALSE,  ### Extension for other breeds
-                          shiny::selectInput(inputId = 'breed', label = 'Breed',choices= breeds,selectize=FALSE),
-                          shiny::selectInput(inputId = 'chromosome',label = "Chromosome",choices="",selectize=FALSE),
-                          shiny::checkboxGroupInput(inputId = "approachselection",label="Select approaches",selected=c("Deterministic","Likelihood"),choices=approaches)
-                          ),"single"),
-        hidden(shiny::htmlOutput(outputId="notworking",inline=TRUE)),
+                           shiny::div(id="breed_dis_able",
+                                      shiny::selectInput(inputId = 'breed', label = 'Breed',choices= breeds,selectize=FALSE),
+                                      shiny::selectInput(inputId = 'chromosome',label = "Chromosome",choices="",selectize=FALSE),
+                                      shiny::checkboxGroupInput(inputId = "approachselection",label="Select approaches",selected=c("Deterministic_male","Likelihood_male"),choices=approaches),
+                                      shiny::actionButton(inputId="run_single",label="Run selected approaches")
+                            )),"single"),
+
+        shinyjs::hidden(shiny::htmlOutput(outputId="notworking",inline=TRUE)),
         convertMenuItem(shinydashboard::menuItem("Breed comparison",tabName="breedcomparison",startExpanded=FALSE,  ### Extension for other breeds
-                                                 shiny::selectizeInput(inputId = 'breed1', label = 'Select breeds', choices=breeds ,multiple=TRUE,options=list(maxItems=3)),
-                                                 shiny::selectInput(inputId = 'chromosome1',label = "Chromosome",choices="",selectize=FALSE),
-                                                 shiny::radioButtons(inputId = "approachselection_bc",label="Select approach",selected=c("Deterministic_male"),choices=c("Deterministic_male"="Deterministic_male",
-                                                                                                                    "Likelihood_male"="Likelihood_male","HMM_male"="HMM_male","HMM_female"="HMM_female","HMM_average"="HMM_average"))#approaches)
-                        ),"breedcomparison"),
-        hidden(shiny::htmlOutput(outputId="notworking2",inline=TRUE)),
-        hidden(shiny::htmlOutput(outputId="notworking3",inline=TRUE))
+                           shiny::div(id="bc_dis_able",
+                                      shiny::selectizeInput(inputId = 'breed1', label = 'Select breeds', choices=breeds ,multiple=TRUE,options=list(maxItems=3)),
+                                      shiny::actionButton(inputId="run_breeds",label="Run selected breeds"),
+                                      shiny::selectInput(inputId = 'chromosome1',label = "Chromosome",choices="",selectize=FALSE),
+                                      shiny::radioButtons(inputId = "approachselection_bc",label="Select approach",selected=c("Deterministic_male"),
+                                                           choices=c("Deterministic_male"="Deterministic_male","Likelihood_male"="Likelihood_male","HMM_male"="HMM_male","HMM_female"="HMM_female","HMM_average"="HMM_average"))
+                           )),"breedcomparison"),
+        shinyjs::hidden(shiny::htmlOutput(outputId="notworking2",inline=TRUE)),
+        shinyjs::hidden(shiny::htmlOutput(outputId="notworking3",inline=TRUE))
       ),
     shinydashboard::sidebarMenuOutput("menu")
   )
@@ -94,9 +95,10 @@ app_ui <- function(request){
     htmltools::tags$head(
        tags$meta(name="author", content="Nina Melzer"),
        tags$meta(name="creation_date", content="2022-10-27"),
-       tags$meta(name="modified_date", content="2025-12-19"),
+       tags$meta(name="modified_date", content="2026-02-12"),
        tags$meta(name="url", content="https://nmelzer.shinyapps.io/clarity"),
        tags$meta(name="version",content="3.0.0"),
+       tags$meta(name="keywords", content="genetic map, physical map, recombination rate, genetic-map function, cattle breeds")
     ),
     metathis::meta()%>%
       metathis::meta_general(
@@ -116,31 +118,45 @@ app_ui <- function(request){
             };
           });
         }
-      ")),
+      ")
+    ),
 
+   ##
+   tags$head(tags$style(htmltools::HTML(".shiny-notification {
+             position:fixed;
+             top: calc(45%);
+             left: calc(10%);
+             background-color: #000000;
+             color: #EE3B3B;
+             font-size= 20px;
+             }
+             "
+       )
+     )
+   ),
     ## include styles.css
     tags$link(rel="stylesheet",type="text/css",href="www/styles.css"),
     ## include favicon
     tags$head(tags$link(rel = "shortcut icon", href = "www/favicon.ico")),
 
-
     ## for the sidebar toogle icon
     tags$head(
-     tags$script(HTML("
+     tags$script(htmltools::HTML("
       document.addEventListener('DOMContentLoaded', function() {
-      var toggleButtons = document.querySelectorAll('[role=\"navigation\"]');
-      toggleButtons.forEach(function(button) {
-        var icon = button.querySelector('i');
-        if (icon) {
-          icon.setAttribute('aria-label', 'navigation');
-          icon.setAttribute('role', 'button');
-        }
+        var toggleButtons = document.querySelectorAll('[role=\"navigation\"]');
+        toggleButtons.forEach(function(button) {
+          var icon = button.querySelector('i');
+          if (icon) {
+            icon.setAttribute('aria-label', 'navigation');
+            icon.setAttribute('role', 'button');
+          }
+        });
       });
-    });"))
+    "))
    ),
 
    # Include JavaScript to change attributes by menuSubItem - works local but not really when online! - lighthouse test failed
-   tags$head(tags$script(HTML("
+   tags$head(tags$script(htmltools::HTML("
       $(document).ready(function() {
         $('a[data-value=\"info\"]').removeAttr('aria-expanded');
         $('a[data-value=\"info\"]').removeAttr('aria-selected');
@@ -156,8 +172,8 @@ app_ui <- function(request){
    ## for the sidebar menuSubItem to set "aria-selected=false" - failed Lighthouse test - additional added
    tags$head(
      tags$style(
-       HTML(".sidebar-menu li.menu-open > .treeview-menu > li > a[aria-selected='false'] {} ")
-     )
+       (htmltools::HTML(".sidebar-menu li.menu-open > .treeview-menu > li > a[aria-selected='false'] {} ")
+     ))
    ),
 
   ###################################################################################################################################
@@ -190,31 +206,32 @@ app_ui <- function(request){
         htmltools::h3("Breed analysis"),
         shinyjs::useShinyjs(),
         shiny::tabsetPanel(id="navbar",
-                    shiny::tabPanel(title="General information",  mod_general_ui("mod_general_1")
+                    shiny::tabPanel(title="General information", mod_general_ui("mod_general_1")
                     ),
-                    shiny::tabPanel(title="Genetic map", mod_genetic_map_ui("mod_genetic_map_1")
+                    shiny::tabPanel(title="Genetic map", shiny::uiOutput("genetic_map_ui")
                     ),
-                    shiny::tabPanel(title="Hotspot detection",mod_hotspot_ui("mod_hotspot_1")
+                    shiny::tabPanel(title="Hotspot detection",shiny::uiOutput("hotspot_ui")
                     ),
-                    shiny::tabPanel(title="Genetic-map functions",mod_genetic_function_ui("mod_genetic_function_1"))
+                    shiny::tabPanel(title="Genetic-map functions",shiny::uiOutput("genetic_function_ui")
+                    )
         )
-      ),
+    ),
     ## Breed comparison
     shinydashboard::tabItem(
-         tabName="breedcomparison",
-         htmltools::h3("Breed comparison"),
-         shinyjs::useShinyjs(),
-         shiny::tabsetPanel(id="navbar2",
+       tabName="breedcomparison",
+       htmltools::h3("Breed comparison"),
+       shinyjs::useShinyjs(),
+       shiny::tabsetPanel(id="navbar2",
           shiny::tabPanel(title="General information",mod_bc_general_ui("bc_general_1")
           ),
-          shiny::tabPanel(title="Genetic map",mod_bc_genetic_map_ui("bc_genetic_map_1")
+          shiny::tabPanel(title="Genetic map", shiny::uiOutput("bc_genetic_map_ui")#,
           ),
-         shiny::tabPanel(title="Hotspot detection",mod_bc_hotspot_ui("bc_hotspot_1")
+          shiny::tabPanel(title="Hotspot detection",shiny::uiOutput("bc_hotspot_ui")
           ),
-         shiny::tabPanel(title="Genetic-map functions",mod_bc_genetic_function_ui("bc_genetic_function_1")
+         shiny::tabPanel(title="Genetic-map functions",shiny::uiOutput("bc_genetic_function_ui")
          )
-        )
       )
+    )
    )#end of tag list
   ) ## End body of the dashboard
 
@@ -252,12 +269,11 @@ golem_add_external_resources <- function(){
    'extdata', app_sys('extdata')
   )
 
-
   golem::add_resource_path(
     'figures', app_sys('figures')
   )
 
- golem::add_resource_path(
+  golem::add_resource_path(
    'www', app_sys('app/www')
   )
 

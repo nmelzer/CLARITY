@@ -11,7 +11,7 @@
 #' @param approach.info data frame containing the predefined settings and names for the selected approaches (\link{table_approach_information})
 #' @param filter character contains the selected chromosome
 #'
-#' @importFrom dplyr mutate if_else row_number
+#' @rawNamespace import(dplyr, except = combine)
 #'
 #' @return The function returns a data.frame (\link{data_plot_general})
 #'
@@ -48,7 +48,7 @@ transformdata_general=function(data1,approach.info,filter)
 #' @param breed.infos data frame containing the predefined settings and names for the selected breeds (\link{table_breed_information})
 #' @param filter character contains the selected chromosome
 #'
-#' @importFrom dplyr mutate if_else row_number
+#' @rawNamespace import(dplyr, except = combine)
 #'
 #' @description The function transforms the data for plotting:
 #' 1) basepairs (bp) into megabasepairs (Mbp) and Morgan (M) into centiMorgan (cM) for selected breeds,
@@ -126,7 +126,7 @@ scatterPlot_general <- function(dat,name.file)
                    legend=list(title=list(text="Legend",font=list(size=18,family="Arial")),font=list(family="Arial",size=16)))%>%
         plotly::config(displayModeBar=TRUE, displaylogo = FALSE, modeBarButtonsToRemove = list('sendDataToCloud','zoom2d', 'autoScale2d', 'hoverClosestCartesian','hoverCompareCartesian', 'pan2d',
                                                                                             'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d','resetScale2d'), toImageButtonOptions= list(filename = name.file))
-p
+  p
 }
 
 #' function
@@ -167,6 +167,7 @@ create.output<-function(data.trans,approach.info)
 #' @title Creates table header for the general table for breed analysis
 #'
 #' @param approach.info data frame containing the predefined settings and names for the selected approaches \link{table_approach_general}
+#' @import htmltools
 #' @return The function returns a shiny.tag.
 #'
 #' @noRd
@@ -222,6 +223,7 @@ create_table_header1 <- function(approach.info) {
 #' @param label numeric vector containing the
 #' @param no.cols numeric
 #' @param header.length numeric how many columns are necessary for the genetic map part
+#' @import htmltools
 #' @return The function returns a shiny.tag.
 #'
 #' @noRd

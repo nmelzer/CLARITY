@@ -6,7 +6,7 @@ Authors@R: as.person(c(
     "Doerte Wittenburg <wittenburg@fbn-dummerstorf.de> [ctb]"
   ))
 Description: Clarity_description.
-DevelopmentStatus: Pre
+DevelopmentStatus: inactive
 License: GPL (>= 2)
 Imports: 
     cachem,
@@ -18,6 +18,7 @@ Imports:
     golem (>= 0.3.2),
     gridExtra,
     htmltools,
+    htmlwidgets,
     magrittr,
     metathis,
     plotly,

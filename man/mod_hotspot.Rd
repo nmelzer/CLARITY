@@ -7,7 +7,14 @@
 \usage{
 mod_hotspot_ui(id)
 
-mod_hotspot_server(id, filter, breed.select, approach.info, add.approach.names)
+mod_hotspot_server(
+  id,
+  filter,
+  breed.select,
+  approach.info,
+  add.approach.names,
+  figure_rendered
+)
 }
 \arguments{
 \item{id}{module id}
@@ -19,6 +26,8 @@ mod_hotspot_server(id, filter, breed.select, approach.info, add.approach.names)
 \item{approach.info}{data.frame data frame containing the predefined settings and names for the selected approaches (\link{table_approach_information})}
 
 \item{add.approach.names}{character containing the concatenated approach abbreviations and is used as an addition to the file name}
+
+\item{figure_rendered}{reactive value indicates if the plot in the module has been fully rendered. Used on the main server to enable or disable "Breed analysis" sidebar elements.}
 }
 \description{
 A shiny module to generate the outcome for the tabpanel "General information" for the sidebar "Breed analysis".

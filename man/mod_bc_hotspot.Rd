@@ -7,7 +7,14 @@
 \usage{
 mod_bc_hotspot_ui(id)
 
-mod_bc_hotspot_server(id, filter, breed.infos, names.files, approach)
+mod_bc_hotspot_server(
+  id,
+  filter,
+  breed.infos,
+  names.files,
+  approach,
+  figure_rend2
+)
 }
 \arguments{
 \item{id}{module id}
@@ -19,6 +26,8 @@ mod_bc_hotspot_server(id, filter, breed.infos, names.files, approach)
 \item{names.files}{character containing the concatenate breed names for file naming}
 
 \item{approach}{data frame containing the predefined settings and names for the selected approach (\link{table_approach_information})}
+
+\item{figure_rend2}{reactive value indicates if the plot in the module has been fully rendered. Used on the main server to enable or disable "Breed comparison" sidebar elements.}
 }
 \description{
 A shiny module to generate the outcome for the tabpanel "General information" for the sidebar "Breed comparison".

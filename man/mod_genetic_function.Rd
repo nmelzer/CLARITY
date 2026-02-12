@@ -12,7 +12,8 @@ mod_genetic_function_server(
   filter,
   breed.select,
   make.traff.light,
-  approach.info
+  approach.info,
+  figure_rendered_gf
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ mod_genetic_function_server(
 \item{breed.select}{character contains the name of the selected breed}
 
 \item{make.traff.light}{object containing the ggplot for the likelihood quality signal(\link{make_traffic_light})}
+
+\item{figure_rendered_gf}{reactive value indicates if the plot in the module has been fully rendered. Used on the main server to enable or disable "Breed analysis" sidebar elements.}
 }
 \description{
 A shiny module to generate the outcome for the tabpanel "Genetic-map functions" for the sidebar "Breed analysis".

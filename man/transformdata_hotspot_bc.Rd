@@ -4,7 +4,7 @@
 \alias{transformdata_hotspot_bc}
 \title{Transform data for Hotspot plot for breed comparison}
 \usage{
-transformdata_hotspot_bc(data.trans, value, filter, infos, approach)
+transformdata_hotspot_bc(data.trans, value, filter, infos, approach, choice)
 }
 \arguments{
 \item{data.trans}{list each list element represents a selected breed and contains data frame (containing: SNP,BP,D_cM,D_Theta,Hm_cM,Hm_Theta,Hf_cM,Hf_Theta,Dis)}
@@ -16,17 +16,21 @@ transformdata_hotspot_bc(data.trans, value, filter, infos, approach)
 \item{infos}{data.frame data frame containing the predefined settings and names for the selected breeds (\link{table_breed_information})}
 
 \item{approach}{data.frame data frame containing the predefined settings and names for the selected approaches (\link{table_approach_information})}
+
+\item{choice}{character contains the information on whether only hotspots or all points are plotted}
 }
 \value{
 The function returns a list containing: \cr
 * 1. data frame containing information for hotspot plot (\link{data_plot_hotspot}-specific selected chromosome or \link{data_plot_hotspot_all} - all chromosomes is selected) \cr
 * 2. data.frame for table use created for table (\link{data_table_hotspot}) \cr
 * 3. list containing revealed hotspot SNP markers for each approach for the Venn diagram
+* 4. numeric contains the chromosome end of the longest chromosome and the maximum theta for hotspot plot (\link{data_plot_hotspot}-specific selected chromosome or \link{data_plot_hotspot_all} - all chromosomes is selected)
 }
 \description{
 The function used the threshold to determine hotspot SNP markers and generate corresponding output data for plot (1), table (2) and Venn diagram (3) for an selected approach and selected breeds.
 1) Transform BP into Mbp and add accordingly colors, sizes and shapes. If all chromosomes are selected then an additional
 column is generated "ChrTheta" - chromosome number + theta . The later is scaled in depending on the size of Theta.
+In addition, the maximum length of chromosomes and maximum theta are determined.
 2) To create the corresponding table only the detected hotspot SNP markers for each approach are used.
 3) For the number of selected approaches, create corresponding sets containing the hotspot SNP markers required to create the Venn diagram.
 }

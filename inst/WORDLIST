@@ -4,6 +4,7 @@ Braunvieh
 CMD
 Chr
 ChrTheta
+DOM
 Felsenstein
 Fleckvieh
 Hm
@@ -36,6 +37,7 @@ js
 makePlot
 megabase
 megabasepairs
+navbar
 plotly
 pre
 progenies
@@ -43,6 +45,7 @@ putatively
 scatterPlot
 startscreen
 tabpanel
+transformdata
 ui
 venn
 visualisation

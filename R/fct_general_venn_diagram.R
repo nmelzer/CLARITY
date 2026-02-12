@@ -17,7 +17,7 @@
 #' @export
 process_venn_data=function(venn)
 {
-  shapes.id=ifelse(length(names(venn))==2,"201","301") ## determine shape of venndiagram
+  shapes.id=ifelse(length(names(venn))==2,"201","301") ## determine shape of venn diagram
   venn.data=ggVennDiagram::process_data(venn,shape_id = shapes.id)
   venn.data
 }
@@ -128,7 +128,7 @@ prepare_table_venn=function(venn.dat,venn,click,table.bc)
   venn.set.name=as$name[1]
   use=match(venn.set.name, ggVennDiagram::process_region_data(venn)$name)
 
-  data=as.data.frame(ggVennDiagram::process_region_data(venn)$item[[use]])
-  dat.merge=merge(table.bc, data[,1],by.x=1,by.y=1)
+  data.ptv=as.data.frame(ggVennDiagram::process_region_data(venn)$item[[use]])
+  dat.merge=merge(table.bc, data.ptv[,1],by.x=1,by.y=1)
   list(dat.merge,venn.set.name)
 }

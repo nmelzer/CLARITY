@@ -57,7 +57,7 @@ mod_contact_server = function(id){
 
     output$referenceList <- renderUI(htmltools::tags$h4(htmltools::HTML("
     <ul>
-     <li>Wittenburg D, Ding X, Melzer N, Abdollahi Sisi N, Seefried FR (2025) <i> A comparative study on recombination activity in cattle</i> (in revision)</li>  &nbsp;
+     <li>Wittenburg D, Ding X, Melzer N, Abdollahi Sisi N, Seefried FR (2026) <i> A comparative study on recombination activity in cattle</i> (in revision)</li>  &nbsp;
 
     <li>Melzer N, Qanbari S, Ding X, Wittenburg D (2023) <i>CLARITY: a Shiny app for interactive visualisation of the bovine physical-genetic
     map.</i> Front. Genet. 14:1082782. <a href = 'https://doi.org/10.3389/fgene.2023.1082782' target='_blank'> <u> https://doi.org/10.3389/fgene.2023.1082782 </u></a> </li>  &nbsp;
@@ -72,7 +72,7 @@ mod_contact_server = function(id){
 
     output$softwareList <- renderUI(htmltools::tags$h4(htmltools::HTML("
     <ul>
-      <li> Melzer N (2025) <i> CLARITY: A Shiny app for interactive visualisation of the bovine physical-genetic map (v3.0.0).</i> Zenodo.<a href ='https://doi.org/10.5281/zenodo.11620801' target='_blank'> <u>https://doi.org/10.5281/zenodo.11620801</u></a>;
+      <li> Melzer N (2026) <i> CLARITY: A Shiny app for interactive visualisation of the bovine physical-genetic map (v3.0.0).</i> Zenodo.<a href ='https://doi.org/10.5281/zenodo.11620801' target='_blank'> <u>https://doi.org/10.5281/zenodo.11620801</u></a>;
             Available at <a href ='https://github.com/nmelzer/CLARITY' target='_blank'> <u>https://github.com/nmelzer/CLARITY </u></a> </li> &nbsp;
 
       <li> Wittenburg D (2025) <i> wittenburg/hsrecombi: Estimation of Recombination Rate and Maternal LD in Half-Sibs (v2.0.1).</i> Zenodo. <a href = 'https://doi.org/10.5281/zenodo.17962688' target='_blank'> <u>https://doi.org/10.5281/zenodo.17962688</u></a>;
@@ -90,10 +90,10 @@ mod_contact_server = function(id){
 
 
       <li> Wittenburg D (2023) <i>hsrecombi: Estimation of recombination rate and maternal LD in half-sibs </i> (v1.0.1).
-            Available at <a href ='https://cran.r-project.org/package=hsrecombi' target='_blank'><u> https://cran.r-project.org/package=hsrecombi </u></a> </li>&nbsp
+            Available at <a href ='https://cran.r-project.org/package=hsrecombi' target='_blank'><u> https://doi.org/10.32614/CRAN.package.hsrecombi </u></a> </li>&nbsp
 
       <li> Wittenburg D (2021) <i>hsrecombi: Estimation of recombination rate and maternal LD in half-sibs </i> (v0.3.4).
-            Available at <a href ='https://cran.r-project.org/package=hsrecombi' target='_blank'><u> https://cran.r-project.org/package=hsrecombi </u></a> </li>&nbsp
+            Available at <a href ='https://cran.r-project.org/package=hsrecombi' target='_blank'><u> https://doi.org/10.32614/CRAN.package.hsrecombi </u></a> </li>&nbsp
 
    </ul>")))
 

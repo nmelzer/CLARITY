@@ -19,16 +19,6 @@ test_that("app server", {
 })
 
 
-#test_that(
-#  "app_sys works",
-#  {
-#    expect_true(
-#      app_sys("golem-config.yml") != ""
-#    )
-#  }
-#)
-
-
 test_that(
   "golem-config works",
   {
@@ -67,10 +57,3 @@ testServer(app_server, {
   # expect_equal(output$txt, "Text")
 })
 
-# Configure this test to fit your need
-test_that(
-  "app launches",
-  {
-    #golem::expect_running(sleep = 10, R_path="C:/Program Files/R/R-4.5.1/bin/R.exe")
-  }
-)

@@ -14,7 +14,9 @@ mod_genetic_map_server(
   geneticMap,
   make.traff.light,
   approach.info,
-  add.approach.names
+  add.approach.names,
+  figure_rendered_gm,
+  state
 )
 }
 \arguments{
@@ -31,6 +33,10 @@ mod_genetic_map_server(
 \item{approach.info}{data frame containing the predefined settings for selected approaches (\link{table_approach_information})}
 
 \item{add.approach.names}{character containing the concatenated approach abbreviations and is used as an addition to the file name}
+
+\item{figure_rendered_gm}{reactive value indicates if the plot in the module has been fully rendered. Used on the main server to enable or disable "Breed analysis" sidebar elements.}
+
+\item{state}{numeric indicating if the threshold slider UI should be created (0; new module ID) or not (1; reused module ID and settings retained). State of the module is tracked on the main server side.}
 }
 \description{
 A shiny module to generate the outcome for the tabpanel "Genetic map" for the sidebar "Breed analysis".
@@ -41,7 +47,7 @@ using the function \link{transformdata_genetic_map}. Depending on the user's sel
 otherwise the function \link{makePlot_all_geneticMaps} is used to create the plot. In addition, when all chromosome is selected than the corresponding plot
 is cached to increase the app performance.
 Finally, the quality of the likelihood approach is also shown here by means of a traffic light
- (also termed as likelihood quality signal (\link{make_traffic_light})).
+(also termed as likelihood quality signal (\link{make_traffic_light})).
 }
 \seealso{
 * \link{transformdata_genetic_map} \cr

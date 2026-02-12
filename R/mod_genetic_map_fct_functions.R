@@ -6,6 +6,7 @@
 #' @param input data frame containing the genetic map information
 #' @param approach.info data frame containing the predefined settings for selected approaches (\link{table_approach_information})
 #'
+#' @importFrom dplyr select mutate
 #' @return The function returns list containing the desired information in data frame (\link{data_plot_geneticMap}) for each chromosome.
 #' @export
 #' @seealso \link{mod_genetic_map_server}
@@ -39,6 +40,7 @@ transformdata_genetic_map=function(input,approach.info)
 #' @param breed.infos data frame containing the predefined settings for selected breeds (\link{table_breed_information})
 #' @param approach character containing the selected approach
 #'
+#' @importFrom dplyr select mutate
 #' @return The function returns a list containing the desired information in data frame for each chromosome (\link{data_plot_geneticMap})
 #' @export
 #' @seealso \link{mod_bc_genetic_map_server}
@@ -113,7 +115,6 @@ makePlot_geneticMaps<-function(dat,name.file)
 #'
 #' @import ggplot2
 #' @importFrom patchwork wrap_plots plot_layout
-#' @import gridExtra
 #'
 #' @return The function returns a patchwork object (containing multiple ggplot objects)).
 #' @export
@@ -146,6 +147,7 @@ makePlot_all_geneticMaps <-function(ll.gm.s)
 #' @title Creates table header for genetic map table for specific selected chromosome for breed analysis
 #' @param approach.info data.frame containing relevant \link{table_approach_general}
 #' @param no.cols integer number of columns for genetic map used
+#' @import htmltools
 #' @return The function returns a shiny.tag.
 #'
 #' @noRd
@@ -201,7 +203,7 @@ create_table_header2 <- function(approach.info,no.cols) {
 #' @title Creates table header for genetic map table when all chromosomes are selected for breed analysis
 #' @param approach.info data.frame containing relevant \link{table_approach_general}
 #' @param no.cols integer number of columns for genetic map used
-#' @return The function returns a character vetor.
+#' @return The function returns a character vector.
 #'
 #' @noRd
 create_table_header2_all <- function(approach.info,no.cols) {
@@ -223,6 +225,7 @@ create_table_header2_all <- function(approach.info,no.cols) {
 #' function
 #' @title Creates table header for genetic map table when specific selected chromosome for breed comparison
 #' @param breed.infos data.frame containing relevant \link{table_breed_general}
+#' @import htmltools
 #' @return The function returns a shiny.tag.
 #' @noRd
 create_table_header_bc2<-function(breed.infos)
@@ -243,7 +246,7 @@ create_table_header_bc2<-function(breed.infos)
           th(colspan=1,"Position (bp)"),
 
           lapply(1:nrow(breed.infos), function(inn) {
-            th(colspan=1,HTML(paste(breed.infos$Name[inn],"<br> Position (cM)")))
+            th(colspan=1,htmltools::HTML(paste(breed.infos$Name[inn],"<br> Position (cM)")))
           })
         )
       )
