@@ -66,7 +66,7 @@ create.colors<-function(colo)
 
 creating_venn=function(venn_data,long.names,abbreviations,venn.colors)
 {
-  X<-Y<-NULL
+  X<-Y<-id<-NULL
 
   ## create legend for venn
   labelling.venn=paste(abbreviations,long.names,sep="-")

@@ -153,7 +153,7 @@ app_server <- function( input, output, session) {
   mod_about_the_project_server("mod_about_the_project_1")
 
   #### 2. information about data set(s)
-  mod_datasets_server("mod_datasets_1",BreedOverview=BreedOverview)
+  mod_datasets_server("mod_datasets_1")
 
   #### 3. generally misplaced markers
   mod_misplaced_server("mod_misplaced_1")

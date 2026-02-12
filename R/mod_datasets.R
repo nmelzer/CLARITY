@@ -79,10 +79,11 @@ mod_datasets_ui <- function(id){
 
 # Module Server
 #' @rdname mod_datasets
+#'
 #' @export
 #' @keywords internal
 
-mod_datasets_server=function(id, BreedOverview){
+mod_datasets_server=function(id){
   shiny::moduleServer(id,function(input, output, session){
 
     thead<-tr<-th<-NULL
