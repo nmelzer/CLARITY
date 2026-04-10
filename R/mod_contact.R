@@ -57,7 +57,8 @@ mod_contact_server = function(id){
 
     output$referenceList <- renderUI(htmltools::tags$h4(htmltools::HTML("
     <ul>
-     <li>Wittenburg D, Ding X, Melzer N, Abdollahi Sisi N, Seefried FR (2026) <i> A comparative study on recombination activity in cattle</i> (in revision)</li>  &nbsp;
+     <li>Wittenburg D, Melzer N, Abdollahi Sisi N, Ding X, Seefried FR (2026) <i> A comparative study on recombination activity in cattle</i>
+     Genet. Sel. Evol. 58, 24.  <a href = 'https://doi.org/10.1186/s12711-026-01041-0' target='_blank'> <u>  https://doi.org/10.1186/s12711-026-01041-0 </u></a> </li> &nbsp;
 
     <li>Melzer N, Qanbari S, Ding X, Wittenburg D (2023) <i>CLARITY: a Shiny app for interactive visualisation of the bovine physical-genetic
     map.</i> Front. Genet. 14:1082782. <a href = 'https://doi.org/10.3389/fgene.2023.1082782' target='_blank'> <u> https://doi.org/10.3389/fgene.2023.1082782 </u></a> </li>  &nbsp;
@@ -65,7 +66,7 @@ mod_contact_server = function(id){
     <li> Qanbari S, Schnabel RD,  Wittenburg, D (2022) <i>Evidence of rare misassemblies in the bovine reference genome revealed by population genetic metrics.</i>
     Anim. Genet.,  53, 498-505. <a href = 'https://doi.org/10.1111/age.13205' target='_blank'> <u> https://doi.org/10.1111/age.13205 </u></a> </li>  &nbsp;
 
-    <li>Qanbari  S, Wittenburg D (2020) <i>Male recombination map of the autosomal genome in German Holstein.</i> Genet Sel Evol 52, 73.
+    <li>Qanbari  S, Wittenburg D (2020) <i>Male recombination map of the autosomal genome in German Holstein.</i> Genet. Sel. Evol. 52, 73.
     <a href = 'https://doi.org/10.1186/s12711-020-00593-z' target='_blank'> <u> https://doi.org/10.1186/s12711-020-00593-z </u></a></li>
       </ul>")))
 
